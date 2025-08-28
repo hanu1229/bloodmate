@@ -17,6 +17,7 @@ public class UserEntity extends BaseTime {
     // 회원 번호 (PK)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private int userId;
     // 아이디
     @Column(name = "user_login_id", nullable = false, length = 12)
