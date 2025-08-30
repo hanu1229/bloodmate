@@ -1,3 +1,4 @@
+-- 회원 샘플
 insert into users(
 user_login_id, user_password, user_nickname, user_name, user_address, user_phone, user_email, user_role, user_state, created_at, updated_at
 ) values
@@ -6,3 +7,11 @@ user_login_id, user_password, user_nickname, user_name, user_address, user_phone
 ('tester97', '!b1234', '테스터97', '김영희', '경기도 ~', '010-3333-3333', 'tester97@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
 ('tester12', '!c1234', '테스터12', '이철수', '경기도 ~', '010-4444-4444', 'tester12@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
 ('tester29', '!d1234', '테스터29', '최희수', '경기도 ~', '010-5555-5555', 'tester29@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07');
+
+-- 당화혈색소 샘플
+insert into user_hba1c(hba1c_value, measured_at, user_id, created_at, updated_at) values
+(5.4, "2025-08-13T09:24:15", 2, "2025-08-15T13:55:42", "2025-08-15T13:55:42"),
+(10.2, "2025-08-13T09:30:24", 3, "2025-08-15T13:55:42", "2025-08-15T13:55:42"),
+(7.1, "2025-08-13T09:37:01", 4, "2025-08-15T13:55:42", "2025-08-15T13:55:42"),
+(6.1, "2025-08-13T09:40:54", 5, "2025-08-15T13:55:42", "2025-08-15T13:55:42"),
+(8.4, "2025-08-13T10:07:11", 3, "2025-08-15T13:55:42", "2025-08-15T13:55:42");

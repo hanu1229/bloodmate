@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 public class Hba1cDto {
 
     ///당화혈색소 수치 번호(PK)
-    private int userHba1cId;
+    private int hba1cId;
     /// 당화혈색소 수치
-    private BigDecimal userHba1cValue;
+    private BigDecimal hba1cValue;
     /// 측정일
     private LocalDateTime measuredAt;
     /// 작성일
@@ -27,7 +27,7 @@ public class Hba1cDto {
     /// Dto --> Entity
     public Hba1cEntity toEntity() {
         return Hba1cEntity.builder()
-                .userHba1cId(this.userHba1cId).userHba1cValue(this.userHba1cValue).measuredAt(this.measuredAt)
+                .hba1cId(this.hba1cId).hba1cValue(this.hba1cValue).measuredAt(this.measuredAt)
                 .build();
     }
 

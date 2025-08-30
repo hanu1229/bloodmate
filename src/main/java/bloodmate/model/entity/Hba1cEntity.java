@@ -17,12 +17,12 @@ public class Hba1cEntity extends BaseTime {
 
     // 당화혈색소 수치 번호(PK)
     @Id
-    @Column(name = "user_hba1c_id")
+    @Column(name = "hba1c_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userHba1cId;
+    private int hba1cId;
     // 당화혈색소 수치 | precision ==> 전체 자리수 정의(소수점 포함), scale ==> 소수점 자리수
-    @Column(name = "user_hba1c_value", precision = 3, scale = 1, nullable = false)
-    private BigDecimal userHba1cValue;
+    @Column(name = "hba1c_value", precision = 3, scale = 1, nullable = false)
+    private BigDecimal hba1cValue;
     // 측정일
     @Column(name = "measured_at", nullable = false)
     private LocalDateTime measuredAt;
@@ -35,7 +35,7 @@ public class Hba1cEntity extends BaseTime {
     /// Entity --> Dto
     public Hba1cDto toDto() {
         return Hba1cDto.builder()
-                .userHba1cId(this.userHba1cId).userHba1cValue(this.userHba1cValue).measuredAt(this.measuredAt)
+                .hba1cId(this.hba1cId).hba1cValue(this.hba1cValue).measuredAt(this.measuredAt)
                 .createdAt(this.getCreatedAt()).updatedAt(this.getUpdatedAt()).userId(this.userEntity.getUserId())
                 .build();
     }
