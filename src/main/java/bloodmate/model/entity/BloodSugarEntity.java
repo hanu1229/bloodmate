@@ -1,6 +1,7 @@
 package bloodmate.model.entity;
 
-import bloodmate.model.dto.BloodSugarDto;
+import bloodmate.model.dto.bloodsugar.BloodSugarRequestDto;
+import bloodmate.model.dto.bloodsugar.BloodSugarResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,10 +35,10 @@ public class BloodSugarEntity extends BaseTime {
     private UserEntity userEntity;
 
     /// Entity -> Dto
-    public BloodSugarDto toDto() {
-        return BloodSugarDto.builder()
+    public BloodSugarResponseDto toDto() {
+        return BloodSugarResponseDto.builder()
                 .bloodSugarId(this.bloodSugarId).bloodSugarValue(this.bloodSugarValue).measuredAt(this.measuredAt)
-                .measurementContextId(this.getMeasurementContextEntity().getMcId()).userId(getUserEntity().getUserId())
+                .measurementContextCode(this.getMeasurementContextEntity().getMcCode()).userId(getUserEntity().getUserId())
                 .createdAt(this.getCreatedAt()).updatedAt(this.getUpdatedAt())
                 .build();
     }

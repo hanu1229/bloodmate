@@ -18,7 +18,7 @@ public class MeasurementContextEntity extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int mcId;
     /// 측정 상황 코드
-    @Column(name = "measurement_context_code", length = 50, nullable = false)
+    @Column(name = "measurement_context_code", length = 50, nullable = false, unique = true)
     private String mcCode;
     /// 측정 상황 정렬
     @Column(name = "order_number", nullable = false)

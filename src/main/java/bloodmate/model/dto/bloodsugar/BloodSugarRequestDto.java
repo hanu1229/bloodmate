@@ -1,4 +1,4 @@
-package bloodmate.model.dto;
+package bloodmate.model.dto.bloodsugar;
 
 import bloodmate.model.entity.BloodSugarEntity;
 import lombok.*;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter @ToString
-public class BloodSugarDto {
+public class BloodSugarRequestDto {
 
     /// 혈당 수치 번호
     private int bloodSugarId;
