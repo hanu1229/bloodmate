@@ -51,6 +51,7 @@ public class Hba1cService {
         }
         return false;
     }
+
     /// 당화혈색소 전체 불러오기 - R
     public List<Hba1cDto> findAllHba1c(String token) {
         System.out.println(">> Hba1cService.findAllHba1c start");
@@ -71,6 +72,7 @@ public class Hba1cService {
         }
         return null;
     }
+
     /// 당화혈색소 수정하기 - U
     public boolean updateHba1c(String token, Hba1cDto hba1cDto, int hba1cId) {
         System.out.println(">> Hba1cService.updateHba1c start");
@@ -95,6 +97,7 @@ public class Hba1cService {
             System.out.println(">> Hba1cService.updateHba1c end");
         }
     }
+
     /// 당화혈색소 삭제하기 - D
     public boolean deleteHba1c(String token, int hba1cId) {
         System.out.println(">> Hba1cService.deleteHba1c start");
