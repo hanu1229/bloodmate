@@ -18,12 +18,12 @@ public class BloodSugarController {
 
     /// 혈당 정보 작성 - C
     @PostMapping("")
-    public boolean createBloodSugar(@RequestHeader("Authorization") String token, @RequestBody BloodSugarRequestDto bloodSugarRequestDto) {
-        System.out.println(">> BloodSugarController.createBloodSugar start");
+    public boolean create(@RequestHeader("Authorization") String token, @RequestBody BloodSugarRequestDto bloodSugarRequestDto) {
+        System.out.println(">> BloodSugarController.create start");
         System.out.println(">> token = " + token);
         System.out.println(">> bloodSugarDto = " + bloodSugarRequestDto);
-        boolean result = bloodSugarService.createBloodSugar(token, bloodSugarRequestDto);
-        System.out.println(">> BloodSugarController.createBloodSugar end\n");
+        boolean result = bloodSugarService.create(token, bloodSugarRequestDto);
+        System.out.println(">> BloodSugarController.create end\n");
         return result;
     }
 
@@ -50,28 +50,28 @@ public class BloodSugarController {
 
     /// 혈당 정보 수정하기 - U
     @PutMapping("/{bloodSugarId}")
-    public boolean updateBloodSugar(
+    public boolean update(
             @RequestHeader("Authorization") String token,
             @RequestBody BloodSugarRequestDto bloodSugarRequestDto,
             @PathVariable("bloodSugarId") int bloodSugarId
     ) {
-        System.out.println(">> BloodSugarController.updateBloodSugar start");
+        System.out.println(">> BloodSugarController.update start");
         System.out.println(">> token = " + token);
         System.out.println(">> bloodSugarDto = " + bloodSugarRequestDto);
         System.out.println(">> bloodSugarId = " + bloodSugarId);
-        boolean result = bloodSugarService.updateBloodSugar(token, bloodSugarRequestDto, bloodSugarId);
-        System.out.println(">> BloodSugarController.updateBloodSugar end\n");
-        return true;
+        boolean result = bloodSugarService.update(token, bloodSugarRequestDto, bloodSugarId);
+        System.out.println(">> BloodSugarController.update end\n");
+        return result;
     }
 
     /// 혈당 정보 삭제하기 - D
     @DeleteMapping("/{bloodSugarId}")
-    public boolean deleteBloodSugar(@RequestHeader("Authorization") String token, @PathVariable("bloodSugarId") int bloodSugarId) {
-        System.out.println(">> BloodSugarController.deleteBloodSugar start");
+    public boolean delete(@RequestHeader("Authorization") String token, @PathVariable("bloodSugarId") int bloodSugarId) {
+        System.out.println(">> BloodSugarController.delete start");
         System.out.println(">> token = " + token);
         System.out.println(">> bloodSugarId = " + bloodSugarId);
-        boolean result = bloodSugarService.deleteBloodSugar(token, bloodSugarId);
-        System.out.println(">> BloodSugarController.deleteBloodSugar end\n");
+        boolean result = bloodSugarService.delete(token, bloodSugarId);
+        System.out.println(">> BloodSugarController.delete end\n");
         return result;
     }
 

@@ -77,7 +77,7 @@ public class JwtUtil {
     }
 
     /// JWT 토큰 검증
-    public int valnoateToken(String token) {
+    public int validateToken(String token) {
         try {
             Claims claims =
                     // 토큰을 검증하기 위한 함수

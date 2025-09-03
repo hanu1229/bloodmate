@@ -85,7 +85,7 @@ public class UserService {
     /// 로그아웃 - R
     public boolean logOut(String token) {
         System.out.println(">> UserService.logOut start");
-        int userId = jwtUtil.valnoateToken(token);
+        int userId = jwtUtil.validateToken(token);
         if(userId > 0) {
             jwtUtil.deleteToken(userId);
             System.out.println(">> UserService.logOut end");
@@ -99,7 +99,7 @@ public class UserService {
     public UserDto userInformation(String token) {
         System.out.println(">> UserService.userInformation start");
 
-        int userId = jwtUtil.valnoateToken(token);
+        int userId = jwtUtil.validateToken(token);
         if(userId > 0) {
             Optional<UserEntity> optional = userRepository.findById(userId);
             if(optional.isPresent()) {
@@ -116,7 +116,7 @@ public class UserService {
     /// 회원 정보 수정 - U
     public boolean updateUser(String token, UserDto userDto) {
         System.out.println(">> UserService.updateUser start");
-        int userId = jwtUtil.valnoateToken(token);
+        int userId = jwtUtil.validateToken(token);
         if(userId > 0) {
             Optional<UserEntity> optional = userRepository.findById(userId);
             if(optional.isPresent()) {
@@ -137,7 +137,7 @@ public class UserService {
     /// 비밀번호 수정 - U
     public boolean updatePassword(String token, Map<String, String> passInfo) {
         System.out.println(">> UserService.updatePassword start");
-        int userId = jwtUtil.valnoateToken(token);
+        int userId = jwtUtil.validateToken(token);
         if(userId > 0) {
             Optional<UserEntity> optional = userRepository.findById(userId);
             if(optional.isPresent()) {
@@ -160,7 +160,7 @@ public class UserService {
     public boolean deleteUser(String token, String userPassword) {
         System.out.println(">> UserService.deleteUser start");
 
-        int userId = jwtUtil.valnoateToken(token);
+        int userId = jwtUtil.validateToken(token);
         if(userId > 0) {
             Optional<UserEntity> optional = userRepository.findById(userId);
             if(optional.isPresent()) {
@@ -198,7 +198,7 @@ public class UserService {
     /// 로그인 확인 - R
     public boolean checkLoginState(String token) {
         System.out.println(">> UserService.checkLoginState start");
-        int userId = jwtUtil.valnoateToken(token);
+        int userId = jwtUtil.validateToken(token);
         if(userId > 0) {
             UserEntity userEntity = userRepository.findById(userId).orElse(null);
             if(userEntity != null) {

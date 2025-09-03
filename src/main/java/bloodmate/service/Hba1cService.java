@@ -22,11 +22,11 @@ public class Hba1cService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
-    /// 당화혈색소 저장 - C
-    public boolean createHba1c(String token, Hba1cDto hba1cDto) {
-        System.out.println(">> Hba1cService.createHba1c start");
+    /// 당화혈색소 정보 저장 - C
+    public boolean create(String token, Hba1cDto hba1cDto) {
+        System.out.println(">> Hba1cService.create start");
         try {
-            int userId = jwtUtil.valnoateToken(token);
+            int userId = jwtUtil.validateToken(token);
             // 단순히 FK 값으로 userId 값을 저장하는 것이라면 UserEntity userEntity = new UserEntity();를 생성하고
             // userEntity.setUserId(userId);를 해도 무방하다. 생각해볼 것
             if(userId > 0) {
@@ -44,19 +44,19 @@ public class Hba1cService {
             }
         } catch(Exception e) {
             System.out.println(">> " + e);
-            System.out.println(">> Hba1cService.createHba1c error!!!");
+            System.out.println(">> Hba1cService.create error!!!");
             return false;
         } finally {
-            System.out.println(">> Hba1cService.createHba1c end");
+            System.out.println(">> Hba1cService.create end");
         }
         return false;
     }
 
-    /// 당화혈색소 전체 불러오기 - R
-    public List<Hba1cDto> findAllHba1c(String token) {
-        System.out.println(">> Hba1cService.findAllHba1c start");
+    /// 당화혈색소 정보 전체 불러오기 - R
+    public List<Hba1cDto> findAll(String token) {
+        System.out.println(">> Hba1cService.findAll start");
         try {
-            int userId = jwtUtil.valnoateToken(token);
+            int userId = jwtUtil.validateToken(token);
             if(userId > 0) {
                 List<Hba1cEntity> hba1cEntityList = hba1cRepository.findByUserIdToHba1c(userId);
                 System.out.println(">> hba1cEntityList = " + hba1cEntityList);
@@ -65,23 +65,24 @@ public class Hba1cService {
             }
         } catch(Exception e) {
             System.out.println(">> " + e);
-            System.out.println(">> Hba1cService.findAllHba1c error!!!");
+            System.out.println(">> Hba1cService.findAll error!!!");
             return null;
         } finally {
-            System.out.println(">> Hba1cService.findAllHba1c end");
+            System.out.println(">> Hba1cService.findAll end");
         }
         return null;
     }
 
-    /// 당화혈색소 수정하기 - U
-    public boolean updateHba1c(String token, Hba1cDto hba1cDto, int hba1cId) {
-        System.out.println(">> Hba1cService.updateHba1c start");
+    /// 당화혈색소 정보 수정하기 - U
+    public boolean update(String token, Hba1cDto hba1cDto, int hba1cId) {
+        System.out.println(">> Hba1cService.update start");
         try {
-            int userId = jwtUtil.valnoateToken(token);
+            int userId = jwtUtil.validateToken(token);
             if(userId > 0) {
                 Optional<Hba1cEntity> optional = hba1cRepository.findById(hba1cId);
                 if(optional.isPresent()) {
                     Hba1cEntity hba1cEntity = optional.get();
+                    if(hba1cEntity.getUserEntity().getUserId() != userId) { return false; }
                     hba1cEntity.setHba1cValue(hba1cDto.getHba1cValue());
                     hba1cEntity.setMeasuredAt(hba1cDto.getMeasuredAt());
                     System.out.println(">> hba1cEntity = " + hba1cEntity);
@@ -91,20 +92,20 @@ public class Hba1cService {
             return false;
         } catch(Exception e) {
             System.out.println(">> " + e);
-            System.out.println(">> Hba1cService.updateHba1c error!!!");
+            System.out.println(">> Hba1cService.update error!!!");
             return false;
         } finally {
-            System.out.println(">> Hba1cService.updateHba1c end");
+            System.out.println(">> Hba1cService.update end");
         }
     }
 
-    /// 당화혈색소 삭제하기 - D
-    public boolean deleteHba1c(String token, int hba1cId) {
-        System.out.println(">> Hba1cService.deleteHba1c start");
-        int userId = jwtUtil.valnoateToken(token);
+    /// 당화혈색소 정보 삭제하기 - D
+    public boolean delete(String token, int hba1cId) {
+        System.out.println(">> Hba1cService.delete start");
+        int userId = jwtUtil.validateToken(token);
         if(userId <= 0) { return false; }
         boolean result = hba1cRepository.deleteByHba1cIdAndUserId(hba1cId, userId) > 0;
-        System.out.println(">> Hba1cService.deleteHba1c end");
+        System.out.println(">> Hba1cService.delete end");
         return result;
     }
 
