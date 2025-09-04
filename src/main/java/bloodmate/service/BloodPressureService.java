@@ -1,6 +1,7 @@
 package bloodmate.service;
 
 import bloodmate.model.dto.bloodpressure.BloodPressureRequestDto;
+import bloodmate.model.dto.bloodpressure.BloodPressureResponseDto;
 import bloodmate.model.entity.BloodPressureEntity;
 import bloodmate.model.entity.MeasurementContextEntity;
 import bloodmate.model.entity.UserEntity;
@@ -12,6 +13,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -54,10 +58,43 @@ public class BloodPressureService {
     }
 
     /// 혈압 정보 전체 불러오기 - R
-
+    public List<BloodPressureResponseDto> findAll(String token) {
+        System.out.println(">> BloodPressureService.findAll start");
+        try {
+            int userId = jwtUtil.validateToken(token);
+            if(userId <= 0) { return null; }
+            List<BloodPressureEntity> bloodPressureEntityList = bloodPressureRepository.findByUserIdToBloodPressure(userId);
+            if(bloodPressureEntityList == null) { return null; }
+            return bloodPressureEntityList.stream().map(BloodPressureEntity::toDto).toList();
+        } catch(Exception e) {
+            System.out.println(">> " + e);
+            System.out.println(">> BloodPressureService.findAll error!!!");
+            return null;
+        } finally {
+            System.out.println(">> BloodPressureService.findAll end");
+        }
+    }
 
     /// 혈압 정보 조건 불러오기 - R
-
+    public List<BloodPressureResponseDto> findByDate(String token, LocalDateTime date) {
+        System.out.println(">> BloodPressureService.findByDate");
+        try {
+            int userId = jwtUtil.validateToken(token);
+            if(userId <= 0) { return null; }
+            LocalDate temp = date.toLocalDate();
+            LocalDateTime start = temp.atStartOfDay();
+            LocalDateTime end = temp.plusDays(1).atStartOfDay();
+            List<BloodPressureEntity> bloodPressureEntityList = bloodPressureRepository.findByDateToBloodPressure(userId, start, end);
+            if(bloodPressureEntityList == null) { return null; }
+            return bloodPressureEntityList.stream().map(BloodPressureEntity::toDto).toList();
+        } catch(Exception e) {
+            System.out.println(">> " + e);
+            System.out.println(">> BloodPressureService.findByDate error!!!");
+            return null;
+        } finally {
+            System.out.println(">> BloodPressureService.findByDate end");
+        }
+    }
 
     /// 혈압 정보 수정하기 - U
     public boolean update(String token, BloodPressureRequestDto bloodPressureRequestDto, int bloodPressureId) {

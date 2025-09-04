@@ -1,9 +1,13 @@
 package bloodmate.controller;
 
 import bloodmate.model.dto.bloodpressure.BloodPressureRequestDto;
+import bloodmate.model.dto.bloodpressure.BloodPressureResponseDto;
 import bloodmate.service.BloodPressureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,10 +28,23 @@ public class BloodPressureController {
     }
 
     /// 혈압 정보 전체 불러오기 - R
-
+    @GetMapping("")
+    public List<BloodPressureResponseDto> findAll(@RequestHeader("Authorization") String token) {
+        System.out.println(">> BloodPressureController.findAll start");
+        System.out.println(">> token = " + token);
+        List<BloodPressureResponseDto> result = bloodPressureService.findAll(token);
+        System.out.println(">> BloodPressureController.findAll end\n");
+        return result;
+    }
 
     /// 혈압 정보 조건 불러오기 - R
-
+    @GetMapping("/date")
+    public List<BloodPressureResponseDto> findByDate(@RequestHeader("Authorization") String token, @RequestParam("date") LocalDateTime date) {
+        System.out.println(">> BloodPressureController.findByDate start");
+        List<BloodPressureResponseDto> result = bloodPressureService.findByDate(token, date);
+        System.out.println(">> BloodPressureController.findByDate end\n");
+        return result;
+    }
 
     /// 혈압 정보 수정하기 - U
     @PutMapping("/{bloodPressureId}")
