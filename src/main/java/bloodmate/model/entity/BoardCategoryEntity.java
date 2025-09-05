@@ -16,7 +16,7 @@ public class BoardCategoryEntity {
     @Column(name = "board_category_id")
     private int boardCategoryId;
     /// 카테고리 제목
-    @Column(name = "board_category_title", nullable = false, length = 16)
+    @Column(name = "board_category_title", nullable = false, unique = true, length = 16)
     private String boardCategoryTitle;
 
 }

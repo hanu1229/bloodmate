@@ -1,5 +1,6 @@
 package bloodmate.model.dto.board;
 
+import bloodmate.model.entity.BoardEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ public class BoardDto {
     /// 게시물 제목
     private String boardPostTitle;
     /// 게시물 내용
-    private String BoardPostContent;
+    private String boardPostContent;
     /// 게시물 조회수
     private int boardPostView;
     /// 게시물 상태 --> 0 : 삭제, 1 : 정상
@@ -27,5 +28,13 @@ public class BoardDto {
     private int userId;
     /// 카테고리 제목 FK
     private String boardCategoryTitle;
+
+    /// Dto -> Entity
+    public BoardEntity toEntity() {
+        return BoardEntity.builder()
+                .boardPostId(this.boardPostId).boardPostTitle(this.boardPostTitle).boardPostContent(this.boardPostContent)
+                .boardPostView(this.boardPostView)
+                .build();
+    }
 
 }

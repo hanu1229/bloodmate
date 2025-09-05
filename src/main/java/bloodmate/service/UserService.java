@@ -159,7 +159,6 @@ public class UserService {
     /// 회원 탈퇴 - D
     public boolean deleteUser(String token, String userPassword) {
         System.out.println(">> UserService.deleteUser start");
-
         int userId = jwtUtil.validateToken(token);
         if(userId > 0) {
             Optional<UserEntity> optional = userRepository.findById(userId);
