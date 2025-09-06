@@ -20,4 +20,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     /// 아이디 중복 확인 - R
     boolean existsByUserLoginId(@Param("userLoginId") String userLoginId);
 
+    /// 닉네임으로 회원 정보 확인
+    @Query(value = "select * from users where user_nickname = :userNickname and user_id = :userId", nativeQuery = true)
+    UserEntity findByNicknameToUserId(@Param("userNickname") String userNickname, @Param("userId") int userId);
+
 }
