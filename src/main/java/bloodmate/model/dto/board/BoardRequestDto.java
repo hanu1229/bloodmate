@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter @ToString
-public class BoardDto {
+public class BoardRequestDto {
 
     /// 게시물 번호 PK
     private int boardPostId;

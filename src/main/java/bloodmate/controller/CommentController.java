@@ -25,22 +25,31 @@ public class CommentController {
     }
 
     /// 댓글 수정 - U
-    @PutMapping("/{boardPostId}/{boardCommentId")
+    @PutMapping("/{boardPostId}/{boardCommentId}")
     public boolean update(
             @RequestHeader("Authorization") String token,
             @RequestBody CommentDto commentDto,
             @PathVariable("boardPostId") int boardPostId, @PathVariable("boardCommentId") int boardCommentId)
     {
-        System.out.println("CommentController.update");
-        System.out.println("token = " + token);
-        System.out.println("commentDto = " + commentDto);
-        System.out.println("boardPostId = " + boardPostId);
-        System.out.println("boardCommentId = " + boardCommentId);
+        System.out.println(">> CommentController.update start");
+        System.out.println(">> token = " + token);
+        System.out.println(">> commentDto = " + commentDto);
+        System.out.println(">> boardPostId = " + boardPostId);
+        System.out.println(">> boardCommentId = " + boardCommentId);
         boolean result = commentService.update(token, commentDto, boardPostId, boardCommentId);
-        System.out.println("CommentController.update");
+        System.out.println(">> CommentController.update end\n");
         return result;
     }
 
     /// 댓글 삭제 - D
+    @DeleteMapping("/{boardCommentId}")
+    public boolean delete(@RequestHeader("Authorization") String token, @PathVariable("boardCommentId") int boardCommentId) {
+        System.out.println(">> CommentController.delete start");
+        System.out.println(">> token = " + token);
+        System.out.println(">> boardCommentId = " + boardCommentId);
+        boolean result = commentService.delete(token, boardCommentId);
+        System.out.println(">> CommentController.delete end\n");
+        return result;
+    }
 
 }

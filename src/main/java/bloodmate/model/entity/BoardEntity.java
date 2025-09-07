@@ -1,6 +1,7 @@
 package bloodmate.model.entity;
 
-import bloodmate.model.dto.board.BoardDto;
+import bloodmate.model.dto.board.BoardRequestDto;
+import bloodmate.model.dto.board.BoardResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -42,11 +43,11 @@ public class BoardEntity extends BaseTime {
     private BoardCategoryEntity boardCategoryEntity;
 
     /// Entity -> Dto
-    public BoardDto toDto() {
-        return BoardDto.builder()
+    public BoardResponseDto toDto() {
+        return BoardResponseDto.builder()
                 .boardPostId(this.boardPostId).boardPostTitle(this.boardPostTitle).boardPostContent(this.boardPostContent)
                 .boardPostView(this.boardPostView).boardPostState(this.boardPostState)
-                .boardCategoryTitle(boardCategoryEntity.getBoardCategoryTitle()).userId(userEntity.getUserId())
+                .boardCategoryTitle(boardCategoryEntity.getBoardCategoryTitle()).userNickname(userEntity.getUserNickname())
                 .createdAt(getCreatedAt()).updatedAt(getUpdatedAt())
                 .build();
     }

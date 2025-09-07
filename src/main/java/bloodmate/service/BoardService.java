@@ -1,10 +1,14 @@
 package bloodmate.service;
 
-import bloodmate.model.dto.board.BoardDto;
+import bloodmate.model.dto.CommentDto;
+import bloodmate.model.dto.board.BoardRequestDto;
+import bloodmate.model.dto.board.BoardResponseDto;
 import bloodmate.model.entity.BoardCategoryEntity;
 import bloodmate.model.entity.BoardEntity;
+import bloodmate.model.entity.CommentEntity;
 import bloodmate.model.repository.BoardCategoryRepository;
 import bloodmate.model.repository.BoardRepository;
+import bloodmate.model.repository.CommentRepository;
 import bloodmate.model.repository.UserRepository;
 import bloodmate.util.JwtUtil;
 import jakarta.transaction.Transactional;
@@ -21,18 +25,19 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final BoardCategoryRepository boardCategoryRepository;
+    private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
     /// 게시물 작성 - C
-    public boolean create(String token, BoardDto boardDto) {
+    public boolean create(String token, BoardRequestDto boardRequestDto) {
         System.out.println(">> BoardService.create start");
         try {
             int userId = jwtUtil.validateToken(token);
             if(userId <= 0) { return false; }
-            boardDto.setBoardPostState(1);
-            BoardEntity boardEntity = boardDto.toEntity();
-            boardEntity.setBoardCategoryEntity(boardCategoryRepository.findByTitle(boardDto.getBoardCategoryTitle()));
+            boardRequestDto.setBoardPostState(1);
+            BoardEntity boardEntity = boardRequestDto.toEntity();
+            boardEntity.setBoardCategoryEntity(boardCategoryRepository.findByTitle(boardRequestDto.getBoardCategoryTitle()));
             boardEntity.setUserEntity(userRepository.findById(userId).orElse(null));
             boardEntity = boardRepository.save(boardEntity);
             if(boardEntity.getBoardPostId() <= 0) { return false; }
@@ -46,8 +51,9 @@ public class BoardService {
             System.out.println(">> BoardService.create end");
         }
     }
+
     /// 게시물 전체 출력 - R --> 추후 페이징 적용 예정
-    public List<BoardDto> findAll() {
+    public List<BoardResponseDto> findAll() {
         System.out.println(">> BoardService.findAll start");
         try {
             List<BoardEntity> boardEntityList = boardRepository.findAllByBoardStateIsNormal();
@@ -60,8 +66,26 @@ public class BoardService {
             System.out.println(">> BoardService.findAll end");
         }
     }
+
+    /// 게시물 카테고리별 전체 출력 - R
+    public List<BoardResponseDto> findAllCategory(String boardCategoryTitle) {
+        System.out.println(">> BoardService.findAllCategory start");
+        try {
+            BoardCategoryEntity boardCategoryEntity = boardCategoryRepository.findByTitle(boardCategoryTitle);
+            if(boardCategoryEntity == null) { return null; }
+            List<BoardEntity> boardEntityList = boardRepository.findAllCategory(boardCategoryEntity.getBoardCategoryId());
+            return boardEntityList.stream().map(BoardEntity::toDto).toList();
+        } catch(Exception e) {
+            System.out.println(">> " + e);
+            System.out.println(">> BoardService.findAllCategory error!!!");
+            return null;
+        } finally {
+            System.out.println(">> BoardService.findAllCategory end");
+        }
+    }
+
     /// 게시물 상세 보기 - R
-    public BoardDto findDetail(int boardPostId) {
+    public BoardResponseDto findDetail(int boardPostId) {
         System.out.println(">> BoardService.findDetail start");
         try {
             if(boardRepository.existBoardPostStateIsNormal(boardPostId) <= 0) { return null; }
@@ -69,9 +93,12 @@ public class BoardService {
             Optional<BoardEntity> optional = boardRepository.findById(boardPostId);
             if(optional.isPresent()) {
                 BoardEntity boardEntity = optional.get();
-                BoardDto boardDto = boardEntity.toDto();
-                System.out.println(">> boardDto = " + boardDto);
-                return boardDto;
+                BoardResponseDto boardResponseDto = boardEntity.toDto();
+                List<CommentEntity> commentEntityList = commentRepository.findByBoardPostId(boardPostId);
+                List<CommentDto> commentDtoList = commentEntityList.stream().map(CommentEntity::toDto).toList();
+                boardResponseDto.setCommentDtoList(commentDtoList);
+                System.out.println(">> boardDto = " + boardResponseDto);
+                return boardResponseDto;
             }
             return null;
         } catch(Exception e) {
@@ -82,8 +109,9 @@ public class BoardService {
             System.out.println(">> BoardService.findDetail end");
         }
     }
+
     /// 게시물 수정 - U
-    public boolean update(String token, BoardDto boardDto, int boardPostId) {
+    public boolean update(String token, BoardRequestDto boardRequestDto, int boardPostId) {
         System.out.println(">> BoardService.update start");
         try {
             int userId = jwtUtil.validateToken(token);
@@ -91,10 +119,10 @@ public class BoardService {
             Optional<BoardEntity> optional = boardRepository.findByBoardPostIdToUserId(boardPostId, userId);
             if(optional.isPresent()) {
                 BoardEntity boardEntity = optional.get();
-                boardEntity.setBoardPostTitle(boardDto.getBoardPostTitle());
-                boardEntity.setBoardPostContent(boardDto.getBoardPostContent());
-                if(!boardEntity.getBoardCategoryEntity().getBoardCategoryTitle().equals(boardDto.getBoardCategoryTitle())) {
-                    BoardCategoryEntity boardCategoryEntity = boardCategoryRepository.findByTitle(boardDto.getBoardCategoryTitle());
+                boardEntity.setBoardPostTitle(boardRequestDto.getBoardPostTitle());
+                boardEntity.setBoardPostContent(boardRequestDto.getBoardPostContent());
+                if(!boardEntity.getBoardCategoryEntity().getBoardCategoryTitle().equals(boardRequestDto.getBoardCategoryTitle())) {
+                    BoardCategoryEntity boardCategoryEntity = boardCategoryRepository.findByTitle(boardRequestDto.getBoardCategoryTitle());
                     boardEntity.setBoardCategoryEntity(boardCategoryEntity);
                 }
                 System.out.println(">> boardEntity = " + boardEntity);
@@ -110,6 +138,7 @@ public class BoardService {
         }
 
     }
+
     /// 게시물 삭제 - D
     public boolean delete(String token, int boardPostId) {
         System.out.println(">> BoardService.delete start");
@@ -124,6 +153,5 @@ public class BoardService {
         System.out.println(">> BoardService.delete end");
         return false;
     }
-    /// 게시물 작성자 확인 - R
 
 }

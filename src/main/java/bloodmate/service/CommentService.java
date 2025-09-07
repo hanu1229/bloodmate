@@ -50,16 +50,39 @@ public class CommentService {
     /// 댓글 수정 - U
     public boolean update(String token, CommentDto commentDto, int boardPostId, int boardCommentId) {
         System.out.println(">> CommentService.update start");
+        try {
+            int userId = jwtUtil.validateToken(token);
+            if(userId <= 0) { return false; }
+            Optional<CommentEntity> optional = commentRepository.updateByComment(userId, boardPostId, boardCommentId);
+            if(optional.isPresent()) {
+                CommentEntity commentEntity = optional.get();
+                commentEntity.setBoardCommentContent(commentDto.getBoardCommentContent());
+                System.out.println(">> commentEntity = " + commentEntity);
+                return true;
+            }
+            return false;
+        } catch(Exception e) {
+            System.out.println(">> " + e);
+            System.out.println(">> CommentService.update error!!!");
+            return false;
+        } finally {
+            System.out.println(">> CommentService.update end");
+        }
+    }
+
+    /// 댓글 삭제 - D
+    public boolean delete(String token, int boardCommentId) {
+        System.out.println(">> CommentService.delete start");
         int userId = jwtUtil.validateToken(token);
         if(userId <= 0) { return false; }
-        Optional<CommentEntity> optional = commentRepository.findByComment(userId, boardPostId, boardCommentId);
+        Optional<CommentEntity> optional = commentRepository.deleteByComment(userId, boardCommentId);
         if(optional.isPresent()) {
             CommentEntity commentEntity = optional.get();
-
+            commentEntity.setBoardCommentState(0);
+            return true;
         }
+        System.out.println(">> CommentService.delete end");
         return false;
     }
-    /// 댓글 삭제 - D
-
 
 }

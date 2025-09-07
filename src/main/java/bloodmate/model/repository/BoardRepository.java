@@ -22,6 +22,10 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
     @Query(value = "select * from board_post where board_post_state = 1", nativeQuery = true)
     List<BoardEntity> findAllByBoardStateIsNormal();
 
+    /// 게시물 카테고리별 전체 출력 - R
+    @Query(value = "select * from board_post where board_category_id = :boardCategoryId", nativeQuery = true)
+    List<BoardEntity> findAllCategory(@Param("boardCategoryId") int boardCategoryId);
+
     /// 게시물 상세 보기 - R
     @Query(value = "select count(*) from board_post where board_post_id = :boardPostId and board_post_state = 1", nativeQuery = true)
     int existBoardPostStateIsNormal(@Param("boardPostId") int boardPostId);

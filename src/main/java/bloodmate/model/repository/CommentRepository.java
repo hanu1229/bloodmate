@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -13,6 +14,14 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Integer>
 
     /// 댓글 수정 - U
     @Query(value = "select * from board_comment where user_id = :userId and board_post_id = :boardPostId and board_comment_id = :boardCommentId", nativeQuery = true)
-    Optional<CommentEntity> findByComment(@Param("userId") int userId, @Param("boardPostId") int boardPostId, @Param("boardCommentId") int boardCommentId);
+    Optional<CommentEntity> updateByComment(@Param("userId") int userId, @Param("boardPostId") int boardPostId, @Param("boardCommentId") int boardCommentId);
+
+    /// 댓글 삭제 - D
+    @Query(value = "select * from board_comment where user_id = :userId and board_comment_id = :boardCommentId", nativeQuery = true)
+    Optional<CommentEntity> deleteByComment(@Param("userId") int userId, @Param("boardCommentId") int boardCommentId);
+
+    /// 게시물 상세보기 댓글 출력 - R
+    @Query(value = "select * from board_comment where board_post_id = :boardPostId", nativeQuery = true)
+    List<CommentEntity> findByBoardPostId(@Param("boardPostId") int boardPostId);
 
 }
