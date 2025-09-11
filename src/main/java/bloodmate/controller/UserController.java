@@ -4,12 +4,14 @@ import bloodmate.model.dto.UserDto;
 import bloodmate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin("*")
 @RequestMapping("/api/user")
 public class UserController {
 
@@ -29,11 +31,19 @@ public class UserController {
 
     /// 로그인 - R
     @PostMapping("/login")
-    public String logIn(@RequestBody UserDto userDto) {
+    public ResponseEntity<String> logIn(@RequestBody UserDto userDto) {
         System.out.println(">> UserController.logIn start");
-        String token = userService.logIn(userDto);
+        String result = userService.logIn(userDto);
+        ResponseEntity<String> str = null;
+        if (
+                result.equals("휴먼(장기미접속) 회원입니다.") || result.equals("정지된 회원입니다.") ||
+                result.equals("탈퇴된 회원입니다.") || result.equals("존재하지 않는 회원입니다.")) {
+            str = ResponseEntity.status(201).body(result);
+        } else {
+            str = ResponseEntity.status(200).body(result);
+        }
         System.out.println(">> UserController.logIn end\n");
-        return token;
+        return str;
     }
 
     /// 로그아웃 - R

@@ -20,13 +20,13 @@ public class UserEntity extends BaseTime {
     @Column(name = "user_id")
     private int userId;
     // 아이디
-    @Column(name = "user_login_id", nullable = false, length = 12)
+    @Column(name = "user_login_id", nullable = false, length = 12, unique = true)
     private String userLoginId;
     // 비밀번호
     @Column(name = "user_password", nullable = false, length = 15)
     private String userPassword;
     // 닉네임
-    @Column(name = "user_nickname", nullable = false, length = 30)
+    @Column(name = "user_nickname", nullable = false, length = 30, unique = true)
     private String userNickname;
     // 이름
     @Column(name = "user_name", nullable = false, length = 30)
@@ -35,7 +35,7 @@ public class UserEntity extends BaseTime {
     @Column(name = "user_address", nullable = false)
     private String userAddress;
     // 전화번호
-    @Column(name = "user_phone", nullable = false, length = 13)
+    @Column(name = "user_phone", nullable = false, length = 13, unique = true)
     private String userPhone;
     // 이메일 length default 255
     @Column(name = "user_email", nullable = false)
