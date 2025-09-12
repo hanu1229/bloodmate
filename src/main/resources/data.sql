@@ -1,12 +1,12 @@
 -- 회원 샘플
 insert into users(
-user_login_id, user_password, user_nickname, user_name, user_address, user_phone, user_email, user_role, user_state, created_at, updated_at
+user_login_id, user_password, user_nickname, user_name, user_birth_date, user_phone, user_email, user_role, user_state, created_at, updated_at
 ) values
-('admin', '!admin1234', '관리자', '한웅재', '경기도 ~', '010-1111-1111', 'han494127@gmail.com', 1, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
-('tester19', '!a1234', '테스터19', '홍길동', '경기도 ~', '010-2222-2222', 'tester19@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
-('tester97', '!b1234', '테스터97', '김영희', '경기도 ~', '010-3333-3333', 'tester97@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
-('tester12', '!c1234', '테스터12', '이철수', '경기도 ~', '010-4444-4444', 'tester12@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
-('tester29', '!d1234', '테스터29', '최희수', '경기도 ~', '010-5555-5555', 'tester29@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07');
+('admin', '!admin1234', '관리자', '한웅재', '1997-12-29', '010-1111-1111', 'han494127@gmail.com', 1, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
+('tester19', '!a1234', '테스터19', '홍길동', '1970-05-04', '010-2222-2222', 'tester19@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
+('tester97', '!b1234', '테스터97', '김영희', '1950-11-27', '010-3333-3333', 'tester97@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
+('tester12', '!c1234', '테스터12', '이철수', '1988-02-17', '010-4444-4444', 'tester12@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
+('tester29', '!d1234', '테스터29', '최희수', '2002-08-08', '010-5555-5555', 'tester29@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07');
 
 -- 당화혈색소 정보 샘플
 insert into user_hba1c(hba1c_value, measured_at, user_id, created_at, updated_at) values

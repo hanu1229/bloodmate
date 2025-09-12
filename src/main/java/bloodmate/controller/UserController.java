@@ -20,13 +20,19 @@ public class UserController {
 
     /// 회원가입 - C
     @PostMapping("/signup")
-    public boolean signUp(@RequestBody UserDto userDto) {
+    public ResponseEntity<Boolean> signUp(@RequestBody UserDto userDto) {
         System.out.println(">> UserController.signUp start");
         System.out.println(">> userDto = " + userDto);
         boolean result = userService.signUp(userDto);
         System.out.println(">> result = " + result);
+        ResponseEntity<Boolean> resultEntity = null;
+        if(result) {
+            resultEntity = ResponseEntity.status(201).body(true);
+        } else {
+            resultEntity = ResponseEntity.status(400).body(false);
+        }
         System.out.println(">> UserController.signUp end\n");
-        return result;
+        return resultEntity;
     }
 
     /// 로그인 - R
@@ -37,7 +43,8 @@ public class UserController {
         ResponseEntity<String> str = null;
         if (
                 result.equals("휴먼(장기미접속) 회원입니다.") || result.equals("정지된 회원입니다.") ||
-                result.equals("탈퇴된 회원입니다.") || result.equals("존재하지 않는 회원입니다.")) {
+                result.equals("탈퇴된 회원입니다.") || result.equals("존재하지 않는 회원입니다.")
+        ) {
             str = ResponseEntity.status(201).body(result);
         } else {
             str = ResponseEntity.status(200).body(result);
@@ -117,6 +124,16 @@ public class UserController {
         System.out.println("userLoginId = " + userLoginId);
         boolean result = userService.checkLoginId(userLoginId);
         System.out.println("UserController.checkLoginId end\n");
+        return result;
+    }
+
+    /// 전화번호 중복 확인 - R
+    @GetMapping("/check-phone")
+    public boolean checkPhone(@RequestParam("userPhone") String userPhone) {
+        System.out.println(">> UserController.checkPhone start");
+        System.out.println(">> userPhone = " + userPhone);
+        boolean result = userService.checkPhone(userPhone);
+        System.out.println(">> UserController.checkPhone end\n");
         return result;
     }
 

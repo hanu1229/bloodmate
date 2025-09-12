@@ -3,6 +3,7 @@ package bloodmate.model.dto;
 import bloodmate.model.entity.UserEntity;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Builder
@@ -20,8 +21,8 @@ public class UserDto {
     private String userNickname;
     /// 이름
     private String userName;
-    /// 주소
-    private String userAddress;
+    /// 생년월일
+    private LocalDate userBirthDate;
     /// 전화번호
     private String userPhone;
     /// 이메일
@@ -39,7 +40,7 @@ public class UserDto {
     public UserEntity toEntity() {
         return UserEntity.builder()
                 .userId(this.userId).userLoginId(this.userLoginId).userPassword(this.userPassword).userNickname(this.userNickname).userName(this.userName)
-                .userAddress(this.userAddress).userPhone(this.userPhone).userEmail(this.userEmail)
+                .userBirthDate(this.userBirthDate).userPhone(this.userPhone).userEmail(this.userEmail)
                 .userRole(this.userRole).userState(this.userState)
                 .build();
     }

@@ -1,47 +1,113 @@
 import { Box, Button, Input, Option, Select, Typography } from "@mui/joy";
-
-import "../styles/signupPage.css";
-import { EmailOutlined, HomeOutlined, Key, PersonOutline, SmartphoneOutlined } from "@mui/icons-material";
+import { CalendarMonthOutlined, EmailOutlined, Key, PersonOutline, SmartphoneOutlined } from "@mui/icons-material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import "../styles/signupPage.css";
+import {serverDomain} from "../ApiDomain";
+import axios from "axios";
 
 export default function SignupPage(props) {
 
     const navigate = useNavigate();
 
-    /// 회원 정보 저장
+    /** 회원 정보 저장 */
     const [info, setInfo] = useState({
         userLoginId : "", userPassword : "", 
         userNickname : "", userName : "", 
-        userAddress : "", userPhone : "", 
+        userBirthDate : "", userPhone : "", 
         userEmail : "", userRole : 0
     });
-    /// 비밀번호 확인용
+    /** 비밀번호 확인 */
     const [checkPassword, setCheckPassword] = useState("");
-    /// 이메일 조합용
-
+    /** 비밀번호 확인 체크 */
+    const [lastCheck, setLastCheck] = useState(true);
+    /** 체크 항목 관리 */
+    const [checkInfo, setCheckInfo] = useState({userLoginId : false, userNickname : false, userPhone : false});
 
 
     const changeInfo = (event) => {
         setInfo({...info, [event.target.name] : event.target.value});
     }
+
+    /** 비밀번호 확인 */
     const changePassword = (event) => {
-        setCheckPassword(event.target.value);
+        if(event.target.name === "userPassword") {
+            setInfo({...info, [event.target.name] : event.target.value});
+            if(checkPassword === event.target.value) { setLastCheck(true); }
+            else { setLastCheck(false); }
+        }
+        else if(event.target.name === "password") {
+            setCheckPassword(event.target.value);
+            if(info.userPassword === event.target.value) { setLastCheck(true); }
+            else { setLastCheck(false); }
+        }
+        return;
     }
 
+    /** 아이디 확인 */
+    const checkUserLoginId = async () => {
+        const response = await axios.get(`${serverDomain}/user/check-login-id?userLoginId=${info.userLoginId}`);
+        if(response.data) {
+            alert("이미 존재하는 아이디입니다.");
+            setCheckInfo({...checkInfo, userLoginId : false});
+            return;
+        }
+        alert("가입 가능한 아이디입니다.");
+        setCheckInfo({...checkInfo, userLoginId : true});
+        return;
+    }
+
+    /** 닉네임 확인 */
+    const checkUserNickname = async () => {
+        const response = await axios.get(`${serverDomain}/user/check-nickname?userNickname=${info.userNickname}`);
+        if(response.data) {
+            alert("이미 존재하는 닉네임입니다.");
+            setCheckInfo({...checkInfo, userNickname : false});
+            return;
+        }
+        alert("가입 가능한 닉네임입니다.");
+        setCheckInfo({...checkInfo, userNickname : true});
+        return;
+    }
+
+    /** 전화번호 확인 */
+    const checkUserPhone = async () => {
+        const response = await axios.get(`${serverDomain}/user/check-phone?userPhone=${info.userPhone}`);
+        if(response.data) {
+            alert("이미 가입된 전화번호입니다.");
+            setCheckInfo({...checkInfo, userPhone : false});
+            return;
+        }
+        alert("가입 가능한 전화번호입니다.")
+        setCheckInfo({...checkInfo, userPhone : true});
+        return;
+    }
+
+
+    /** 회원가입 */
     const signupBtnClick = async () => {
-        alert(
-            `
-            이름 : ${info.userName}
-            닉네임 : ${info.userNickname}
-            아이디 : ${info.userLoginId}
-            비밀번호 : ${info.userPassword}
-            비밀번호 확인 : ${checkPassword}
-            이메일 : ${info.userEmail}
-            전화번호 : ${info.userPhone}
-            주소 : ${info.userAddress}
-            `
-        );
+        if(checkInfo.userLoginId && checkInfo.userNickname && checkInfo.userPhone) {
+            try {
+            const response = await axios.post(`${serverDomain}/user/signup`, info);
+            console.log(`response.data : ${response.data} / response.status : ${response.status}`);
+            if(response.status === 201 && response.data) {
+                alert("회원가입이 완료되었습니다.");
+                navigate("/login");
+            }
+            return;
+            } catch(e) {
+                alert("회원가입에 실패하셨습니다.");
+                return;
+            }
+        } else if(!checkInfo.userLoginId) {
+            alert("아이디를 확인해주세요");
+        } else if(!checkInfo.userNickname) {
+            alert("닉네임을 확인해주세요");
+        } else if(!checkInfo.userPhone) {
+            alert("전화번호를 확인해주세요");
+        }
+        return;
     }
 
     return (
@@ -60,34 +126,40 @@ export default function SignupPage(props) {
                 >
                     <Typography style= {{margin : "0px", textAlign : "center", fontSize : 32, color : "#A097D4", textShadow : "5px 5px 10px #A097D4"}}>블러드메이트</Typography>
                     <Box sx = {{display : "flex", flexDirection : "column", padding : "30px"}}>
+                        {/* 이름 */}
                         <Input className = "input-style" name = "userName" type = "text" placeholder = "이름" value = {info.userName} onChange = {changeInfo} startDecorator = {<PersonOutline/>}></Input>
-                        <Box sx = {{display : "flex", justifyContent : "space-between"}}>
-                            <Input className = "input-style" name = "userNickname" type = "text" placeholder = "닉네임" value = {info.userNickname} onChange = {changeInfo} startDecorator = {<PersonOutline/>} sx = {{flex : 1, marginRight : "20px"}}></Input>
-                            <Button sx={{marginBottom : "20px", backgroundColor : "#A097D4", color : "#FFFFFF", "&:hover" : {backgroundColor : "#A097D4", color : "#FFFFFF"}}}>확인</Button>
-                        </Box>
-                        <Box sx = {{display : "flex", justifyContent : "space-between"}}>
-                            <Input className = "input-style" name = "userLoginId" type = "text" placeholder = "아이디" value = {info.userLoginId} onChange = {changeInfo} startDecorator = {<PersonOutline/>} sx = {{flex : 1, marginRight : "20px"}}></Input>
-                            <Button sx={{marginBottom : "20px", backgroundColor : "#A097D4", color : "#FFFFFF", "&:hover" : {backgroundColor : "#A097D4", color : "#FFFFFF"}}}>확인</Button>
-                        </Box>
-                        <Input className = "input-style" name = "userPassword" type = "password" placeholder = "비밀번호" value = {info.userPassword} onChange = {changeInfo} startDecorator = {<Key/>}></Input>
-                        <Input className = "input-style" name = "password" type = "password" placeholder = "비밀번호 확인" value = {checkPassword} onChange = {changePassword} startDecorator = {<Key/>}></Input>
-                    
-                        <Box sx = {{display : "flex", justifyContent : "space-between"}}>
-                            <Input className = "input-style" name = "userEmail" type = "email" placeholder = "이메일" value = {info.userEmail} onChange = {changeInfo} startDecorator = {<EmailOutlined/>} sx = {{flex : 1, marginRight : "20px"}}></Input>
-                            <Input className = "input-style"></Input>
-                            <Select placeholder = "직접입력"  sx = {{marginBottom : "20px", width : "140px"}}>
-                                <Option value = "직접입력">직접입력</Option>
-                                <Option value = "naver.com">naver.com</Option>
-                                <Option value = "daum.net">daum.net</Option>
-                                <Option value = "google.com">google.com</Option>
-                            </Select>
-                        </Box>
-
+                        
+                        {/* 생년월일 */}
+                        <Input className = "input-style" name = "userBirthDate" type = "text" placeholder = "생년월일(XXXX-XX-XX)" value = {info.userBirthDate} onChange = {changeInfo} startDecorator = {<CalendarMonthOutlined/>}></Input>
+                        
+                        {/* 이메일 */}
+                        <Input className = "input-style" name = "userEmail" type = "text" placeholder = "이메일" value = {info.userEmail} onChange = {changeInfo} startDecorator = {<EmailOutlined/>}></Input>
+                        
+                        {/* 전화번호 */}
                         <Box sx = {{display : "flex", justifyContent : "space-between"}}>
                             <Input className = "input-style" name = "userPhone" type = "text" placeholder = "전화번호(010-XXXX-XXXX)" value = {info.userPhone} onChange = {changeInfo} startDecorator = {<SmartphoneOutlined/>} sx = {{flex : 1, marginRight : "20px"}}></Input>
-                            <Button sx={{marginBottom : "20px", backgroundColor : "#A097D4", color : "#FFFFFF", "&:hover" : {backgroundColor : "#A097D4", color : "#FFFFFF"}}}>확인</Button>
+                            <Button sx={{marginBottom : "20px", backgroundColor : "#A097D4", color : "#FFFFFF", "&:hover" : {backgroundColor : "#A097D4", color : "#FFFFFF"}}} onClick = {checkUserPhone}>확인</Button>
                         </Box>
-                        <Input className = "input-style" name = "userAddress" type = "text" placeholder = "주소" value = {info.userAddress} onChange = {changeInfo} startDecorator = {<HomeOutlined/>}></Input>
+                        
+                        {/* 닉네임 */}
+                        <Box sx = {{display : "flex", justifyContent : "space-between"}}>
+                            <Input className = "input-style" name = "userNickname" type = "text" placeholder = "닉네임" value = {info.userNickname} onChange = {changeInfo} startDecorator = {<PersonOutline/>} sx = {{flex : 1, marginRight : "20px"}}></Input>
+                            <Button sx={{marginBottom : "20px", backgroundColor : "#A097D4", color : "#FFFFFF", "&:hover" : {backgroundColor : "#A097D4", color : "#FFFFFF"}}} onClick = {checkUserNickname}>확인</Button>
+                        </Box>
+                        
+                        {/* 아이디 */}
+                        <Box sx = {{display : "flex", justifyContent : "space-between"}}>
+                            <Input className = "input-style" name = "userLoginId" type = "text" placeholder = "아이디" value = {info.userLoginId} onChange = {changeInfo} startDecorator = {<PersonOutline/>} sx = {{flex : 1, marginRight : "20px"}}></Input>
+                            <Button sx={{marginBottom : "20px", backgroundColor : "#A097D4", color : "#FFFFFF", "&:hover" : {backgroundColor : "#A097D4", color : "#FFFFFF"}}} onClick = {checkUserLoginId}>확인</Button>
+                        </Box>
+                        
+                        {/* 비밀번호 */}
+                        <Input className = "input-style" name = "userPassword" type = "password" placeholder = "비밀번호" value = {info.userPassword} onChange = {changePassword} startDecorator = {<Key/>}></Input>
+                        
+                        {/* 비밀번호 확인 */}
+                        <Input className = "input-style" name = "password" type = "password" placeholder = "비밀번호 확인" value = {checkPassword} onChange = {changePassword} startDecorator = {<Key/>} sx = {{borderColor : lastCheck ? "#CDD7E1" : "red", "&:focus-within::before" : {boxShadow : lastCheck ? "#CDD7E1" : "inset 0 0 0 2px red"}}}></Input>
+                        
+                        {/* 회원가입 버튼 */}
                         <Box>
                             <Button 
                                 sx = {{

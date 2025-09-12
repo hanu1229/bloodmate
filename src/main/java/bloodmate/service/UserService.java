@@ -123,7 +123,7 @@ public class UserService {
                 UserEntity userEntity = optional.get();
                 userEntity.setUserNickname(userDto.getUserNickname());
                 userEntity.setUserName(userDto.getUserName());
-                userEntity.setUserAddress(userDto.getUserAddress());
+                userEntity.setUserBirthDate(userDto.getUserBirthDate());
                 userEntity.setUserPhone(userDto.getUserPhone());
                 userEntity.setUserEmail(userDto.getUserEmail());
                 System.out.println(">> UserService.updateUser end");
@@ -191,6 +191,15 @@ public class UserService {
         System.out.println("UserService.checkLoginId start");
         boolean result = userRepository.existsByUserLoginId(userLoginId);
         System.out.println("UserService.checkLoginId end");
+        return result;
+    }
+
+    /// <b>전화번호 중복 확인 - R</b></br>
+    /// 전화번호가 존재하면 true
+    public boolean checkPhone(String userPhone) {
+        System.out.println(">> UserService.checkPhone start");
+        boolean result = userRepository.existsByUserPhone(userPhone);
+        System.out.println(">> UserService.checkPhone end");
         return result;
     }
 

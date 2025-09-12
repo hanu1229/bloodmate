@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,8 +33,8 @@ public class UserEntity extends BaseTime {
     @Column(name = "user_name", nullable = false, length = 30)
     private String userName;
     // 주소 length default 255
-    @Column(name = "user_address", nullable = false)
-    private String userAddress;
+    @Column(name = "user_birth_date", nullable = false)
+    private LocalDate userBirthDate;
     // 전화번호
     @Column(name = "user_phone", nullable = false, length = 13, unique = true)
     private String userPhone;
@@ -53,7 +54,7 @@ public class UserEntity extends BaseTime {
     public UserDto toDto() {
         return UserDto.builder()
                 .userId(this.userId).userLoginId(this.userLoginId).userPassword(this.userPassword).userNickname(this.userNickname)
-                .userName(this.userName).userAddress(this.userAddress).userPhone(this.userPhone).userEmail(this.userEmail)
+                .userName(this.userName).userBirthDate(this.userBirthDate).userPhone(this.userPhone).userEmail(this.userEmail)
                 .userRole(this.userRole).userState(this.userState)
                 .createdAt(getCreatedAt()).updatedAt(getUpdatedAt())
                 .build();
