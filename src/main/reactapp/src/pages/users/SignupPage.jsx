@@ -3,8 +3,8 @@ import { CalendarMonthOutlined, EmailOutlined, Key, PersonOutline, SmartphoneOut
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import "../styles/signupPage.css";
-import {serverDomain} from "../ApiDomain";
+import "../../styles/signupPage.css";
+import {serverDomain} from "../../ApiDomain";
 import axios from "axios";
 
 export default function SignupPage(props) {

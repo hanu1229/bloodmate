@@ -46,7 +46,9 @@ export default function LoginPage(props) {
                     // backgroundColor : "#A097D4",
                     color : "#FFFFFF"
                 }}>
-                    <Typography style= {{margin : "0px", fontSize : 32, color : "#A097D4", textShadow : "5px 5px 10px #A097D4"}}>블러드 메이트</Typography>
+                    <Typography sx = {{margin : "0px", fontSize : 32, color : "#A097D4", textShadow : "5px 5px 10px #A097D4"}}>
+                        <Link to = "/" style = {{textDecoration : "none", color : "inherit"}}>블러드 메이트</Link>
+                    </Typography>
                     <Box sx = {{display : "flex", flexDirection : "column", padding : "30px"}}>
                         <Input 
                             type = "text"

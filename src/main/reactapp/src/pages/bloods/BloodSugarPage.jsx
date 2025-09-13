@@ -1,6 +1,6 @@
 import { Box } from "@mui/joy";
 
-export default function DashBoard(props) {
+export default function BloodSugarPage(props) {
     return (
         <>
             <Box 
@@ -11,7 +11,7 @@ export default function DashBoard(props) {
                     backgroundColor : "#f6f6f6"
                 }}
             >
-                대시보드
+                혈당
             </Box>
         </>
     );

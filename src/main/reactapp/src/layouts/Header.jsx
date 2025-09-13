@@ -14,10 +14,12 @@ export default function Header(props) {
         if(token != null) { setLoginState(true); } else { setLoginState(false); }
     }, [loginState]);
 
+    /** 로그인 페이지로 이동 */
     const loginButtonClick = () => {
         navigate("/login");
     };
 
+    /** 로그아웃 */
     const logoutButtonClick = async () => {
         const answer = confirm("로그아웃 하시겠습니까?");
         if(!answer) { return }
@@ -42,6 +44,11 @@ export default function Header(props) {
         setLoginState(false);
     }
 
+    /** 게시판 페이지로 이동 */
+    const changeToBoardPage = () => {
+        navigate("/board");
+    }
+
     return (
         <>
             <div className = "header-main">
@@ -52,15 +59,26 @@ export default function Header(props) {
                         </Link>
                     </li>
                     <li>
-                        <Button 
-                            sx = {
-                                {
-                                    backgroundColor : "#A097D4", 
-                                    "&:hover" : {
-                                        backgroundColor : "#FFFFFF", 
-                                        color : "#000000"
-                                    }
+                        <Button
+                            sx = {{
+                                marginRight : "10px",
+                                backgroundColor : "#A097D4",
+                                "&:hover" :  {
+                                    backgroundColor : "#FFFFFF",
+                                    color : "#000000"
                                 }
+                            }}
+                            onClick = {changeToBoardPage}
+                        >
+                            게시판
+                        </Button>
+                        <Button 
+                            sx = {{
+                                backgroundColor : "#A097D4", 
+                                "&:hover" : {
+                                    backgroundColor : "#FFFFFF", 
+                                    color : "#000000"
+                                }}
                             } 
                             onClick={() => {loginState ? logoutButtonClick() : loginButtonClick()}}
                         >
