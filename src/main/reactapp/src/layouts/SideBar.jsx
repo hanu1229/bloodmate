@@ -18,7 +18,7 @@ export default function SideBar(props) {
                 {/* 대시보드 */}
                 <Link to = "/" style = {{textDecoration : "none", color : "black", fontWeight : "bold"}}>
                     <Box sx = {{padding : "5px 0px 5px 10px", backgroundColor : isActive("/") ? "#FFFFFF" : "inherit"}}>
-                        대시보드
+                        대시보드 
                     </Box>
                 </Link>
                 {/* 당화혈색소 */}
