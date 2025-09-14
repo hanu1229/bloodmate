@@ -42,6 +42,7 @@ export default function Header(props) {
         localStorage.removeItem("Token");
         console.log("정상적으로 로그아웃됨");
         setLoginState(false);
+        navigate("/");
     }
 
     /** 게시판 페이지로 이동 */

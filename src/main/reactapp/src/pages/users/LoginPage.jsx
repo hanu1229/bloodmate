@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Box, Button, IconButton, Input, Typography } from "@mui/joy";
+import { Box, Button, IconButton, Input, Tooltip, Typography } from "@mui/joy";
 import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -22,6 +22,7 @@ export default function LoginPage(props) {
             if(response.status == 200) {
                 console.log(response.data);
                 localStorage.setItem("Token", response.data);
+                alert("로그인에 성공했습니다.");
                 navigate("/");
             } else {
                 alert(response.data);
@@ -37,7 +38,7 @@ export default function LoginPage(props) {
                 <Box sx = {{
                     display : "flex",
                     flexDirection : "column",
-                    // border : "1px solid #A097D4",
+                    border : "2px solid #A097D4",
                     borderRadius : 15,
                     padding : "15px",
                     height : 400,
@@ -47,7 +48,11 @@ export default function LoginPage(props) {
                     color : "#FFFFFF"
                 }}>
                     <Typography sx = {{margin : "0px", fontSize : 32, color : "#A097D4", textShadow : "5px 5px 10px #A097D4"}}>
-                        <Link to = "/" style = {{textDecoration : "none", color : "inherit"}}>블러드 메이트</Link>
+                        <Tooltip title = "메인페이지로..." placement = "top" sx = {{backgroundColor : "#A097D4"}}>
+                            <Link to = "/" style = {{textDecoration : "none", color : "inherit"}}>
+                                블러드 메이트
+                            </Link>
+                        </Tooltip>
                     </Typography>
                     <Box sx = {{display : "flex", flexDirection : "column", padding : "30px"}}>
                         <Input 

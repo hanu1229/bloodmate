@@ -1,6 +1,13 @@
 import { Box } from "@mui/joy";
+import useCustomNavigate from "../../useCustomNavigate";
+import { useEffect } from "react";
 
 export default function BloodSugarPage(props) {
+
+    const checkLogin = useCustomNavigate();
+
+    useEffect(() => { checkLogin(); }, []);
+
     return (
         <>
             <Box 

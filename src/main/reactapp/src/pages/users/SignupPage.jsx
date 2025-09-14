@@ -1,7 +1,7 @@
-import { Box, Button, Input, Option, Select, Typography } from "@mui/joy";
+import { Box, Button, Input, Option, Select, Tooltip, Typography } from "@mui/joy";
 import { CalendarMonthOutlined, EmailOutlined, Key, PersonOutline, SmartphoneOutlined } from "@mui/icons-material";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import "../../styles/signupPage.css";
 import {serverDomain} from "../../ApiDomain";
@@ -121,10 +121,17 @@ export default function SignupPage(props) {
                         textAlign : "center",
                         padding : "15px",
                         width : 400,
-                        border : "2px solid #A097D4"
+                        border : "2px solid #A097D4",
+                        borderRadius : 15
                     }}
-                >
-                    <Typography style= {{margin : "0px", textAlign : "center", fontSize : 32, color : "#A097D4", textShadow : "5px 5px 10px #A097D4"}}>블러드메이트</Typography>
+                >   
+                    <Typography style= {{margin : "0px", textAlign : "center", fontSize : 32, color : "#A097D4", textShadow : "5px 5px 10px #A097D4"}}>
+                        <Tooltip title = "메인페이지로..." placement = "top" sx = {{backgroundColor : "#A097D4"}}>
+                            <Link to = "/" style = {{textDecoration : "none", color : "inherit"}}>
+                                블러드메이트
+                            </Link>
+                        </Tooltip>
+                    </Typography>
                     <Box sx = {{display : "flex", flexDirection : "column", padding : "30px"}}>
                         {/* 이름 */}
                         <Input className = "input-style" name = "userName" type = "text" placeholder = "이름" value = {info.userName} onChange = {changeInfo} startDecorator = {<PersonOutline/>}></Input>

@@ -1,6 +1,12 @@
 import { Box } from "@mui/joy";
+import { useEffect } from "react";
+import useCustomNavigate from "../../useCustomNavigate";
 
 export default function BloodHba1cPage(props) {
+    const checkLogin = useCustomNavigate();
+
+    useEffect(() => { checkLogin(); }, []);
+
     return (
         <>
             <Box 
