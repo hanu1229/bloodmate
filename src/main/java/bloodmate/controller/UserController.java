@@ -171,7 +171,7 @@ public class UserController {
         return result;
     }
 
-    /// 아이디 찾기 - R
+    /// 아이디 및 비밀번호 찾기 - R
     @PostMapping("/search")
     public ResponseEntity<String> findByUserLoginIdOrUserPassword(@RequestBody VerificationDto verificationDto) {
         System.out.println(">> UserController.findByUserLoginIdOrUserPassword start");
