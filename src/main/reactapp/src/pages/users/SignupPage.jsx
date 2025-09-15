@@ -2,6 +2,7 @@ import { Box, Button, Input, Option, Select, Tooltip, Typography } from "@mui/jo
 import { CalendarMonthOutlined, EmailOutlined, Key, PersonOutline, SmartphoneOutlined } from "@mui/icons-material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { btnColor, inputFocusColor } from "../../styles/commonStyle";
 
 import "../../styles/signupPage.css";
 import {serverDomain} from "../../ApiDomain";
@@ -119,66 +120,56 @@ export default function SignupPage(props) {
                         display : "flex",
                         flexDirection : "column",
                         textAlign : "center",
-                        padding : "15px",
+                        padding : "20px",
                         width : 400,
                         border : "2px solid #A097D4",
                         borderRadius : 15
                     }}
                 >   
-                    <Typography style= {{margin : "0px", textAlign : "center", fontSize : 32, color : "#A097D4", textShadow : "5px 5px 10px #A097D4"}}>
+                    <Typography style= {{margin : "0px", textAlign : "center", fontSize : 32, color : "#A097D4"}}>
                         <Tooltip title = "메인페이지로..." placement = "top" sx = {{backgroundColor : "#A097D4"}}>
                             <Link to = "/" style = {{textDecoration : "none", color : "inherit"}}>
                                 블러드메이트
                             </Link>
                         </Tooltip>
                     </Typography>
-                    <Box sx = {{display : "flex", flexDirection : "column", padding : "30px"}}>
+                    <Box sx = {{display : "flex", flexDirection : "column", padding : "30px 30px 0px 30px"}}>
                         {/* 이름 */}
-                        <Input className = "input-style" name = "userName" type = "text" placeholder = "이름" value = {info.userName} onChange = {changeInfo} startDecorator = {<PersonOutline/>}></Input>
+                        <Input className = "input-style" name = "userName" type = "text" placeholder = "이름" value = {info.userName} onChange = {changeInfo} startDecorator = {<PersonOutline/>} sx = {{...inputFocusColor}} />
                         
                         {/* 생년월일 */}
-                        <Input className = "input-style" name = "userBirthDate" type = "text" placeholder = "생년월일(XXXX-XX-XX)" value = {info.userBirthDate} onChange = {changeInfo} startDecorator = {<CalendarMonthOutlined/>}></Input>
+                        <Input className = "input-style" name = "userBirthDate" type = "text" placeholder = "생년월일(XXXX-XX-XX)" value = {info.userBirthDate} onChange = {changeInfo} startDecorator = {<CalendarMonthOutlined/>} sx = {{...inputFocusColor}} />
                         
                         {/* 이메일 */}
-                        <Input className = "input-style" name = "userEmail" type = "text" placeholder = "이메일" value = {info.userEmail} onChange = {changeInfo} startDecorator = {<EmailOutlined/>}></Input>
+                        <Input className = "input-style" name = "userEmail" type = "text" placeholder = "이메일" value = {info.userEmail} onChange = {changeInfo} startDecorator = {<EmailOutlined/>} sx = {{...inputFocusColor}} />
                         
                         {/* 전화번호 */}
                         <Box sx = {{display : "flex", justifyContent : "space-between"}}>
-                            <Input className = "input-style" name = "userPhone" type = "text" placeholder = "전화번호(010-XXXX-XXXX)" value = {info.userPhone} onChange = {changeInfo} startDecorator = {<SmartphoneOutlined/>} sx = {{flex : 1, marginRight : "20px"}}></Input>
-                            <Button sx={{marginBottom : "20px", backgroundColor : "#A097D4", color : "#FFFFFF", "&:hover" : {backgroundColor : "#A097D4", color : "#FFFFFF"}}} onClick = {checkUserPhone}>확인</Button>
+                            <Input className = "input-style" name = "userPhone" type = "text" placeholder = "전화번호(010-XXXX-XXXX)" value = {info.userPhone} onChange = {changeInfo} startDecorator = {<SmartphoneOutlined/>} sx = {{flex : 1, marginRight : "20px", ...inputFocusColor}} />
+                            <Button sx={{marginBottom : "20px", ...btnColor}} onClick = {checkUserPhone}>확인</Button>
                         </Box>
                         
                         {/* 닉네임 */}
                         <Box sx = {{display : "flex", justifyContent : "space-between"}}>
-                            <Input className = "input-style" name = "userNickname" type = "text" placeholder = "닉네임" value = {info.userNickname} onChange = {changeInfo} startDecorator = {<PersonOutline/>} sx = {{flex : 1, marginRight : "20px"}}></Input>
-                            <Button sx={{marginBottom : "20px", backgroundColor : "#A097D4", color : "#FFFFFF", "&:hover" : {backgroundColor : "#A097D4", color : "#FFFFFF"}}} onClick = {checkUserNickname}>확인</Button>
+                            <Input className = "input-style" name = "userNickname" type = "text" placeholder = "닉네임" value = {info.userNickname} onChange = {changeInfo} startDecorator = {<PersonOutline/>} sx = {{flex : 1, marginRight : "20px", ...inputFocusColor}} />
+                            <Button sx={{marginBottom : "20px", ...btnColor}} onClick = {checkUserNickname}>확인</Button>
                         </Box>
                         
                         {/* 아이디 */}
                         <Box sx = {{display : "flex", justifyContent : "space-between"}}>
-                            <Input className = "input-style" name = "userLoginId" type = "text" placeholder = "아이디" value = {info.userLoginId} onChange = {changeInfo} startDecorator = {<PersonOutline/>} sx = {{flex : 1, marginRight : "20px"}}></Input>
-                            <Button sx={{marginBottom : "20px", backgroundColor : "#A097D4", color : "#FFFFFF", "&:hover" : {backgroundColor : "#A097D4", color : "#FFFFFF"}}} onClick = {checkUserLoginId}>확인</Button>
+                            <Input className = "input-style" name = "userLoginId" type = "text" placeholder = "아이디" value = {info.userLoginId} onChange = {changeInfo} startDecorator = {<PersonOutline/>} sx = {{flex : 1, marginRight : "20px", ...inputFocusColor}} />
+                            <Button sx={{marginBottom : "20px", ...btnColor}} onClick = {checkUserLoginId}>확인</Button>
                         </Box>
                         
                         {/* 비밀번호 */}
-                        <Input className = "input-style" name = "userPassword" type = "password" placeholder = "비밀번호" value = {info.userPassword} onChange = {changePassword} startDecorator = {<Key/>}></Input>
+                        <Input className = "input-style" name = "userPassword" type = "password" placeholder = "비밀번호" value = {info.userPassword} onChange = {changePassword} startDecorator = {<Key/>} sx = {{...inputFocusColor}} />
                         
                         {/* 비밀번호 확인 */}
-                        <Input className = "input-style" name = "password" type = "password" placeholder = "비밀번호 확인" value = {checkPassword} onChange = {changePassword} startDecorator = {<Key/>} sx = {{borderColor : lastCheck ? "#CDD7E1" : "red", "&:focus-within::before" : {boxShadow : lastCheck ? "#CDD7E1" : "inset 0 0 0 2px red"}}}></Input>
+                        <Input className = "input-style" name = "password" type = "password" placeholder = "비밀번호 확인" value = {checkPassword} onChange = {changePassword} startDecorator = {<Key/>} sx = {{backgroundColor : "#FFFFFF", borderColor : lastCheck ? "#A097D4" : "red", "&:focus-within::before" : {boxShadow : lastCheck ? "inset 0 0 0 2px #A097D4" : "inset 0 0 0 2px red"}}}></Input>
                         
                         {/* 회원가입 버튼 */}
                         <Box>
-                            <Button 
-                                sx = {{
-                                    width : "100%",
-                                    backgroundColor : "#A097D4",
-                                    color : "#FFFFFF",
-                                    "&:hover" : { backgroundColor : "#A097D4", color : "#FFFFFF" }
-                                }}
-                                onClick = {signupBtnClick}
-                            >
-                                회원가입
-                            </Button>
+                            <Button sx = {{width : "100%", ...btnColor}} onClick = {signupBtnClick}>회원가입</Button>
                         </Box>
                     </Box>
                 </Box>

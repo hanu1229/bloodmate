@@ -1,17 +1,18 @@
 package bloodmate.controller;
 
 import bloodmate.model.dto.UserDto;
+import bloodmate.model.dto.VerificationDto;
 import bloodmate.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin("*")
 @RequestMapping("/api/user")
 public class UserController {
 
@@ -144,6 +145,39 @@ public class UserController {
         System.out.println("token = " + token);
         boolean result = userService.checkLoginState(token);
         System.out.println(">> UserController.checkLoginState end\n");
+        return result;
+    }
+
+    /// 인증번호 발송 - R
+    @PostMapping("/verification-code")
+    public ResponseEntity<String> sendCodeNumber(@RequestBody VerificationDto verificationDto) {
+        System.out.println(">> UserController.sendCodeNumber start");
+        System.out.println(">> verificationDto.userName = " + verificationDto.getUserName());
+        System.out.println(">> verificationDto.userPhone = " + verificationDto.getUserPhone());
+        System.out.println(">> verificationDto.UserLoginId = " + verificationDto.getUserLoginId());
+        ResponseEntity<String> result = userService.sendCodeNumber(verificationDto);
+        System.out.println(">> UserController.sendCodeNumber end\n");
+        if(result == null) { return ResponseEntity.status(404).body("오류입니다"); }
+        return result;
+    }
+
+    /// 인증번호 확인 - R
+    @PostMapping("/check-code")
+    public ResponseEntity<Boolean> checkCodeNumber(@RequestBody VerificationDto verificationDto) {
+        System.out.println(">> UserController.checkCodeNumber start");
+        System.out.println(">> verificationDto = " + verificationDto);
+        ResponseEntity<Boolean> result = userService.checkCodeNumber(verificationDto);
+        System.out.println(">> UserController.checkCodeNumber end\n");
+        return result;
+    }
+
+    /// 아이디 찾기 - R
+    @PostMapping("/search")
+    public ResponseEntity<String> findByUserLoginIdOrUserPassword(@RequestBody VerificationDto verificationDto) {
+        System.out.println(">> UserController.findByUserLoginIdOrUserPassword start");
+        System.out.println(">> verificationDto = " + verificationDto);
+        ResponseEntity<String> result = userService.findByUserLoginIdOrUserPassword(verificationDto);
+        System.out.println(">> UserController.findByUserLoginIdOrUserPassword end\n");
         return result;
     }
 

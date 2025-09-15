@@ -27,4 +27,16 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     @Query(value = "select * from users where user_nickname = :userNickname and user_id = :userId", nativeQuery = true)
     UserEntity findByNicknameToUserId(@Param("userNickname") String userNickname, @Param("userId") int userId);
 
+    /// 이름과 번호로 인증번호 발송
+    boolean existsByUserNameAndUserPhone(@Param("userName") String userName, @Param("userPhone") String userPhone);
+
+    /// 이름과 번호, 아이디로 인증번호 발송
+    boolean existsByUserNameAndUserPhoneAndUserLoginId(@Param("userName") String userName, @Param("userPhone") String userPhone, @Param("userLoginId") String userLoginId);
+
+    /// 아이디 찾기 - R
+    UserEntity findByUserNameAndUserPhone(@Param("userName") String userName, @Param("userPhone") String userPhone);
+
+    /// 비밀번호 찾기 - R
+    UserEntity findByUserNameAndUserPhoneAndUserLoginId(@Param("userName") String userName, @Param("userPhone") String userPhone, @Param("userLoginId") String userLoginId);
+
 }

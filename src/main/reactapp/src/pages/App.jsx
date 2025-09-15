@@ -10,6 +10,7 @@ import PasswordSearchPage from "./users/PasswordSearchPage";
 import SignupPage from "./users/SignupPage";
 import BoardPage from "./boards/BoardPage";
 import BloodHba1cPage from "./bloods/BloodHba1cPage";
+import ResetPasswordPage from "./users/ResetPasswordPage";
 
 export default function App(props) {
     return (
@@ -26,6 +27,7 @@ export default function App(props) {
                 <Route path = "/login" element = {<LoginPage/>}/>
                 <Route path = "/search/id" element = {<IdSearchPage/>}/>
                 <Route path = "/search/password" element = {<PasswordSearchPage/>}/>
+                <Route path = "/reset-password/:token" element = {<ResetPasswordPage />}/>
                 <Route path = "/signup" element = {<SignupPage/>}/>
                 <Route path = "*" element = {<NotFoundPage/>}/>
             </Routes>

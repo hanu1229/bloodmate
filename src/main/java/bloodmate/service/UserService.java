@@ -1,15 +1,21 @@
 package bloodmate.service;
 
 import bloodmate.model.dto.UserDto;
+import bloodmate.model.dto.VerificationDto;
 import bloodmate.model.entity.UserEntity;
+import bloodmate.model.entity.VerificationEntity;
 import bloodmate.model.repository.UserRepository;
+import bloodmate.model.repository.VerificationRepository;
 import bloodmate.util.JwtUtil;
+import bloodmate.util.VerificationNumber;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +23,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final VerificationRepository verificationRepository;
 
     private final JwtUtil jwtUtil;
 
@@ -222,6 +229,113 @@ public class UserService {
         }
         System.out.println(">> UserService.checkLoginState end");
         return false;
+    }
+
+    /// 인증번호 발송 - R
+    public ResponseEntity<String> sendCodeNumber(VerificationDto verificationDto) {
+        System.out.println(">> UserService.sendCodeNumber start");
+        try {
+            String userName = verificationDto.getUserName();
+            String userPhone = verificationDto.getUserPhone();
+            String userLoginId = verificationDto.getUserLoginId();
+            if(userLoginId == null) {
+                boolean isExist = userRepository.existsByUserNameAndUserPhone(userName, userPhone);
+                if(!isExist) { return ResponseEntity.status(404).body("존재하지 않는 이름 또는 전화번호입니다."); }
+            } else {
+                boolean isExist = userRepository.existsByUserNameAndUserPhoneAndUserLoginId(userName, userPhone, userLoginId);
+                if(!isExist) { return ResponseEntity.status(404).body("존재하지 않는 아이디 또는 이름 또는 전화번호입니다."); }
+            }
+            String number = VerificationNumber.createNumber();
+            System.out.println(">> number = " + number);
+            verificationDto.setVerificationCode(number);
+            verificationDto.setIsVerification(0);
+            VerificationEntity verificationEntity = verificationDto.toEntity();
+            verificationEntity = verificationRepository.save(verificationEntity);
+            if(verificationEntity.getVerificationId() <= 0) { return null; }
+            System.out.println(">> verificationEntity = " + verificationEntity);
+            return ResponseEntity.status(201).body(number);
+        } catch (Exception e) {
+            System.out.println(">> " + e);
+            System.out.println(">> UserService.sendCodeNumber error!!!");
+            return null;
+        } finally {
+            System.out.println(">> UserService.sendCodeNumber end");
+        }
+    }
+
+    /// 인증번호 확인 - R
+    public ResponseEntity<Boolean> checkCodeNumber(VerificationDto verificationDto) {
+        System.out.println(">> UserService.checkCodeNumber start");
+        try {
+            String userName = verificationDto.getUserName();
+            String userPhone = verificationDto.getUserPhone();
+            String userLoginId = verificationDto.getUserLoginId();
+            String code = verificationDto.getVerificationCode();
+            VerificationEntity verificationEntity;
+            if(userLoginId == null) {
+                verificationEntity = verificationRepository.findByUserNameAndUserPhone(userName, userPhone);
+            } else {
+                verificationEntity = verificationRepository.findByUserNameAndUserPhoneAndUserLoginId(userName, userPhone, userLoginId);
+            }
+            if(verificationEntity.getIsVerification() == 0 && verificationEntity.getVerificationCode().equals(code)) {
+                verificationEntity.setIsVerification(1);
+                return ResponseEntity.status(200).body(true);
+            }
+            return ResponseEntity.status(404).body(false);
+        } catch(Exception e) {
+            System.out.println(">> " + e);
+            System.out.println(">> UserService.checkCodeNumber error!!!");
+            return ResponseEntity.status(400).body(false);
+        } finally {
+            System.out.println(">> UserService.checkCodeNumber end");
+        }
+    }
+
+    /// 아이디 및 비밀번호 찾기 - R
+    public ResponseEntity<String> findByUserLoginIdOrUserPassword(VerificationDto verificationDto) {
+        System.out.println(">> UserService.findByUserLoginIdOrUserPassword");
+        try {
+            String userName = verificationDto.getUserName();
+            String userPhone = verificationDto.getUserPhone();
+            String userLoginId = verificationDto.getUserLoginId();
+            String code = verificationDto.getVerificationCode();
+            VerificationEntity verificationEntity;
+            UserEntity userEntity;
+            String str;
+            if(userLoginId == null) {
+                verificationEntity = verificationRepository.findByUserNameAndUserPhone(userName, userPhone);
+                userEntity = userRepository.findByUserNameAndUserPhone(userName, userPhone);
+                str = "아이디";
+            } else {
+                verificationEntity = verificationRepository.findByUserNameAndUserPhoneAndUserLoginId(userName, userPhone, userLoginId);
+                userEntity = userRepository.findByUserNameAndUserPhoneAndUserLoginId(userName, userPhone, userLoginId);
+                str = "비밀번호";
+            }
+            if(
+                    verificationEntity.getIsUsed() == 0 &&
+                    verificationEntity.getIsVerification() == 1 &&
+                    verificationEntity.getVerificationCode().equals(code) &&
+                    verificationEntity.getUserName().equals(userName) &&
+                    verificationEntity.getUserPhone().equals(userPhone)
+            ) {
+                verificationEntity.setIsUsed(1);
+                if(userEntity.getUserId() <= 0) { return ResponseEntity.status(404).body("아이디가 존재하지 않습니다."); }
+                if(str.equals("아이디")) { return ResponseEntity.status(201).body(userEntity.getUserLoginId()); }
+                else {
+                    String resetToken = UUID.randomUUID().toString();
+                    verificationEntity.setResetToken(resetToken);
+                    System.out.println(">> resetToken = " + resetToken);
+                    return ResponseEntity.status(201).body(resetToken);
+                }
+            }
+            return ResponseEntity.status(404).body("존재하지 않는 인증코드입니다.");
+        } catch(Exception e) {
+            System.out.println(">> " + e);
+            System.out.println(">> UserService.findByUserLoginIdOrUserPassword error!!!");
+            return ResponseEntity.status(404).body("아이디가 존재하지 않습니다.");
+        } finally {
+            System.out.println(">> UserService.findByUserLoginIdOrUserPassword end");
+        }
     }
 
 }
