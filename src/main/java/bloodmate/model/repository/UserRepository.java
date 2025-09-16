@@ -39,4 +39,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     /// 비밀번호 찾기 - R
     UserEntity findByUserNameAndUserPhoneAndUserLoginId(@Param("userName") String userName, @Param("userPhone") String userPhone, @Param("userLoginId") String userLoginId);
 
+    /// 비밀번호 재설정(리셋) - U
+    @Query(value = "select count(*) > 0 from verifications where user_name = :userName and user_phone = :userPhone and user_login_id = :userLoginId and verification_code = :verificationCode and reset_token = :resetToken", nativeQuery = true)
+    int existsByCode(@Param("userName") String userName, @Param("userPhone") String userPhone, @Param("userLoginId") String userLoginId, @Param("verificationCode") String verificationCode, @Param("resetToken") String ResetToken);
+
 }

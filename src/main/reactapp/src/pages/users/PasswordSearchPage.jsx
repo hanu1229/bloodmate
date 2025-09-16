@@ -45,7 +45,7 @@ export default function PasswordSearchPage(props) {
         }
     }
 
-    /** 아이디 찾기 */
+    /** 비밀번호 찾기 */
     const searchPassword = async () => {
         alert("비밀번호 찾기");
         try {
@@ -53,7 +53,7 @@ export default function PasswordSearchPage(props) {
             if(response.status == 201) {
                 alert("비밀번호 찾기 성공");
                 const resetToken = response.data;
-                navigate(`/reset-password/${resetToken}`);
+                navigate(`/reset-password/${resetToken}`, {state : {userName : userName, userPhone : userPhone, userLoginId : userLoginId, verificationCode : code}});
                 return;
             }
         } catch(e) {
@@ -73,17 +73,17 @@ export default function PasswordSearchPage(props) {
                         width : 400,
                         textAlign : "center",
                         border : "2px solid #A097D4",
-                        borderRadius : 15
+                        borderRadius : 16
                     }}>
-                    <Typography sx = {{margin : "0px", fontSize : 32, color : "#A097D4"}}> {/* textShadow : "5px 5px 10px #A097D4" */}
-                        <Tooltip title = "메인페이지로..." placement = "top" sx = {{backgroundColor : "#A097D4"}}>
+                    <Typography sx = {{margin : "0px", fontSize : 32, color : "#A097D4"}}> {/* textShadow : "4px 4px 12px #A097D4" */}
+                        <Tooltip title = "메인페이지로..." placement = "bottom" sx = {{backgroundColor : "#A097D4"}}>
                             <Link to = "/" style = {{textDecoration : "none", color : "inherit"}}>
                                 블러드메이트
                             </Link>
                         </Tooltip>
                     </Typography>
-                    <Typography sx = {{margin : "5px 0px", fontSize : 28, color : "#A097D4"}}>비밀번호 찾기</Typography>
-                    <Box sx = {{display : "flex", flexDirection : "column", padding : "30px 30px 0px 30px"}}>
+                    <Typography sx = {{margin : "4px 0px", fontSize : 16, fontWeight : "bold"}}>비밀번호 찾기</Typography>
+                    <Box sx = {{display : "flex", flexDirection : "column", padding : "28px 28px 0px 28px"}}>
                         {/* 아이디 */}
                         <Input type = "text" value = {userLoginId} onChange = {(event) => { setUserLoginId(event.target.value); }} placeholder = "아이디..." sx = {{marginBottom : "20px", ...inputFocusColor}}/>
                         {/* 이름 */}
@@ -99,7 +99,7 @@ export default function PasswordSearchPage(props) {
                             <Button onClick = {checkCodeNumber} sx = {{...btnColor}}>확인</Button>
                         </Box>
                         <Button onClick = {searchPassword} sx = {{marginBottom : "20px", ...btnColor}}>비밀번호 찾기</Button>
-                        <Typography>
+                        {/* <Typography> */}
                             <Box sx = {{display : "flex", justifyContent : "space-evenly"}}>
                                 <Link to = "/login" style = {{textDecoration : "none", color : "#424242"}}>
                                     <Typography>로그인으로</Typography>
@@ -108,7 +108,7 @@ export default function PasswordSearchPage(props) {
                                     <Typography>아이디 찾기</Typography>
                                 </Link>
                             </Box>
-                        </Typography>
+                        {/* </Typography> */}
                     </Box>
                 </Box>
             </div>

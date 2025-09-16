@@ -71,17 +71,17 @@ export default function IdSearchPage(props) {
                         width : 400,
                         textAlign : "center",
                         border : "2px solid #A097D4",
-                        borderRadius : 15
+                        borderRadius : 16
                     }}>
-                    <Typography sx = {{margin : "0px", fontSize : 32, color : "#A097D4"}}> {/* textShadow : "5px 5px 10px #A097D4" */}
-                        <Tooltip title = "메인페이지로..." placement = "top" sx = {{backgroundColor : "#A097D4"}}>
+                    <Typography sx = {{margin : "0px", fontSize : 32, color : "#A097D4"}}> {/* textShadow : "4px 4px 12px #A097D4" */}
+                        <Tooltip title = "메인페이지로..." placement = "bottom" sx = {{backgroundColor : "#A097D4"}}>
                             <Link to = "/" style = {{textDecoration : "none", color : "inherit"}}>
                                 블러드메이트
                             </Link>
                         </Tooltip>
                     </Typography>
-                    <Typography sx = {{margin : "5px 0px", fontSize : 28, color : "#A097D4"}}>아이디 찾기</Typography>
-                    <Box sx = {{display : "flex", flexDirection : "column", padding : "30px 30px 0px 30px"}}>
+                    <Typography sx = {{margin : "4px 0px", fontSize : 16, fontWeight : "bold"}}>아이디 찾기</Typography>
+                    <Box sx = {{display : "flex", flexDirection : "column", padding : "28px 28px 0px 28px"}}>
                         {/* 이름 */}
                         <Input type = "text" value = {userName} onChange = {(event) => { setUserName(event.target.value); }} placeholder = "이름..." sx = {{marginBottom : "20px", ...inputFocusColor}}/>
                         {/* 전화번호 */}

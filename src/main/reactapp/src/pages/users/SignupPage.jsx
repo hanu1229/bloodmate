@@ -123,7 +123,7 @@ export default function SignupPage(props) {
                         padding : "20px",
                         width : 400,
                         border : "2px solid #A097D4",
-                        borderRadius : 15
+                        borderRadius : 16
                     }}
                 >   
                     <Typography style= {{margin : "0px", textAlign : "center", fontSize : 32, color : "#A097D4"}}>
@@ -133,7 +133,7 @@ export default function SignupPage(props) {
                             </Link>
                         </Tooltip>
                     </Typography>
-                    <Box sx = {{display : "flex", flexDirection : "column", padding : "30px 30px 0px 30px"}}>
+                    <Box sx = {{display : "flex", flexDirection : "column", padding : "28px 28px 0px 28px"}}>
                         {/* 이름 */}
                         <Input className = "input-style" name = "userName" type = "text" placeholder = "이름" value = {info.userName} onChange = {changeInfo} startDecorator = {<PersonOutline/>} sx = {{...inputFocusColor}} />
                         

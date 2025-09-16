@@ -181,4 +181,15 @@ public class UserController {
         return result;
     }
 
+    /// 비밀번호 재설정(리셋) - U
+    @PostMapping("/reset-password/{token}")
+    public ResponseEntity<Boolean> resetPassword(@RequestBody HashMap<String, String> info, @PathVariable("token") String ResetToken) {
+        System.out.println(">> UserController.resetPassword start");
+        System.out.println(">> ResetToken = " + ResetToken);
+        System.out.println(">> info = " + info);
+        ResponseEntity<Boolean> result = userService.resetPassword(info, ResetToken);
+        System.out.println(">> UserController.resetPassword end\n");
+        return result;
+    }
+
 }

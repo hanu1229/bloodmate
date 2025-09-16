@@ -11,14 +11,16 @@ import SignupPage from "./users/SignupPage";
 import BoardPage from "./boards/BoardPage";
 import BloodHba1cPage from "./bloods/BloodHba1cPage";
 import ResetPasswordPage from "./users/ResetPasswordPage";
+import HomePage from "./HomePage";
 
 export default function App(props) {
     return (
         <BrowserRouter>
             <Routes>
                 {/* ↓ 레이아웃 전용 라우트 설정 */}
-                <Route element = {<MainLayout/>}>
-                    <Route path = "/" element = {<DashBoard/>}/>
+                <Route path = "/" element = {<MainLayout/>}>
+                    <Route path = "/" element = {<HomePage/>}/>
+                    <Route path = "/dashboard" element = {<DashBoard/>}/>
                     <Route path = "/blood/hba1c" element = {<BloodHba1cPage/>}/>
                     <Route path = "/blood/sugar" element = {<BloodSugarPage/>}/>
                     <Route path = "/blood/pressure" element = {<BloodPressurePage/>}/>

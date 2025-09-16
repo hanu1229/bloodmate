@@ -3,6 +3,7 @@ import "../styles/header.css";
 import Button from "@mui/joy/Button";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Box } from "@mui/joy";
 
 export default function Header(props) {
 
@@ -55,16 +56,21 @@ export default function Header(props) {
             <div className = "header-main">
                 <ul>
                     <li>
-                        <Link to = "/" style = {{textDecoration : "none", color : "inherit"}}>
-                            <b>블러드메이트</b>
+                        <Link to = "/" style = {{display : "flex", alignItems : "center", textDecoration : "none", color : "inherit"}}>
+                            <Box sx = {{display : "flex", alignItems : "center", marginRight : "12px"}}>
+                                <img src = "/logo_white.png" style = {{width : "36px", height : "36px"}}></img>
+                            </Box>
+                            <b style = {{fontSize : "24px"}}>블러드메이트</b>
                         </Link>
                     </li>
                     <li>
                         <Button
                             sx = {{
-                                marginRight : "10px",
+                                marginRight : "8px",
+                                fontSize : "16px",
                                 backgroundColor : "#A097D4",
                                 "&:hover" :  {
+                                    fontSize : "16px",
                                     backgroundColor : "#FFFFFF",
                                     color : "#000000"
                                 }
@@ -75,8 +81,10 @@ export default function Header(props) {
                         </Button>
                         <Button 
                             sx = {{
+                                fontSize : "16px",
                                 backgroundColor : "#A097D4", 
                                 "&:hover" : {
+                                    fontSize : "16px",
                                     backgroundColor : "#FFFFFF", 
                                     color : "#000000"
                                 }}

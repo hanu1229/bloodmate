@@ -40,7 +40,7 @@ export default function LoginPage(props) {
                     display : "flex",
                     flexDirection : "column",
                     border : "2px solid #A097D4",
-                    borderRadius : 15,
+                    borderRadius : 16,
                     padding : "20px",
                     width : 400,
                     textAlign : "center",
@@ -48,13 +48,13 @@ export default function LoginPage(props) {
                     color : "#FFFFFF"
                 }}>
                     <Typography sx = {{margin : "0px", fontSize : 32, color : "#A097D4"}}>
-                        <Tooltip title = "메인페이지로..." placement = "top" sx = {{backgroundColor : "#A097D4"}}>
+                        <Tooltip title = "메인페이지로..." placement = "bottom" sx = {{backgroundColor : "#A097D4"}}>
                             <Link to = "/" style = {{textDecoration : "none", color : "inherit"}}>
                                 블러드 메이트
                             </Link>
                         </Tooltip>
                     </Typography>
-                    <Box sx = {{display : "flex", flexDirection : "column", padding : "30px 30px 0px 30px"}}>
+                    <Box sx = {{display : "flex", flexDirection : "column", padding : "28px 28px 0px 28px"}}>
                         <Input 
                             type = "text"
                             name = "userLoginId"
@@ -62,7 +62,7 @@ export default function LoginPage(props) {
                             variant = "outlined"
                             value = {info.userLoginId}
                             onChange = {changeInfo}
-                            sx= {{marginBottom : "30px", ...inputFocusColor}}
+                            sx= {{marginBottom : "28px", ...inputFocusColor}}
                         />
                         <Input 
                             type = {show ? "text" : "password"}
@@ -79,9 +79,9 @@ export default function LoginPage(props) {
                                     {show ? <VisibilityOff/> : <Visibility/>}
                                 </IconButton>
                             }
-                            sx= {{marginBottom : "30px", ...inputFocusColor}}
+                            sx= {{marginBottom : "28px", ...inputFocusColor}}
                         />
-                        <Button sx = {{marginBottom : "5px", ...btnColor}} onClick = {loginBtnClick}>로그인</Button>
+                        <Button sx = {{marginBottom : "4px", ...btnColor}} onClick = {loginBtnClick}>로그인</Button>
                          {/*  #424242  #6A1B9A */}
                         <Box sx = {{textAlign : "right"}}>
                             <Link to = "/search/id" style = {{textDecoration : "none", color : "#424242", fontSize : 12}}>아이디 찾기</Link>

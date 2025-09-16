@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -335,6 +336,33 @@ public class UserService {
             return ResponseEntity.status(404).body("아이디가 존재하지 않습니다.");
         } finally {
             System.out.println(">> UserService.findByUserLoginIdOrUserPassword end");
+        }
+    }
+
+    /// 비밀번호 재설정(리셋) - U
+    public ResponseEntity<Boolean> resetPassword(HashMap<String, String> info, String ResetToken) {
+        System.out.println(">> UserService.resetPassword start");
+        try {
+            String userLoginId = info.get("userLoginId");
+            String userName = info.get("userName");
+            String userPhone = info.get("userPhone");
+            String verificationCode = info.get("verificationCode");
+            String newPassword = info.get("newPassword");
+            int isExist = userRepository.existsByCode(userName, userPhone, userLoginId, verificationCode, ResetToken);
+            boolean bool;
+            if(isExist == 0) { bool = false; } else { bool = true; }
+            if(!bool) { return ResponseEntity.status(404).body(false); }
+            UserEntity userEntity = userRepository.findByUserNameAndUserPhoneAndUserLoginId(userName, userPhone, userLoginId);
+            if(userEntity == null) { return ResponseEntity.status(404).body(false); }
+            if(userEntity.getUserPassword().equals(newPassword)) { return ResponseEntity.status(201).body(false); }
+            userEntity.setUserPassword(newPassword);
+            return ResponseEntity.status(201).body(true);
+        } catch(Exception e) {
+            System.out.println(">> " + e);
+            System.out.println(">> UserService.resetPassword error!!!");
+            return ResponseEntity.status(404).body(false);
+        } finally {
+            System.out.println(">> UserService.resetPassword end");
         }
     }
 

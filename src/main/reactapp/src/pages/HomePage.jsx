@@ -1,15 +1,10 @@
 import { Box } from "@mui/joy";
-import useCustomNavigate from "../useCustomNavigate";
-import { useEffect } from "react";
 
-export default function DashBoard(props) {
-    const checkLogin = useCustomNavigate();
-    
-    useEffect(() => { checkLogin(); }, []);
+export default function HomePage(props) {
 
     return (
         <>
-            <Box 
+            <Box
                 sx = {{
                     boxSizing: "border-box",
                     padding : "20px",
@@ -17,7 +12,7 @@ export default function DashBoard(props) {
                     backgroundColor : "#f6f6f6"
                 }}
             >
-                대시보드
+                홈
             </Box>
         </>
     );

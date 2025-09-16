@@ -1,7 +1,7 @@
 ul {
     /* margin : 16px 0px */
     margin : 0px;
-    padding : 10px 30px;
+    padding : 12px 32px;
     display : flex;
     list-style : none;
     justify-content : space-between;
