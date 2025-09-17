@@ -30,6 +30,21 @@ public class BloodSugarService {
     private final MeasurementContextRepository mcRepository;
     private final JwtUtil jwtUtil;
 
+    /// Map.ofEntries() --> readOnly
+    private static final Map<String, String> CONTEXT_LABELS = Map.ofEntries(
+            Map.entry("MORNING_BEFORE_MEAL", "아침 식전"),
+            Map.entry("MORNING_AFTER_MEAL", "아침 식후"),
+            Map.entry("LUNCH_BEFORE_MEAL", "점심 식전"),
+            Map.entry("LUNCH_AFTER_MEAL", "점심 식후"),
+            Map.entry("DINNER_BEFORE_MEAL", "저녁 식전"),
+            Map.entry("DINNER_AFTER_MEAL", "저녁 식후"),
+            Map.entry("BEFORE_EXERCISE", "운동 전"),
+            Map.entry("AFTER_EXERCISE", "운동 후"),
+            Map.entry("BEFORE_SLEEP", "취침 전"),
+            Map.entry("WAKE_UP", "기상"),
+            Map.entry("OTHER", "기타")
+    );
+
     /// 혈당 정보 작성 - C
     public boolean create(String token, BloodSugarRequestDto bloodSugarRequestDto) {
         System.out.println(">> BloodSugarService.create start");
@@ -69,7 +84,14 @@ public class BloodSugarService {
             if(userId <= 0) { return null; }
             List<BloodSugarEntity> bloodSugarEntityList = bloodSugarRepository.findByUserIdToBloodSugar(userId);
             if(bloodSugarEntityList == null) { return null; }
-            return bloodSugarEntityList.stream().map(BloodSugarEntity::toDto).toList();
+            return bloodSugarEntityList.stream().map(entity -> {
+                BloodSugarResponseDto dto = entity.toDto();
+                String code = entity.getMeasurementContextEntity().getMcCode();
+                /// getOrDefault(key, default) --> Map 타입에서 key를 찾고 key가 없으면 default값을 반환 시킴
+                String label = CONTEXT_LABELS.getOrDefault(code, code);
+                dto.setMeasurementContextLabel(label);
+                return dto;
+            }).toList();
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BloodSugarService.findAll error!!!");

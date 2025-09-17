@@ -3,17 +3,22 @@ import "../styles/mainLayout.css";
 import "../styles/app.css";
 import Header from "./Header";
 import SideBar from "./SideBar";
+import { Box } from "@mui/joy";
+import { useState } from "react";
 
 export default function MainLayout(props) {
+
+    const [isScroll, setIsScroll] = useState(false);
+
     return (
         <>
-            <div style={{display : "flex", flexDirection : "column", height : "100vh"}}>
+            <div style={{display : "flex", flexDirection : "column", height : "100vh", minHeight : 0, overflow : "hidden"}}>
                 <Header/>
                 <div className = "layouts">
                     <SideBar/>
-                    <div className = "main-layout">
+                    <Box className = "main-layout" sx = {{scrollBarGutter : isScroll ? "stable" : null}}>
                         <Outlet/>
-                    </div>
+                    </Box>
                 </div>
             </div>
         </>

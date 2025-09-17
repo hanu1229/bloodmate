@@ -1,3 +1,12 @@
 .main-layout {
+    display : flex;
     flex : 1;
+    height : calc(100vh - 60px);
+    align-items : flex-start;
+    background-color : #f6f6f6;
+    min-height : 0;
+    overflow-y : auto;
+    overflow-x : hidden;
+    /* ↓ 스크롤 공간을 따로 만듬 */
+    /* scrollbar-gutter : stable; */
 }
