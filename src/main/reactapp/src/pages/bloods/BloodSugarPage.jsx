@@ -3,7 +3,7 @@ import useCustomNavigate from "../../useCustomNavigate";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { serverDomain } from "../../ApiDomain";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, gridPaginatedVisibleSortedGridRowEntriesSelector, useGridApiRef } from "@mui/x-data-grid";
 import { ArrowDropDown, ArrowDropUp, ArrowRight } from "@mui/icons-material";
 import { LineChart } from "@mui/x-charts";
 
@@ -14,9 +14,43 @@ export default function BloodSugarPage(props) {
     const [bloodSugarInfo, setBloodSugarInfo] = useState([]);
     /** true : 펼침 | false : 닫힘 */
     const [sugarGuide, setSugarGuide] = useState(false);
+    /** 차트에 필요 - DataGrid를 조작할 수 있게 해줌 */
+    /*
+    const apiRef = useGridApiRef();
+    const [currentPageRows, setCurrentPageRows] = useState([]);
+    const [measureDates, setMeasureDates] = useState([]);
+    */
     
-
     useEffect(() => { checkLogin(); findAll(); }, []);
+    /** 차트에 피료 */
+    /*
+    useEffect(() => {
+        if(!apiRef.current) { return; }
+
+        const update = () => {
+            // 현재 페이지에 들어가는 행들의 목록을 보여줌
+            const entries = gridPaginatedVisibleSortedGridRowEntriesSelector(apiRef);
+            const models = [...entries].reverse().map(entry => entry.model);
+            setCurrentPageRows(models);
+            const dates = [...models].map(model => model.measureDate);
+            setMeasureDates(dates);
+            console.log('현재 페이지 entries:', entries);
+            console.table(models);
+            console.table(dates);
+        };
+
+        // 초기 1회
+        update();
+        // 페이지/정렬/필터/행 변경 시 재계산
+        const off1 = apiRef.current.subscribeEvent('paginationModelChange', update);
+        const off2 = apiRef.current.subscribeEvent('sortModelChange', update);
+        const off3 = apiRef.current.subscribeEvent('filterModelChange', update);
+        const off4 = apiRef.current.subscribeEvent('rowsSet', update);
+
+        return () => { off1(); off2(); off3(); off4(); };
+        
+    }, [apiRef, bloodSugarInfo]);
+    */
 
     const findAll = async () => {
         const token = localStorage.getItem("Token");
@@ -135,8 +169,9 @@ export default function BloodSugarPage(props) {
                                 </>) : ""
                         }
                     </Box>
-                    <Box sx = {{display : "flex", width : "100%", height : "481px", alignItems : "start"}}>
+                    <Box sx = {{display : "flex", width : "100%", height : "484px", alignItems : "start"}}>
                         <DataGrid
+                            // apiRef = {apiRef}
                             rows = {bloodSugarInfo}
                             columns = {columns}
                             rowHeight = {40}
@@ -146,31 +181,45 @@ export default function BloodSugarPage(props) {
                                     paginationModel : {pageSize : 10},
                                 }
                             }}
-                            pageSizeOptions = {[5]}
+                            pageSizeOptions = {[10]}
                             // checkboxSelection
                             disableRowSelectionOnClick
                             sx = {{
                                 boxSizing : "border-box",
                                 height : "100%",
                                 marginRight : "30px",
-                                border : "0px solid black",
+                                border : "2px solid #e0e0e0",
+                                borderRadius : 0,
                                 "& .MuiDataGrid-footerContainer" : {maxHeight : "40px", minHeight : "40px"},
                                 ".MuiToolbar-root" : {maxHeight : "40px", minHeight : "40px"}
                             }}
                         />
-                        <Box sx = {{flex : 1, height : "100%", border : "1px solid black", backgroundColor  : "#FFFFFF"}}>
+                        {/* <Box sx = {{flex : 1, height : "484px", backgroundColor  : "#FFFFFF"}}>
                             <LineChart
-                                xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+                                xAxis={[
+                                    { 
+                                        scaleType : "band",
+                                        data: [...measureDates]
+                                        // data: ["2025-08-15", 2, 3, 5, 8, 10]
+                                    }
+                                ]}
                                 series={[
                                     {
-                                    data: [2, 5.5, 2, 8.5, 1.5, 5],
+                                    // data: [168, 5.5, 2, 8.5, 1.5, 5],
+                                    data: [168, 5.5, 2, 8.5, 1.5, 5],
                                     },
                                 ]}
                                 // width={500}
                                 // height={300}
-                                sx = {{flex : 1, height : "inherit", border : "1px solid black", backgroundColor  : "#FFFFFF"}}
+                                sx = {{
+                                    flex : 1, 
+                                    boxSizing : "border-box", 
+                                    height : "inherit", 
+                                    border : "2px solid #e0e0e0", 
+                                    backgroundColor  : "#FFFFFF",
+                                }}
                             />
-                        </Box>
+                        </Box> */}
                     </Box>
                 </Box>
             </Box>

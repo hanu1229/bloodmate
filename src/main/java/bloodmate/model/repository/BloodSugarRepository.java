@@ -13,7 +13,7 @@ import java.util.List;
 public interface BloodSugarRepository extends JpaRepository<BloodSugarEntity, Integer> {
 
     /// 혈당 정보 전체 불러오기 - R
-    @Query(value = "select * from user_blood_sugar where user_id = :userId", nativeQuery = true)
+    @Query(value = "select * from user_blood_sugar where user_id = :userId order by measured_at DESC", nativeQuery = true)
     List<BloodSugarEntity> findByUserIdToBloodSugar(@Param("userId") int userId);
 
     /// 혈당 정보 조건 불러오기(조건 : 날짜) - R
