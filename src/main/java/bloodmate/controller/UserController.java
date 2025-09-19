@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -40,18 +42,18 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<String> logIn(@RequestBody UserDto userDto) {
         System.out.println(">> UserController.logIn start");
-        String result = userService.logIn(userDto);
-        ResponseEntity<String> str = null;
+        String token = userService.logIn(userDto);
+        ResponseEntity<String> result = null;
         if (
-                result.equals("휴먼(장기미접속) 회원입니다.") || result.equals("정지된 회원입니다.") ||
-                result.equals("탈퇴된 회원입니다.") || result.equals("존재하지 않는 회원입니다.")
+                token.equals("휴먼(장기미접속) 회원입니다.") || token.equals("정지된 회원입니다.") ||
+                token.equals("탈퇴된 회원입니다.") || token.equals("존재하지 않는 회원입니다.")
         ) {
-            str = ResponseEntity.status(201).body(result);
+            result = ResponseEntity.status(201).body(token);
         } else {
-            str = ResponseEntity.status(200).body(result);
+            result = ResponseEntity.status(200).body(token);
         }
         System.out.println(">> UserController.logIn end\n");
-        return str;
+        return result;
     }
 
     /// 로그아웃 - R

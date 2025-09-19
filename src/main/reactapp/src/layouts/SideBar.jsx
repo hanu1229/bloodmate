@@ -17,6 +17,12 @@ export default function SideBar(props) {
                         홈 
                     </Box>
                 </Link>
+                {/* 게시판 */}
+                <Link to = "/board" style = {{textDecoration : "none", color : "black", fontWeight : "bold"}}>
+                    <Box sx = {{padding : "8px 0px 8px 12px", backgroundColor : isActive("/board") ? "#FFFFFF" : "inherit"}}>
+                        게시판
+                    </Box>
+                </Link>
                 {/* 대시보드 */}
                 <Link to = "/dashboard" style = {{textDecoration : "none", color : "black", fontWeight : "bold"}}>
                     <Box sx = {{padding : "8px 0px 8px 12px", backgroundColor : isActive("/dashboard") ? "#FFFFFF" : "inherit"}}>

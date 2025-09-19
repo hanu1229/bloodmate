@@ -13,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -68,25 +65,18 @@ public class UserService {
                 System.out.println(">> userId = " + userId);
                 token = jwtUtil.createToken(userId);
                 System.out.println(">> token = " + token);
-                System.out.println(">> UserService.logIn end");
             } else if(user.getUserState() == 2) {
-                System.out.println(">> 휴먼(장기미접속) 회원입니다.");
-                System.out.println(">> UserService.logIn end");
-                return "휴먼(장기미접속) 회원입니다.";
+                token = "휴먼(장기미접속) 회원입니다.";
             } else if(user.getUserState() == 3) {
-                System.out.println(">> 정지된 회원입니다.");
-                System.out.println(">> UserService.logIn end");
-                return "정지된 회원입니다.";
+                token = "정지된 회원입니다.";
             } else if(user.getUserState() == 0) {
-                System.out.println(">> 탈퇴된 회원입니다.");
-                System.out.println(">> UserService.logIn end");
-                return "탈퇴된 회원입니다.";
+                token = "탈퇴된 회원입니다.";
             }
         } else {
-            System.out.println(">> 존재하지 않는 회원입니다.");
-            System.out.println(">> UserService.logIn end");
-            return "존재하지 않는 회원입니다.";
+            token = "존재하지 않는 회원입니다.";
         }
+        System.out.println(">> " + token);
+        System.out.println(">> UserService.logIn end");
         return token;
     }
 

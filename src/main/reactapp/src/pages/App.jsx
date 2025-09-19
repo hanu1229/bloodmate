@@ -12,6 +12,7 @@ import BoardPage from "./boards/BoardPage";
 import BloodHba1cPage from "./bloods/BloodHba1cPage";
 import ResetPasswordPage from "./users/ResetPasswordPage";
 import HomePage from "./HomePage";
+import MyInfoPage from "./users/MyInfoPage";
 
 export default function App(props) {
     return (
@@ -24,8 +25,9 @@ export default function App(props) {
                     <Route path = "/blood/hba1c" element = {<BloodHba1cPage/>}/>
                     <Route path = "/blood/sugar" element = {<BloodSugarPage/>}/>
                     <Route path = "/blood/pressure" element = {<BloodPressurePage/>}/>
+                    <Route path = "/board" element = {<BoardPage/>}/>
+                    <Route path = "/myinfo" element = {<MyInfoPage/>}/>
                 </Route>
-                <Route path = "/board" element = {<BoardPage/>}/>
                 <Route path = "/login" element = {<LoginPage/>}/>
                 <Route path = "/search/id" element = {<IdSearchPage/>}/>
                 <Route path = "/search/password" element = {<PasswordSearchPage/>}/>

@@ -47,8 +47,8 @@ export default function Header(props) {
     }
 
     /** 게시판 페이지로 이동 */
-    const changeToBoardPage = () => {
-        navigate("/board");
+    const changeToMyInfoPage = () => {
+        navigate("/myinfo");
     }
 
     return (
@@ -75,9 +75,9 @@ export default function Header(props) {
                                     color : "#000000"
                                 }
                             }}
-                            onClick = {changeToBoardPage}
+                            onClick = {changeToMyInfoPage}
                         >
-                            게시판
+                            내정보
                         </Button>
                         <Button 
                             sx = {{

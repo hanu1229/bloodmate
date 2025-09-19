@@ -13,7 +13,7 @@ export default function LoginPage(props) {
 
     const changeInfo = (event) => {
         setInfo({...info, [event.target.name] : event.target.value});
-        console.log(info);
+        // console.log(info);
     }
 
     const loginBtnClick = async () => {
