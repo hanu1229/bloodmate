@@ -68,12 +68,45 @@ public class UserController {
 
     /// 회원 정보 확인 - R
     @GetMapping("/information")
-    public UserDto userInformation(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<UserDto> userInformation(@RequestHeader("Authorization") String token) {
         System.out.println(">> UserController.userInformation start");
         System.out.println("token = " + token);
         // userId는 넘기지 않도록 변경하기
-        UserDto result = userService.userInformation(token);
+        ResponseEntity<UserDto> result = userService.userInformation(token);
         System.out.println(">> UserController.userInformation end\n");
+        return result;
+    }
+
+    /// 이메일 수정 - P
+    @PatchMapping("/information/email")
+    public ResponseEntity<Boolean> changeUserEmail(@RequestHeader("Authorization") String token, @RequestBody Map<String, String> receive) {
+        System.out.println(">> UserController.changeUserEmail start");
+        System.out.println(">> token = " + token);
+        System.out.println(">> receive = " + receive);
+        ResponseEntity<Boolean> result = userService.changeUserInfo(token, receive);
+        System.out.println(">> UserController.changeUserEmail end\n");
+        return result;
+    }
+
+    /// 전화번호 수정 - P
+    @PatchMapping("/information/phone")
+    public ResponseEntity<Boolean> changeUserPhone(@RequestHeader("Authorization") String token, @RequestBody Map<String, String> receive) {
+        System.out.println(">> UserController.changeUserPhone start");
+        System.out.println(">> token = " + token);
+        System.out.println(">> receive = " + receive);
+        ResponseEntity<Boolean> result = userService.changeUserInfo(token, receive);
+        System.out.println(">> UserController.changeUserPhone end\n");
+        return result;
+    }
+
+    /// 비밀번호 수정(내정보) - P
+    @PatchMapping("/information/password")
+    public ResponseEntity<Boolean> changeUserPassword(@RequestHeader("Authorization") String token, @RequestBody Map<String ,String> receive) {
+        System.out.println(">> UserController.changeUserPassword start");
+        System.out.println(">> token = " + token);
+        System.out.println(">> receive = " + receive);
+        ResponseEntity<Boolean> result = userService.changeUserInfo(token, receive);
+        System.out.println(">> UserController.changeUserPassword end\n");
         return result;
     }
 
@@ -88,7 +121,7 @@ public class UserController {
         return result;
     }
 
-    /// 비밀번호 수정 - U
+    /// 비밀번호 수정(비밀번호 찾기) - U
     @PutMapping("/password")
     public boolean updatePassword(@RequestHeader("Authorization") String token, @RequestBody Map<String, String> passInfo) {
         System.out.println(">> UserController.updatePassword start");
@@ -101,11 +134,11 @@ public class UserController {
 
     /// 회원 탈퇴 - D
     @PostMapping("/information/delete")
-    public boolean deleteUser(@RequestHeader("Authorization") String token, @RequestBody UserDto userDto) {
+    public ResponseEntity<Boolean> deleteUser(@RequestHeader("Authorization") String token, @RequestBody Map<String, String> receive) {
         System.out.println(">> UserController.deleteUser start");
         System.out.println("token = " + token);
-        System.out.println("userDto.getUserPassword = " + userDto.getUserPassword());
-        boolean result = userService.deleteUser(token, userDto.getUserPassword());
+        System.out.println("receive = " + receive);
+        ResponseEntity<Boolean> result = userService.deleteUser(token, receive);
         System.out.println(">> UserController.deleteUser end\n");
         return result;
     }

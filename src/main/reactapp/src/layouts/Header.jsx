@@ -4,6 +4,7 @@ import Button from "@mui/joy/Button";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Box } from "@mui/joy";
+import { serverDomain } from "../ApiDomain";
 
 export default function Header(props) {
 
@@ -27,7 +28,7 @@ export default function Header(props) {
         const token = localStorage.getItem("Token");
         try {
             const response = await axios.post(
-                "http://raunriu.iptime.org:8080/api/user/logout", 
+                `${serverDomain}/user/logout`, 
                 null, 
                 {
                     headers : {

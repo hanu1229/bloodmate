@@ -19,7 +19,7 @@ public class CorsConfig implements WebMvcConfigurer {
                 // 허용할 오리진(출처)을 지정 | 접속할 도메인 작성 (여러개 가능)
                 .allowedOrigins("http://localhost:5173", "http://raunriu.iptime.org:5173")
                 // 프론트에서 사용할 HTTP 메소드를 지정 | OPTIONS는 브라우저가 사진을 요청할 때 사용되므로 꼭 포함
-                .allowedMethods("POST", "GET", "PUT", "DELETE", "OPTIONS")
+                .allowedMethods("POST", "GET", "PUT", "DELETE", "PATCH", "OPTIONS")
                 // 요청 시 허용할 헤더
                 // Authorization, Content-Type, X-Requested-With등을 개별 기재해도 되지만 운영 중 헤더가 추가 될 수 있음으로 "*"를 작성한다.
                 .allowedHeaders("*")

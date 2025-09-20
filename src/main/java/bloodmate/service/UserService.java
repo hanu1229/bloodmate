@@ -94,7 +94,7 @@ public class UserService {
     }
 
     /// 회원 정보 확인 - R
-    public UserDto userInformation(String token) {
+    public ResponseEntity<UserDto> userInformation(String token) {
         System.out.println(">> UserService.userInformation start");
 
         int userId = jwtUtil.validateToken(token);
@@ -104,11 +104,11 @@ public class UserService {
                 UserDto userDto = optional.get().toDto();
                 System.out.println("userDto = " + userDto);
                 System.out.println(">> UserService.userInformation end");
-                return userDto;
+                return ResponseEntity.status(200).body(userDto);
             }
         }
         System.out.println(">> UserService.userInformation end");
-        return null;
+        return ResponseEntity.status(400).body(null);
     }
 
     /// 회원 정보 수정 - U
@@ -130,6 +130,50 @@ public class UserService {
         }
         System.out.println(">> UserService.updateUser end");
         return false;
+    }
+
+    /// 이메일, 전화번호, 비밀번호 수정 - P
+    public ResponseEntity<Boolean> changeUserInfo(String token, Map<String, String> receive) {
+        System.out.println(">> UserService.changeUserEmail start");
+        try {
+            int userId = jwtUtil.validateToken(token);
+            if(userId <= 0) { return ResponseEntity.status(400).body(false); }
+            String password = receive.getOrDefault("password", null);
+            Optional<UserEntity> optional = userRepository.findById(userId);
+            if(optional.isPresent()) {
+                UserEntity userEntity = optional.get();
+                if(receive.containsKey("email")) {
+                    String email = receive.getOrDefault("email", null);
+                    String newEmail = receive.getOrDefault("newEmail", null);
+                    if(userEntity.getUserEmail().equals(email) && userEntity.getUserPassword().equals(password)) {
+                        userEntity.setUserEmail(newEmail);
+                        return ResponseEntity.status(200).body(true);
+                    }
+                } else if(receive.containsKey("phone")) {
+                    String phone = receive.getOrDefault("phone", null);
+                    String newPhone = receive.getOrDefault("newPhone", null);
+                    if(userEntity.getUserPhone().equals(phone) && userEntity.getUserPassword().equals(password)) {
+                        userEntity.setUserPhone(newPhone);
+                        return ResponseEntity.status(200).body(true);
+                    }
+                } else if(receive.containsKey("newPassword")) {
+                    String newPassword = receive.getOrDefault("newPassword", null);
+                    if(userEntity.getUserPassword().equals(password)) {
+                        userEntity.setUserPassword(newPassword);
+                        return ResponseEntity.status(200).body(true);
+                    }
+                }
+            } else {
+                return ResponseEntity.status(400).body(false);
+            }
+            return ResponseEntity.status(400).body(false);
+        } catch(Exception e) {
+            System.out.println(">> " + e);
+            System.out.println(">> UserService.changeUserEmail error!!!");
+            return ResponseEntity.status(400).body(false);
+        } finally {
+            System.out.println(">> UserService.changeUserInfo end");
+        }
     }
 
     /// 비밀번호 수정 - U
@@ -155,23 +199,24 @@ public class UserService {
     }
 
     /// 회원 탈퇴 - D
-    public boolean deleteUser(String token, String userPassword) {
+    public ResponseEntity<Boolean> deleteUser(String token, Map<String, String> receive) {
         System.out.println(">> UserService.deleteUser start");
         int userId = jwtUtil.validateToken(token);
         if(userId > 0) {
             Optional<UserEntity> optional = userRepository.findById(userId);
             if(optional.isPresent()) {
                 UserEntity userEntity = optional.get();
-                if(userEntity.getUserPassword().equals(userPassword)) {
+                String key = receive.getOrDefault("key", null);
+                if(key.equals("탈퇴") && userEntity.getUserPassword().equals(receive.getOrDefault("password", null))) {
                     userEntity.setUserState(0);
                     jwtUtil.deleteToken(userId);
                     System.out.println(">> UserService.deleteUser end");
-                    return true;
+                    return ResponseEntity.status(200).body(true);
                 }
             }
         }
         System.out.println(">> UserService.deleteUser end");
-        return false;
+        return ResponseEntity.status(400).body(false);
     }
 
     /// <b>닉네임 중복 확인 - R</b></br>
