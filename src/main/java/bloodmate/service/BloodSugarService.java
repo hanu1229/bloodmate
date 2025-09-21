@@ -31,7 +31,7 @@ public class BloodSugarService {
     private final JwtUtil jwtUtil;
 
     /// Map.ofEntries() --> readOnly
-    private static final Map<String, String> CONTEXT_LABELS = Map.ofEntries(
+    public static final Map<String, String> CONTEXT_LABELS = Map.ofEntries(
             Map.entry("MORNING_BEFORE_MEAL", "아침 식전"),
             Map.entry("MORNING_AFTER_MEAL", "아침 식후"),
             Map.entry("LUNCH_BEFORE_MEAL", "점심 식전"),

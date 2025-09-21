@@ -1,8 +1,8 @@
 import { Box, Button, Input, Option, Select, Tooltip, Typography } from "@mui/joy";
-import { CalendarMonthOutlined, EmailOutlined, Key, PersonOutline, SmartphoneOutlined } from "@mui/icons-material";
+import { CalendarMonth, CalendarMonthOutlined, Email, EmailOutlined, Key, Person, PersonOutline, Smartphone, SmartphoneOutlined } from "@mui/icons-material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { btnColor, inputFocusColor } from "../../styles/commonStyle";
+import { btnColor, iconColor, inputFocusColor } from "../../styles/commonStyle";
 
 import "../../styles/signupPage.css";
 import {serverDomain} from "../../ApiDomain";
@@ -135,37 +135,37 @@ export default function SignupPage(props) {
                     </Typography>
                     <Box sx = {{display : "flex", flexDirection : "column", padding : "28px 28px 0px 28px"}}>
                         {/* 이름 */}
-                        <Input className = "input-style" name = "userName" type = "text" placeholder = "이름" value = {info.userName} onChange = {changeInfo} startDecorator = {<PersonOutline/>} sx = {{...inputFocusColor}} />
+                        <Input className = "input-style" name = "userName" type = "text" placeholder = "이름" value = {info.userName} onChange = {changeInfo} startDecorator = {<Person sx = {{...iconColor}} />} sx = {{...inputFocusColor}} />
                         
                         {/* 생년월일 */}
-                        <Input className = "input-style" name = "userBirthDate" type = "text" placeholder = "생년월일(XXXX-XX-XX)" value = {info.userBirthDate} onChange = {changeInfo} startDecorator = {<CalendarMonthOutlined/>} sx = {{...inputFocusColor}} />
+                        <Input className = "input-style" name = "userBirthDate" type = "text" placeholder = "생년월일(XXXX-XX-XX)" value = {info.userBirthDate} onChange = {changeInfo} startDecorator = {<CalendarMonth sx = {{...iconColor}} />} sx = {{...inputFocusColor}} />
                         
                         {/* 이메일 */}
-                        <Input className = "input-style" name = "userEmail" type = "text" placeholder = "이메일" value = {info.userEmail} onChange = {changeInfo} startDecorator = {<EmailOutlined/>} sx = {{...inputFocusColor}} />
+                        <Input className = "input-style" name = "userEmail" type = "text" placeholder = "이메일" value = {info.userEmail} onChange = {changeInfo} startDecorator = {<Email sx = {{...iconColor}} />} sx = {{...inputFocusColor}} />
                         
                         {/* 전화번호 */}
                         <Box sx = {{display : "flex", justifyContent : "space-between"}}>
-                            <Input className = "input-style" name = "userPhone" type = "text" placeholder = "전화번호(010-XXXX-XXXX)" value = {info.userPhone} onChange = {changeInfo} startDecorator = {<SmartphoneOutlined/>} sx = {{flex : 1, marginRight : "20px", ...inputFocusColor}} />
+                            <Input className = "input-style" name = "userPhone" type = "text" placeholder = "전화번호(010-XXXX-XXXX)" value = {info.userPhone} onChange = {changeInfo} startDecorator = {<Smartphone sx = {{...iconColor}} />} sx = {{flex : 1, marginRight : "20px", ...inputFocusColor}} />
                             <Button sx={{marginBottom : "20px", ...btnColor}} onClick = {checkUserPhone}>확인</Button>
                         </Box>
                         
                         {/* 닉네임 */}
                         <Box sx = {{display : "flex", justifyContent : "space-between"}}>
-                            <Input className = "input-style" name = "userNickname" type = "text" placeholder = "닉네임" value = {info.userNickname} onChange = {changeInfo} startDecorator = {<PersonOutline/>} sx = {{flex : 1, marginRight : "20px", ...inputFocusColor}} />
+                            <Input className = "input-style" name = "userNickname" type = "text" placeholder = "닉네임" value = {info.userNickname} onChange = {changeInfo} startDecorator = {<Person sx = {{...iconColor}} />} sx = {{flex : 1, marginRight : "20px", ...inputFocusColor}} />
                             <Button sx={{marginBottom : "20px", ...btnColor}} onClick = {checkUserNickname}>확인</Button>
                         </Box>
                         
                         {/* 아이디 */}
                         <Box sx = {{display : "flex", justifyContent : "space-between"}}>
-                            <Input className = "input-style" name = "userLoginId" type = "text" placeholder = "아이디" value = {info.userLoginId} onChange = {changeInfo} startDecorator = {<PersonOutline/>} sx = {{flex : 1, marginRight : "20px", ...inputFocusColor}} />
+                            <Input className = "input-style" name = "userLoginId" type = "text" placeholder = "아이디" value = {info.userLoginId} onChange = {changeInfo} startDecorator = {<Person sx = {{...iconColor}} />} sx = {{flex : 1, marginRight : "20px", ...inputFocusColor}} />
                             <Button sx={{marginBottom : "20px", ...btnColor}} onClick = {checkUserLoginId}>확인</Button>
                         </Box>
                         
                         {/* 비밀번호 */}
-                        <Input className = "input-style" name = "userPassword" type = "password" placeholder = "비밀번호" value = {info.userPassword} onChange = {changePassword} startDecorator = {<Key/>} sx = {{...inputFocusColor}} />
+                        <Input className = "input-style" name = "userPassword" type = "password" placeholder = "비밀번호" value = {info.userPassword} onChange = {changePassword} startDecorator = {<Key sx = {{...iconColor}} />} sx = {{...inputFocusColor}} />
                         
                         {/* 비밀번호 확인 */}
-                        <Input className = "input-style" name = "password" type = "password" placeholder = "비밀번호 확인" value = {checkPassword} onChange = {changePassword} startDecorator = {<Key/>} sx = {{backgroundColor : "#FFFFFF", borderColor : lastCheck ? "#A097D4" : "red", "&:focus-within::before" : {boxShadow : lastCheck ? "inset 0 0 0 2px #A097D4" : "inset 0 0 0 2px red"}}}></Input>
+                        <Input className = "input-style" name = "password" type = "password" placeholder = "비밀번호 확인" value = {checkPassword} onChange = {changePassword} startDecorator = {<Key sx = {{...iconColor}} />} sx = {{backgroundColor : "#FFFFFF", borderColor : lastCheck ? "#A097D4" : "red", "&:focus-within::before" : {boxShadow : lastCheck ? "inset 0 0 0 2px #A097D4" : "inset 0 0 0 2px red"}}}></Input>
                         
                         {/* 회원가입 버튼 */}
                         <Box>

@@ -1,16 +1,16 @@
 import { Box, Button, IconButton, Input, Typography } from "@mui/joy";
-import { btnColor, iconColor, inputErrorColor, inputFocusColor } from "../../styles/commonStyle";
+import { iconColor, inputErrorColor, inputFocusColor } from "../../styles/commonStyle";
 import { CheckCircle, Email, Key, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import axios from "axios";
 import { serverDomain } from "../../ApiDomain";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import useCustomNavigate from "../../useCustomNavigate";
 
 export default function DeleteUserModal(props) {
 
     const navigate = useNavigate();
-    const checkLogin = useCustomNavigate();
+    const { setLoginState } = useOutletContext();
 
     const [key, setKey] = useState("");
     const [checkKey, setCheckKey] = useState(true);
@@ -34,7 +34,8 @@ export default function DeleteUserModal(props) {
                 alert("회원 탈퇴가 완료되었습니다."); 
                 props.onClose(); 
                 localStorage.removeItem("Token");
-                navigate("/");
+                setLoginState(false);
+                navigate("/", {replace : true});
             }
         } catch(e) {
             if(e.response.status === 400) { alert("회원 탈퇴에 실패했습니다."); }

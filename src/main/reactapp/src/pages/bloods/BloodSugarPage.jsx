@@ -6,12 +6,16 @@ import { serverDomain } from "../../ApiDomain";
 import { DataGrid, gridPaginatedVisibleSortedGridRowEntriesSelector, useGridApiRef } from "@mui/x-data-grid";
 import { ArrowDropDown, ArrowDropUp, ArrowRight } from "@mui/icons-material";
 import { LineChart } from "@mui/x-charts";
+import { btnColor } from "../../styles/commonStyle";
+import { CustomModal } from "../modals/CustomModal";
+import CreateSugarModal from "../modals/CreateSugarModal";
 
 export default function BloodSugarPage(props) {
 
     const checkLogin = useCustomNavigate();
 
     const [bloodSugarInfo, setBloodSugarInfo] = useState([]);
+    const [createModal, setCreateModal] = useState(false);
     /** true : 펼침 | false : 닫힘 */
     const [sugarGuide, setSugarGuide] = useState(false);
     /** 차트에 필요 - DataGrid를 조작할 수 있게 해줌 */
@@ -122,6 +126,7 @@ export default function BloodSugarPage(props) {
         },
     ];
 
+    /*
     const rows = [
         { id : 1, measureDate: 1, measureTime: 'Jon', contextLabel: 'Snow', value: 14 },
         { id : 2, measureDate: 2, measureTime: 'Cersei', contextLabel: 'Lannister', value: 31 },
@@ -132,7 +137,8 @@ export default function BloodSugarPage(props) {
         { id : 7, measureDate: 7, measureTime: 'Ferrara', contextLabel: 'Clifford', value: 44 },
         { id : 8, measureDate: 8, measureTime: 'Rossini', contextLabel: 'Frances', value: 36 },
         { id : 9, measureDate: 9, measureTime: 'Harvey', contextLabel: 'Roxie', value: 65 },
-    ];
+    ]; 
+    */
 
     return (
         <>
@@ -143,6 +149,7 @@ export default function BloodSugarPage(props) {
                     {/* <Box sx = {{height : "32px"}}></Box> */}
                     {/* <Box sx = {{height : "320px"}}></Box> */}
                     {/* <Box sx = {{height : "32px"}}></Box> */}
+                    {/* 가이드 */}
                     <Box onClick = {() => {setSugarGuide(!sugarGuide);}} sx = {{display : "flex", alignItems : "center", "&:hover" : {cursor : "pointer", fontWeight : "bold"}}}>
                         {sugarGuide ? <ArrowDropDown /> : <ArrowRight />}
                         <Typography sx = {{color : "inherit"}}>혈당 수치 기준</Typography>
@@ -169,6 +176,18 @@ export default function BloodSugarPage(props) {
                                 </>) : ""
                         }
                     </Box>
+                    {/* 추가하기 버튼 */}
+                    <Box sx = {{marginBottom : "8px", display : "flex", justifyContent : "end"}}>
+                        <Button onClick = {() => setCreateModal(true)} sx = {{...btnColor}}>추가하기</Button>
+                        <CustomModal
+                            open = {createModal}
+                            onClose = {(event, reason) => { reason === "backdropClick" ? setCreateModal(true) : setCreateModal(false) }}
+                            title = "혈당 수치 추가하기"
+                        >
+                            <CreateSugarModal/>
+                        </CustomModal>
+                    </Box>
+                    {/* 표 */}
                     <Box sx = {{display : "flex", width : "100%", height : "484px", alignItems : "start"}}>
                         <DataGrid
                             // apiRef = {apiRef}
@@ -187,7 +206,7 @@ export default function BloodSugarPage(props) {
                             sx = {{
                                 boxSizing : "border-box",
                                 height : "100%",
-                                marginRight : "30px",
+                                // marginRight : "30px",
                                 border : "2px solid #e0e0e0",
                                 borderRadius : 0,
                                 "& .MuiDataGrid-footerContainer" : {maxHeight : "40px", minHeight : "40px"},

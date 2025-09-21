@@ -17,7 +17,6 @@ export default function useCustomNavigate(props) {
         if(response.data) { return true; }
         return false;
     }
-    
 
     return checkLogin;
 }

@@ -4,8 +4,12 @@ import { Key, Smartphone, SmartphoneOutlined, Visibility, VisibilityOff } from "
 import { useState } from "react";
 import axios from "axios";
 import { serverDomain } from "../../ApiDomain";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 export default function PasswordModal(props) {
+
+    const navigate = useNavigate();
+    const { setLoginState } = useOutletContext();
 
     const [password, setPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
@@ -34,7 +38,14 @@ export default function PasswordModal(props) {
         try {
             const token = localStorage.getItem("Token");
             const response = await axios.patch(`${serverDomain}/user/information/password`, info, {withCredentials : true, headers : {Authorization : token}});
-            if(response.status === 200) { alert("비밀번호 변경을 완료했습니다."); props.findInfo(); props.onClose(); }
+            if(response.status === 200) { 
+                alert("비밀번호 변경을 완료했습니다.");
+                alert("다시 로그인 해주세요.");
+                props.onClose();
+                localStorage.removeItem("Token");
+                setLoginState(false);
+                navigate("/", {replace : true});
+            }
         } catch(e) {
             if(e.response.status === 400) { alert("비밀번호 변경에 실패했습니다."); }
         }

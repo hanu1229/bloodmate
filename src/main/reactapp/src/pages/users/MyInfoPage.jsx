@@ -10,43 +10,7 @@ import { useNavigate } from "react-router-dom";
 import PasswordModal from "../modals/PasswordModal";
 import { Dangerous } from "@mui/icons-material";
 import DeleteUserModal from "../modals/DeleteUserModal";
-
-
-export function CustomModal(props) {
-    return (
-        <Modal 
-            aria-labelledby="modal-title" 
-            aria-describedby="modal-desc" 
-            open = {props.open} 
-            onClose = {props.onClose} 
-            /** 블러 처리 삭제 */
-            // slots = {{backdrop : "span"}}
-            sx = {{
-                display : "flex", justifyContent : "center", alignItems : "center"
-                }}
-        >
-            <Sheet 
-                variant = "outlined" 
-                sx = {{
-                    display : "flex",
-                    flexDirection : "column",
-                    padding : "12px",
-                    minWidth : "400px", maxWidth : "480px", 
-                    minHeight : 0, maxHeight : "480px", 
-                    borderRadius : "16px", boxShadow : "lg",
-                    overflowY : "hidden", background : "#FFFFFF"
-                }}
-            >
-                <ModalClose variant = "outlined"/>
-                <Typography sx = {{marginLeft : "12px", marginBottom : "12px", fontSize : "20px", fontWeight : "bold"}}>{props.title}</Typography>
-                <Box sx = {{width : "100%", height : "100%", overflowY : "auto", overflowX : "hidden", minHeight : 0}}>
-                    {props.children}
-                </Box>
-            </Sheet>
-        </Modal>
-    );
-}
-
+import { CustomModal } from "../modals/CustomModal";
 
 export default function MyInfoPage(props) {
     const checkLogin = useCustomNavigate();
@@ -55,6 +19,7 @@ export default function MyInfoPage(props) {
     const [emailModal, setEmailModal] = useState(false);
     const [phoneModal, setPhoneModal] = useState(false);
     const [passwordModal, setPasswordModal] = useState(false);
+    const [deleteModal, setDeleteModal] = useState(false);
     const [myInfo, setMyInfo] = useState({});
     /** true : 펼침 | false : 닫힘 */
     const [sugarGuide, setSugarGuide] = useState(false);
@@ -166,15 +131,15 @@ export default function MyInfoPage(props) {
                         </Box>
                         <Typography sx = {{marginBottom : "32px"}}>※ 계정과 건강 데이터를 영구 삭제됩니다.<br/>※ 복구할 수 없습니다.</Typography>
                         <Box sx = {{display : "flex", justifyContent : "space-between", alignItems : "center"}}>
-                            <Button size = "sm" color = "danger" sx = {{width : "100%"}} onClick = {() => { setPasswordModal(true); }}>탈퇴하기</Button>
+                            <Button size = "sm" color = "danger" sx = {{width : "100%"}} onClick = {() => { setDeleteModal(true); }}>탈퇴하기</Button>
                             <CustomModal 
-                                open = {passwordModal} 
-                                onClose = {(event, reason) => { reason == "backdropClick" ? setPasswordModal(true) : setPasswordModal(false) }}
+                                open = {deleteModal} 
+                                onClose = {(event, reason) => { reason == "backdropClick" ? setDeleteModal(true) : setDeleteModal(false) }}
                                 title = "회원 탈퇴"
                             >
                                 <DeleteUserModal
                                     findInfo = {findInfo}
-                                    onClose = {() => { setPasswordModal(false); }}
+                                    onClose = {() => { setDeleteModal(false); }}
                                 />
                             </CustomModal>
                         </Box>

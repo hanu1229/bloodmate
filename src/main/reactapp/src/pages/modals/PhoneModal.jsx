@@ -1,6 +1,6 @@
 import { Box, Button, IconButton, Input, Typography } from "@mui/joy";
-import { btnColor, iconColor, inputErrorColor, inputFocusColor } from "../../styles/commonStyle";
-import { Key, Smartphone, SmartphoneOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
+import { btnColor, iconColor, inputFocusColor } from "../../styles/commonStyle";
+import { Key, Smartphone, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import axios from "axios";
 import { serverDomain } from "../../ApiDomain";
