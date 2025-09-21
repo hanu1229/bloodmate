@@ -17,7 +17,7 @@ public class MeasurementContextService {
 
     private final MeasurementContextRepository mcRepository;
 
-    /// 측정 상황 불러오기 - R
+    /// 측정 상황 불러 오기 - R
     public ResponseEntity<List<MeasurementContextDto>> findAll() {
         System.out.println(">> MeasurementContextService.findAll start");
         try {
