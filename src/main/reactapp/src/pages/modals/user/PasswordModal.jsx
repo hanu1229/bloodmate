@@ -1,9 +1,9 @@
 import { Box, Button, IconButton, Input, Typography } from "@mui/joy";
-import { btnColor, iconColor, inputErrorColor, inputFocusColor } from "../../styles/commonStyle";
+import { btnColor, iconColor, inputErrorColor, inputFocusColor } from "../../../styles/commonStyle";
 import { Key, Smartphone, SmartphoneOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import axios from "axios";
-import { serverDomain } from "../../ApiDomain";
+import { serverDomain } from "../../../ApiDomain";
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 export default function PasswordModal(props) {

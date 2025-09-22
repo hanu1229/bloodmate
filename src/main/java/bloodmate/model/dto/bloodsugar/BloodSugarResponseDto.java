@@ -21,6 +21,8 @@ public class BloodSugarResponseDto {
     /// 수정일
     private LocalDateTime updatedAt;
     /// 측정 상황 번호 FK
+    private int measurementContextId;
+    /// 측정 상황 코드
     private String measurementContextCode;
     /// 측정 상황 라벨
     private String measurementContextLabel;

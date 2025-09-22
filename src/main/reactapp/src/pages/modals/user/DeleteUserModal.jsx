@@ -1,11 +1,11 @@
 import { Box, Button, IconButton, Input, Typography } from "@mui/joy";
-import { iconColor, inputErrorColor, inputFocusColor } from "../../styles/commonStyle";
+import { iconColor, inputErrorColor, inputFocusColor } from "../../../styles/commonStyle";
 import { CheckCircle, Email, Key, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import axios from "axios";
-import { serverDomain } from "../../ApiDomain";
+import { serverDomain } from "../../../ApiDomain";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import useCustomNavigate from "../../useCustomNavigate";
+import useCustomNavigate from "../../../useCustomNavigate";
 
 export default function DeleteUserModal(props) {
 

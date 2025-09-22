@@ -10,7 +10,7 @@ export function CustomModal(props) {
             /** 블러 처리 삭제 */
             // slots = {{backdrop : "span"}}
             sx = {{
-                display : "flex", justifyContent : "center", alignItems : "center"
+                display : "flex", justifyContent : "center", alignItems : "center", zIndex : 100
                 }}
         >
             <Sheet 

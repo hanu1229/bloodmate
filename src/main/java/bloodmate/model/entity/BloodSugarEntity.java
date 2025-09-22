@@ -38,7 +38,9 @@ public class BloodSugarEntity extends BaseTime {
     public BloodSugarResponseDto toDto() {
         return BloodSugarResponseDto.builder()
                 .bloodSugarId(this.bloodSugarId).bloodSugarValue(this.bloodSugarValue).measuredAt(this.measuredAt)
-                .measurementContextCode(this.getMeasurementContextEntity().getMcCode()).userId(getUserEntity().getUserId())
+                .measurementContextId(this.measurementContextEntity.getMcId())
+                .measurementContextCode(this.measurementContextEntity.getMcCode())
+                .userId(getUserEntity().getUserId())
                 .createdAt(this.getCreatedAt()).updatedAt(this.getUpdatedAt())
                 .build();
     }

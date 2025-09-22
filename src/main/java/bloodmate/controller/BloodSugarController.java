@@ -4,6 +4,7 @@ import bloodmate.model.dto.bloodsugar.BloodSugarRequestDto;
 import bloodmate.model.dto.bloodsugar.BloodSugarResponseDto;
 import bloodmate.service.BloodSugarService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -18,11 +19,11 @@ public class BloodSugarController {
 
     /// 혈당 정보 작성 - C
     @PostMapping("")
-    public boolean create(@RequestHeader("Authorization") String token, @RequestBody BloodSugarRequestDto bloodSugarRequestDto) {
+    public ResponseEntity<Boolean> create(@RequestHeader("Authorization") String token, @RequestBody BloodSugarRequestDto bloodSugarRequestDto) {
         System.out.println(">> BloodSugarController.create start");
         System.out.println(">> token = " + token);
         System.out.println(">> bloodSugarDto = " + bloodSugarRequestDto);
-        boolean result = bloodSugarService.create(token, bloodSugarRequestDto);
+        ResponseEntity<Boolean> result = bloodSugarService.create(token, bloodSugarRequestDto);
         System.out.println(">> BloodSugarController.create end\n");
         return result;
     }
@@ -50,7 +51,7 @@ public class BloodSugarController {
 
     /// 혈당 정보 수정하기 - U
     @PutMapping("/{bloodSugarId}")
-    public boolean update(
+    public ResponseEntity<Boolean> update(
             @RequestHeader("Authorization") String token,
             @RequestBody BloodSugarRequestDto bloodSugarRequestDto,
             @PathVariable("bloodSugarId") int bloodSugarId
@@ -59,18 +60,18 @@ public class BloodSugarController {
         System.out.println(">> token = " + token);
         System.out.println(">> bloodSugarDto = " + bloodSugarRequestDto);
         System.out.println(">> bloodSugarId = " + bloodSugarId);
-        boolean result = bloodSugarService.update(token, bloodSugarRequestDto, bloodSugarId);
+        ResponseEntity<Boolean> result = bloodSugarService.update(token, bloodSugarRequestDto, bloodSugarId);
         System.out.println(">> BloodSugarController.update end\n");
         return result;
     }
 
     /// 혈당 정보 삭제하기 - D
     @DeleteMapping("/{bloodSugarId}")
-    public boolean delete(@RequestHeader("Authorization") String token, @PathVariable("bloodSugarId") int bloodSugarId) {
+    public ResponseEntity<Boolean> delete(@RequestHeader("Authorization") String token, @PathVariable("bloodSugarId") int bloodSugarId) {
         System.out.println(">> BloodSugarController.delete start");
         System.out.println(">> token = " + token);
         System.out.println(">> bloodSugarId = " + bloodSugarId);
-        boolean result = bloodSugarService.delete(token, bloodSugarId);
+        ResponseEntity<Boolean> result = bloodSugarService.delete(token, bloodSugarId);
         System.out.println(">> BloodSugarController.delete end\n");
         return result;
     }

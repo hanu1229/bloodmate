@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { serverDomain } from "../../ApiDomain";
 import { btnColor } from "../../styles/commonStyle";
-import EmailModal from "../modals/EmailModal";
-import PhoneModal from "../modals/PhoneModal";
+import EmailModal from "../modals/user/EmailModal";
+import PhoneModal from "../modals/user/PhoneModal";
 import { useNavigate } from "react-router-dom";
-import PasswordModal from "../modals/PasswordModal";
+import PasswordModal from "../modals/user/PasswordModal";
 import { Dangerous } from "@mui/icons-material";
-import DeleteUserModal from "../modals/DeleteUserModal";
+import DeleteUserModal from "../modals/user/DeleteUserModal";
 import { CustomModal } from "../modals/CustomModal";
 
 export default function MyInfoPage(props) {

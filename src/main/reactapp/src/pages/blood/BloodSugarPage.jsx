@@ -3,12 +3,14 @@ import useCustomNavigate from "../../useCustomNavigate";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { serverDomain } from "../../ApiDomain";
-import { DataGrid, gridPaginatedVisibleSortedGridRowEntriesSelector, useGridApiRef } from "@mui/x-data-grid";
-import { ArrowDropDown, ArrowDropUp, ArrowRight } from "@mui/icons-material";
+import { DataGrid, GridActionsCellItem, gridPaginatedVisibleSortedGridRowEntriesSelector, useGridApiRef } from "@mui/x-data-grid";
+import { ArrowDropDown, ArrowDropUp, ArrowRight, Edit } from "@mui/icons-material";
 import { LineChart } from "@mui/x-charts";
 import { btnColor } from "../../styles/commonStyle";
 import { CustomModal } from "../modals/CustomModal";
-import CreateSugarModal from "../modals/CreateSugarModal";
+import CreateSugarModal from "../modals/blood/sugar/CreateSugarModal";
+import UpdateSugarModal from "../modals/blood/sugar/UpdateSugarModal";
+import DeleteSugarModal from "../modals/blood/sugar/DeleteSugarModal";
 
 export default function BloodSugarPage(props) {
 
@@ -16,6 +18,9 @@ export default function BloodSugarPage(props) {
 
     const [bloodSugarInfo, setBloodSugarInfo] = useState([]);
     const [createModal, setCreateModal] = useState(false);
+    const [updateModal, setUpdateModal] = useState(false);
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [rowInfo, setRowInfo] = useState({});
     /** true : 펼침 | false : 닫힘 */
     const [sugarGuide, setSugarGuide] = useState(false);
     /** 차트에 필요 - DataGrid를 조작할 수 있게 해줌 */
@@ -26,7 +31,7 @@ export default function BloodSugarPage(props) {
     */
     
     useEffect(() => { checkLogin(); findAll(); }, []);
-    /** 차트에 피료 */
+    /** 차트에 필요 */
     /*
     useEffect(() => {
         if(!apiRef.current) { return; }
@@ -66,10 +71,13 @@ export default function BloodSugarPage(props) {
 
             const obj = {
                 id : index + 1,
-                measureDate : item["measuredAt"].split("T")[0].replaceAll("-", "."),
-                measureTime : `${hour}시${minute}분`,
+                measureDate : item["measuredAt"].split("T")[0],
+                measureTime : `${hour}:${minute}`,
                 contextLabel : item["measurementContextLabel"],
+                contextId : item["measurementContextId"],
                 value : item["bloodSugarValue"],
+                bloodSugarId : item["bloodSugarId"]
+                // put : <Typography>테스트</Typography>
             }
             return obj;
         });
@@ -97,7 +105,7 @@ export default function BloodSugarPage(props) {
             flex : 1,
             headerAlign : "center",
             align : "center", 
-            editable: true,
+            editable: false,
             sortable: false,
             disableColumnMenu : true,
         },
@@ -108,7 +116,7 @@ export default function BloodSugarPage(props) {
             flex : 1,
             headerAlign : "center",
             align : "center", 
-            editable: true,
+            editable: false,
             sortable: false,
             disableColumnMenu : true,
         },
@@ -120,9 +128,55 @@ export default function BloodSugarPage(props) {
             flex : 1,
             headerAlign : "center",
             align : "center", 
-            editable: true,
+            editable: false,
             sortable: false,
             disableColumnMenu : true,
+        },
+        {
+            field: "put",
+            headerName: "수정",
+            width : 80,
+            headerAlign : "center",
+            align : "center", 
+            editable: false,
+            sortable: false,
+            disableColumnMenu : true,
+            renderCell: (params) => (
+                <Button
+                    onClick={(event) => { 
+                        event.stopPropagation(); 
+                        console.log("수정하기"); 
+                        setRowInfo(params.row);
+                        setUpdateModal(true);
+                    }}
+                    sx = {{...btnColor}}
+                >
+                    수정
+                </Button>
+            )
+        },
+        {
+            field: "delete",
+            headerName: "삭제",
+            width : 80,
+            headerAlign : "center",
+            align : "center", 
+            editable: false,
+            sortable: false,
+            disableColumnMenu : true,
+            renderCell: (params) => (
+                <Button
+                    onClick={(event) => {
+                        event.stopPropagation(); 
+                        console.log("삭제하기"); 
+                        setRowInfo(params.row);
+                        setDeleteModal(true);
+                    }}
+                    sx = {{...btnColor}}
+                >
+                    삭제
+                </Button>
+            ),
         },
     ];
 
@@ -184,9 +238,24 @@ export default function BloodSugarPage(props) {
                             onClose = {(event, reason) => { reason === "backdropClick" ? setCreateModal(true) : setCreateModal(false) }}
                             title = "혈당 수치 추가하기"
                         >
-                            <CreateSugarModal/>
+                            <CreateSugarModal findAll = {findAll} onClose = {() => {setCreateModal(false);}} />
                         </CustomModal>
                     </Box>
+                    {/* 모달 */}
+                    <CustomModal
+                        open = {updateModal}
+                        onClose = {(event, reason) => { reason === "backdropClick" ? setUpdateModal(true) : setUpdateModal(false) }}
+                        title = "혈당 수치 수정하기"
+                    >
+                        <UpdateSugarModal rowInfo = {rowInfo} findAll = {findAll} onClose = {() => {setUpdateModal(false);}} />
+                    </CustomModal>
+                    <CustomModal
+                        open = {deleteModal}
+                        onClose = {(event, reason) => { reason === "backdropClick" ? setDeleteModal(true) : setDeleteModal(false) }}
+                        title = "혈당 수치 삭제하기"
+                    >
+                        <DeleteSugarModal rowInfo = {rowInfo} findAll = {findAll} onClose = {() => {setDeleteModal(false);}} />
+                    </CustomModal>
                     {/* 표 */}
                     <Box sx = {{display : "flex", width : "100%", height : "484px", alignItems : "start"}}>
                         <DataGrid

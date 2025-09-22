@@ -11,6 +11,7 @@ import bloodmate.model.repository.UserRepository;
 import bloodmate.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -46,11 +47,11 @@ public class BloodSugarService {
     );
 
     /// 혈당 정보 작성 - C
-    public boolean create(String token, BloodSugarRequestDto bloodSugarRequestDto) {
+    public ResponseEntity<Boolean> create(String token, BloodSugarRequestDto bloodSugarRequestDto) {
         System.out.println(">> BloodSugarService.create start");
         try {
             int userId = jwtUtil.validateToken(token);
-            if(userId <= 0) { return false; }
+            if(userId <= 0) { return ResponseEntity.status(400).body(false); }
             Optional<UserEntity> optional = userRepository.findById(userId);
             if(optional.isPresent()) {
                 UserEntity userEntity = optional.get();
@@ -60,17 +61,17 @@ public class BloodSugarService {
                     bloodSugarEntity.setMeasurementContextEntity(mcEntity);
                     bloodSugarEntity.setUserEntity(userEntity);
                     bloodSugarEntity = bloodSugarRepository.save(bloodSugarEntity);
-                    if(bloodSugarEntity.getBloodSugarId() <= 0) { return false; }
+                    if(bloodSugarEntity.getBloodSugarId() <= 0) { return ResponseEntity.status(400).body(false); }
                     System.out.println(">> bloodSugarEntity = " + bloodSugarEntity);
-                    return true;
+                    return ResponseEntity.status(201).body(true);
                 }
             }
             System.out.println(">> 오류123");
-            return false;
+            return ResponseEntity.status(400).body(false);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BloodSugarService.create error!!!");
-            return false;
+            return ResponseEntity.status(400).body(false);
         } finally {
             System.out.println(">> BloodSugarService.create end");
         }
@@ -128,15 +129,15 @@ public class BloodSugarService {
     }
 
     /// 혈당 정보 수정하기 - U
-    public boolean update(String token, BloodSugarRequestDto bloodSugarRequestDto, int bloodSugarId) {
+    public ResponseEntity<Boolean> update(String token, BloodSugarRequestDto bloodSugarRequestDto, int bloodSugarId) {
         System.out.println(">> BloodSugarService.updated start");
         try {
             int userId = jwtUtil.validateToken(token);
-            if(userId <= 0) { return false; }
+            if(userId <= 0) { return ResponseEntity.status(400).body(false); }
             Optional<BloodSugarEntity> optional = bloodSugarRepository.findById(bloodSugarId);
             if(optional.isPresent()) {
                 BloodSugarEntity bloodSugarEntity = optional.get();
-                if(bloodSugarEntity.getUserEntity().getUserId() != userId) { return false; }
+                if(bloodSugarEntity.getUserEntity().getUserId() != userId) { return ResponseEntity.status(400).body(false); }
                 bloodSugarEntity.setBloodSugarValue(bloodSugarRequestDto.getBloodSugarValue());
                 bloodSugarEntity.setMeasuredAt(bloodSugarRequestDto.getMeasuredAt());
                 int existingId = bloodSugarEntity.getMeasurementContextEntity().getMcId();
@@ -149,33 +150,33 @@ public class BloodSugarService {
                         System.out.println(">> bloodSugarEntity = " + bloodSugarEntity);
                     }
                 }
-                return true;
+                return ResponseEntity.status(200).body(true);
             }
-            return false;
+            return ResponseEntity.status(400).body(false);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BloodSugarService.updated error!!!");
-            return false;
+            return ResponseEntity.status(400).body(false);
         } finally {
             System.out.println(">> BloodSugarService.updated end");
         }
     }
 
     /// 혈당 정보 삭제하기 - D
-    public boolean delete(String token, int bloodSugarId) {
+    public ResponseEntity<Boolean> delete(String token, int bloodSugarId) {
         System.out.println(">> BloodSugarService.delete start");
         int userId = jwtUtil.validateToken(token);
-        if(userId <= 0) { return false; }
+        if(userId <= 0) { return ResponseEntity.status(400).body(false); }
         Optional<BloodSugarEntity> optional = bloodSugarRepository.findById(bloodSugarId);
         if(optional.isPresent()) {
             BloodSugarEntity bloodSugarEntity = optional.get();
-            if(bloodSugarEntity.getUserEntity().getUserId() != userId) { return false; }
+            if(bloodSugarEntity.getUserEntity().getUserId() != userId) { return ResponseEntity.status(400).body(false); }
             bloodSugarRepository.deleteById(bloodSugarId);
-            return true;
+            return ResponseEntity.status(200).body(true);
         }
         bloodSugarRepository.deleteById(bloodSugarId);
         System.out.println(">> BloodSugarService.delete end");
-        return false;
+        return ResponseEntity.status(400).body(false);
     }
 
 }
