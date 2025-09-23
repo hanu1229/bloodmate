@@ -4,6 +4,7 @@ import bloodmate.model.dto.bloodpressure.BloodPressureRequestDto;
 import bloodmate.model.dto.bloodpressure.BloodPressureResponseDto;
 import bloodmate.service.BloodPressureService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -18,11 +19,11 @@ public class BloodPressureController {
 
     /// 혈압 정보 작성 - C
     @PostMapping("")
-    public boolean create(@RequestHeader("Authorization") String token, @RequestBody BloodPressureRequestDto bloodPressureRequestDto) {
+    public ResponseEntity<Boolean> create(@RequestHeader("Authorization") String token, @RequestBody BloodPressureRequestDto bloodPressureRequestDto) {
         System.out.println(">> BloodPressureController.createBloodPressure start");
         System.out.println(">> token = " + token);
         System.out.println(">> bloodPressureRequestDto = " + bloodPressureRequestDto);
-        boolean result = bloodPressureService.create(token, bloodPressureRequestDto);
+        ResponseEntity<Boolean> result = bloodPressureService.create(token, bloodPressureRequestDto);
         System.out.println(">> BloodPressureController.createBloodPressure end\n");
         return result;
     }
@@ -48,7 +49,7 @@ public class BloodPressureController {
 
     /// 혈압 정보 수정하기 - U
     @PutMapping("/{bloodPressureId}")
-    public boolean update(
+    public ResponseEntity<Boolean> update(
             @RequestHeader("Authorization") String token,
             @RequestBody BloodPressureRequestDto bloodPressureRequestDto,
             @PathVariable("bloodPressureId") int bloodPressureId
@@ -57,18 +58,18 @@ public class BloodPressureController {
         System.out.println(">> token = " + token);
         System.out.println(">> bloodPressureId = " + bloodPressureId);
         System.out.println(">> bloodPressureRequestDto = " + bloodPressureRequestDto);
-        boolean result = bloodPressureService.update(token, bloodPressureRequestDto, bloodPressureId);
+        ResponseEntity<Boolean> result = bloodPressureService.update(token, bloodPressureRequestDto, bloodPressureId);
         System.out.println(">> BloodPressureController.update end\n");
         return result;
     }
 
     /// 혈압 정보 삭제하기 - D
     @DeleteMapping("/{bloodPressureId}")
-    public boolean delete(@RequestHeader("Authorization") String token, @PathVariable("bloodPressureId") int bloodPressureId) {
+    public ResponseEntity<Boolean> delete(@RequestHeader("Authorization") String token, @PathVariable("bloodPressureId") int bloodPressureId) {
         System.out.println(">> BloodPressureController.delete start");
         System.out.println(">> token = " + token);
         System.out.println(">> bloodPressureId = " + bloodPressureId);
-        boolean result = bloodPressureService.delete(token, bloodPressureId);
+        ResponseEntity<Boolean> result = bloodPressureService.delete(token, bloodPressureId);
         System.out.println(">> BloodPressureController.delete end\n");
         return result;
     }

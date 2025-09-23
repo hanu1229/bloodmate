@@ -11,6 +11,7 @@ import bloodmate.model.repository.UserRepository;
 import bloodmate.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,11 +31,11 @@ public class BloodPressureService {
     private final JwtUtil jwtUtil;
 
     /// 혈압 정보 작성 - C
-    public boolean create(String token, BloodPressureRequestDto bloodPressureRequestDto) {
+    public ResponseEntity<Boolean> create(String token, BloodPressureRequestDto bloodPressureRequestDto) {
         System.out.println(">> BloodPressureService.create start");
         try {
             int userId = jwtUtil.validateToken(token);
-            if(userId <= 0) { return false; }
+            if(userId <= 0) { return ResponseEntity.status(400).body(false); }
             int measurementContextId = bloodPressureRequestDto.getMeasurementContextId();
             Optional<UserEntity> UserOptional = userRepository.findById(userId);
             Optional<MeasurementContextEntity> measurementOptional = measurementContextRepository.findById(measurementContextId);
@@ -45,13 +46,13 @@ public class BloodPressureService {
                 bloodPressureEntity.setMeasurementContextEntity(mcEntity);
                 bloodPressureEntity.setUserEntity(userEntity);
                 bloodPressureEntity = bloodPressureRepository.save(bloodPressureEntity);
-                return bloodPressureEntity.getBloodPressureId() > 0;
+                if(bloodPressureEntity.getBloodPressureId() > 0) { return ResponseEntity.status(201).body(true); }
             }
-            return false;
+            return ResponseEntity.status(400).body(false);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BloodPressureService.create error!!!");
-            return false;
+            return ResponseEntity.status(400).body(false);
         } finally {
             System.out.println(">> BloodPressureService.create end");
         }
@@ -65,7 +66,13 @@ public class BloodPressureService {
             if(userId <= 0) { return null; }
             List<BloodPressureEntity> bloodPressureEntityList = bloodPressureRepository.findByUserIdToBloodPressure(userId);
             if(bloodPressureEntityList == null) { return null; }
-            return bloodPressureEntityList.stream().map(BloodPressureEntity::toDto).toList();
+            return bloodPressureEntityList.stream().map(entity -> {
+                BloodPressureResponseDto dto = entity.toDto();
+                String code = entity.getMeasurementContextEntity().getMcCode();
+                String label = BloodSugarService.CONTEXT_LABELS.getOrDefault(code, code);
+                dto.setMeasurementContextLabel(label);
+                return dto;
+            }).toList();
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BloodPressureService.findAll error!!!");
@@ -97,15 +104,15 @@ public class BloodPressureService {
     }
 
     /// 혈압 정보 수정하기 - U
-    public boolean update(String token, BloodPressureRequestDto bloodPressureRequestDto, int bloodPressureId) {
+    public ResponseEntity<Boolean> update(String token, BloodPressureRequestDto bloodPressureRequestDto, int bloodPressureId) {
         System.out.println(">> BloodPressureService.update start");
         try {
             int userId = jwtUtil.validateToken(token);
-            if(userId <= 0) { return false; }
+            if(userId <= 0) { return ResponseEntity.status(400).body(false); }
             Optional<BloodPressureEntity> optional = bloodPressureRepository.findById(bloodPressureId);
             if(optional.isPresent()) {
                 BloodPressureEntity bloodPressureEntity = optional.get();
-                if(bloodPressureEntity.getUserEntity().getUserId() != userId) { return false; }
+                if(bloodPressureEntity.getUserEntity().getUserId() != userId) { return ResponseEntity.status(400).body(false); }
                 bloodPressureEntity.setBloodPressureSystolic(bloodPressureRequestDto.getBloodPressureSystolic());
                 bloodPressureEntity.setBloodPressureDiastolic(bloodPressureRequestDto.getBloodPressureDiastolic());
                 bloodPressureEntity.setBloodPressurePulse(bloodPressureRequestDto.getBloodPressurePulse());
@@ -119,32 +126,32 @@ public class BloodPressureService {
                         bloodPressureEntity.setMeasurementContextEntity(measurementContextEntity);
                     }
                 }
-                return true;
+                return ResponseEntity.status(200).body(true);
             }
-            return false;
+            return ResponseEntity.status(400).body(false);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BloodPressureService.update error!!!");
-            return false;
+            return ResponseEntity.status(400).body(false);
         } finally {
             System.out.println(">> BloodPressureService.update end");
         }
     }
 
     /// 혈압 정보 삭제하기 - D
-    public boolean delete(String token, int bloodPressureId) {
+    public ResponseEntity<Boolean> delete(String token, int bloodPressureId) {
         System.out.println(">> BloodPressureService.delete start");
         int userId = jwtUtil.validateToken(token);
-        if(userId <= 0) { return false; }
+        if(userId <= 0) { return ResponseEntity.status(400).body(false); }
         Optional<BloodPressureEntity> optional = bloodPressureRepository.findById(bloodPressureId);
         if(optional.isPresent()) {
             BloodPressureEntity bloodPressureEntity = optional.get();
-            if(bloodPressureEntity.getUserEntity().getUserId() != userId) { return false; }
+            if(bloodPressureEntity.getUserEntity().getUserId() != userId) { return ResponseEntity.status(400).body(false); }
             bloodPressureRepository.deleteById(bloodPressureId);
-            return true;
+            return ResponseEntity.status(200).body(true);
         }
         System.out.println(">> BloodPressureService.delete end");
-        return false;
+        return ResponseEntity.status(400).body(false);
     }
 
 }

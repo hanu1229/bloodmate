@@ -77,7 +77,6 @@ export default function BloodSugarPage(props) {
                 contextId : item["measurementContextId"],
                 value : item["bloodSugarValue"],
                 bloodSugarId : item["bloodSugarId"]
-                // put : <Typography>테스트</Typography>
             }
             return obj;
         });

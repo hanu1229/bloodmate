@@ -22,8 +22,12 @@ public class BloodPressureResponseDto {
     private int bloodPressurePulse;
     /// 측정일
     private LocalDateTime measuredAt;
+    /// 측정 상황 번호 FK
+    private int measurementContextId;
     /// 측정 상황 코드
     private String measurementContextCode;
+    /// 측정 상황 라벨
+    private String measurementContextLabel;
     ///  회원 번호 FK
     private int userId;
     /// 작성일

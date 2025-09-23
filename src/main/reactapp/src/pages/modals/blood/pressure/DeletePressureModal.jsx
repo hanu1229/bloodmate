@@ -2,14 +2,14 @@ import { Box, Button, Typography } from "@mui/joy";
 import axios from "axios";
 import { serverDomain } from "../../../../ApiDomain";
 
-export default function DeleteSugarModal(props) {
+export default function DeletePressureModal(props) {
 
-    const deleteSugar = async () => {
+    const deletePressure = async () => {
         const answer = confirm("정말 삭제하시겠습니까?");
         if(!answer) { return; }
         try {
             const token = localStorage.getItem("Token");
-            const response = await axios.delete(`${serverDomain}/blood/sugar/${props.rowInfo.bloodSugarId}`, {withCredentials : true, headers : {Authorization : token}});
+            const response = await axios.delete(`${serverDomain}/blood/pressure/${props.rowInfo.bloodPressureId}`, {withCredentials : true, headers : {Authorization : token}});
             if(response.status === 200) {
                 alert("정상적으로 삭제되었습니다.");
                 props.findAll();
@@ -30,7 +30,7 @@ export default function DeleteSugarModal(props) {
                     <Typography sx = {{marginBottom : "4px", color : "red", fontSize : "20px", fontWeight : "bold"}}>※ 데이터가 영구 삭제되어 복구 할 수 없습니다.</Typography>
                 </Box>
             </Box>
-            <Button color = "danger" onClick = {deleteSugar}>삭제하기</Button>
+            <Button color = "danger" onClick = {deletePressure}>삭제하기</Button>
         </Box>
     );
 }

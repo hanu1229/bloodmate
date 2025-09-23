@@ -44,7 +44,9 @@ public class BloodPressureEntity extends BaseTime {
         return BloodPressureResponseDto.builder()
                 .bloodPressureId(this.bloodPressureId).bloodPressureSystolic(this.bloodPressureSystolic).bloodPressureDiastolic(this.bloodPressureDiastolic)
                 .bloodPressurePulse(this.bloodPressurePulse).measuredAt(this.measuredAt)
-                .measurementContextCode(this.measurementContextEntity.getMcCode()).userId(this.userEntity.getUserId())
+                .measurementContextCode(this.measurementContextEntity.getMcCode())
+                .measurementContextId(this.measurementContextEntity.getMcId())
+                .userId(this.userEntity.getUserId())
                 .createdAt(this.getCreatedAt()).updatedAt(this.getUpdatedAt())
                 .build();
     }

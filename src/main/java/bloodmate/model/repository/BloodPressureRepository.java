@@ -13,7 +13,7 @@ import java.util.List;
 public interface BloodPressureRepository extends JpaRepository<BloodPressureEntity, Integer> {
 
     /// 혈압 정보 전체 불러오기 - R
-    @Query(value = "select * from user_blood_pressure where user_id = :userId", nativeQuery = true)
+    @Query(value = "select * from user_blood_pressure where user_id = :userId order by measured_at DESC", nativeQuery = true)
     List<BloodPressureEntity> findByUserIdToBloodPressure(@Param("userId") int userId);
 
     /// 혈압 정보 조건 불러오기 - R

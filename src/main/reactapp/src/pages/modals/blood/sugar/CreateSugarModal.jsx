@@ -1,10 +1,9 @@
-import { Box, Button, IconButton, Input, Option, Select, Typography } from "@mui/joy";
+import { Box, Button, Input, Option, Select, Typography } from "@mui/joy";
 import { btnColor, iconColor, inputFocusColor } from "../../../../styles/commonStyle";
-import { CalendarMonth, CalendarToday, WaterDrop } from "@mui/icons-material";
+import { WaterDrop } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { serverDomain } from "../../../../ApiDomain";
-import { referenceLineClasses } from "@mui/x-charts";
 
 export default function CreateSugarModal(props) {
 
@@ -24,8 +23,6 @@ export default function CreateSugarModal(props) {
         const day = String(now.getDate()).padStart(2, "0");
         const hours = String(now.getHours()).padStart(2, "0");
         const minutes = String(now.getMinutes()).padStart(2, "0");
-        // setDate(`${year}-${month}-${day}`);
-        // setTime(`${hours}:${minutes}`);
         console.log(`${year}-${month}-${day}T${hours}:${minutes}:00`);
     }, []);
 

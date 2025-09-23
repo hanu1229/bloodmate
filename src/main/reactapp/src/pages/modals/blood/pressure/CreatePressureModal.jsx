@@ -1,15 +1,17 @@
 import { Box, Button, Input, Option, Select, Typography } from "@mui/joy";
 import { btnColor, iconColor, inputFocusColor } from "../../../../styles/commonStyle";
-import {  WaterDrop } from "@mui/icons-material";
+import { MonitorHeart } from "@mui/icons-material";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { serverDomain } from "../../../../ApiDomain";
 
-export default function UpdateSugarModal(props) {
+export default function CreatePressureModal(props) {
 
     const inputRef = useRef(null);
 
-    const [sugar, setSugar] = useState("");
+    const [systolic, setSystolic] = useState("");
+    const [diastolic, setDiastolic] = useState("");
+    const [pulse, setPulse] = useState("");
     const [date, setDate] = useState("");
     const [time, setTime] = useState("");
     const [context, setContext] = useState(null);
@@ -17,11 +19,13 @@ export default function UpdateSugarModal(props) {
 
     useEffect(() => { 
         measureFindAll();
-        console.log(props.rowInfo);
-        setSugar(props.rowInfo.value);
-        setDate(props.rowInfo.measureDate);
-        setTime(props.rowInfo.measureTime);
-        setContext(props.rowInfo.contextId);
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        console.log(`${year}-${month}-${day}T${hours}:${minutes}:00`);
     }, []);
 
     const measureFindAll = async () => {
@@ -33,25 +37,29 @@ export default function UpdateSugarModal(props) {
         }
     }
 
-    const updateSugar = async () => {
+    const createPressure = async () => {
         const measuredAt = `${date}T${time}:00`;
-        // alert(`측정일 : ${date}\n측정 시간 : ${time}\n측정 상황 : ${context}\n혈당 수치 : ${sugar}\n${measuredAt}`);
+        // alert(`측정일 : ${date}\n측정 시간 : ${time}\n측정 상황 : ${context}\n맥박 : ${pulse}\n수축 : ${systolic}\n이완 : ${diastolic}`);
         try {
             const token = localStorage.getItem("Token");
-            const info = {bloodSugarValue : sugar, measurementContextId : context, measuredAt : measuredAt};
-            const response = await axios.put(`${serverDomain}/blood/sugar/${props.rowInfo.bloodSugarId}`, info, {withCredentials : true, headers : {Authorization : token}});
-            if(response.status === 200) {
-                alert("정상적으로 수정되었습니다.");
+            const info = {
+                bloodPressureSystolic : systolic, bloodPressureDiastolic : diastolic, bloodPressurePulse : pulse, 
+                measuredAt : measuredAt, measurementContextId : context
+            };
+            const response = await axios.post(`${serverDomain}/blood/pressure`, info, {withCredentials : true, headers : {Authorization : token}});
+            if(response.status === 201) {
+                alert("정상적으로 추가되었습니다.");
                 props.findAll();
                 props.onClose();
             }
         } catch(e) {
             if(e.response.status === 400) {
-                alert("정상적으로 수정하지 못했습니다.");
+                alert("정상적으로 추가하지 못했습니다.");
             }
         }
     }
 
+    /** 측정일 */
     const changeDate = (event) => {
         // 숫자만 남기는 정규표현식 방식
         let value = event.target.value.replace(/\D/g, "");
@@ -64,7 +72,7 @@ export default function UpdateSugarModal(props) {
         }
         setDate(value);
     }
-
+    /** 측정 시간 */
     const changeTime = (event) => {
         // 숫자만 남기는 정규표현식 방식
         let value = event.target.value.replace(/\D/g, "");
@@ -75,6 +83,21 @@ export default function UpdateSugarModal(props) {
             value = value.substring(0, 2) + ":" + value.substring(2, 4);
         }
         setTime(value);
+    }
+    /** 맥박 수치 */
+    const changePulse = (event) => {
+        const value = event.target.value.replace(/\D/g, "");
+        setPulse(value);
+    }
+    /** 수축 수치 */
+    const changeSystolic = (event) => {
+        const value = event.target.value.replace(/\D/g, "");
+        setSystolic(value);
+    }
+    /** 이완 수치 */
+    const changeDiastolic = (event) => {
+        const value = event.target.value.replace(/\D/g, "");
+        setDiastolic(value);
     }
 
     return (
@@ -99,12 +122,6 @@ export default function UpdateSugarModal(props) {
                         value = {context} 
                         onChange = {(event, value) => { setContext(value); console.log(value); }} 
                         placeholder = "선택해주세요"
-                        slotProps = {{
-                            listbox: {
-                                placement: 'bottom-start',
-                                sx: { maxHeight: 320, overflow: 'auto' },
-                            },
-                        }}
                         sx = {{...inputFocusColor}}
                     >
                         {
@@ -116,19 +133,46 @@ export default function UpdateSugarModal(props) {
                 </Box>
                 {/* 혈당 수치 */}
                 <Box sx = {{width : "48%"}}>
-                    <Typography sx = {{marginLeft : "4px", marginBottom : "4px"}}>혈당 수치</Typography>
+                    <Typography sx = {{marginLeft : "4px", marginBottom : "4px"}}>맥박 수치</Typography>
                     <Input 
                         type = "text"
-                        value = {sugar}
-                        onChange = {(event) => { setSugar(event.target.value); }} 
-                        placeholder = "혈당 수치"
-                        startDecorator = {<WaterDrop sx = {{...iconColor}} />} 
-                        endDecorator = {"mg/dL"}
+                        value = {pulse}
+                        onChange = {(event) => { setPulse(event.target.value); }} 
+                        placeholder = "맥박 수치"
+                        startDecorator = {<MonitorHeart sx = {{...iconColor}} />} 
+                        endDecorator = {"회"}
                         sx = {{...inputFocusColor}}
                     />
                 </Box>
             </Box>
-            <Button onClick = {updateSugar} sx = {{...btnColor, marginTop : "12px"}}>수정하기</Button>
+            {/* 수축 수치, 이완 수치 */}
+            <Box sx = {{ marginBottom : "12px", display : "flex", justifyContent : "space-between"}}>
+                <Box sx = {{width : "48%"}}>
+                    {/* 수축 수치 */}
+                    <Typography sx = {{marginLeft : "4px", marginBottom : "4px"}}>수축 수치</Typography>
+                    <Input
+                        type = "text"
+                        value = {systolic} 
+                        onChange = {changeSystolic} 
+                        placeholder = "수축 수치"
+                        endDecorator = {"mmHg"}
+                        sx = {{...inputFocusColor}}
+                    />
+                </Box>
+                {/* 이완 수치 */}
+                <Box sx = {{width : "48%"}}>
+                    <Typography sx = {{marginLeft : "4px", marginBottom : "4px"}}>이완 수치</Typography>
+                    <Input 
+                        type = "text"
+                        value = {diastolic}
+                        onChange = {changeDiastolic} 
+                        placeholder = "이완 수치"
+                        endDecorator = {"mmHg"}
+                        sx = {{...inputFocusColor}}
+                    />
+                </Box>
+            </Box>
+            <Button onClick = {createPressure} sx = {{...btnColor, marginTop : "12px"}}>추가하기</Button>
         </Box>
     );
 }
