@@ -75,7 +75,7 @@ public class BloodPressureService {
             }).toList();
         } catch(Exception e) {
             System.out.println(">> " + e);
-            System.out.println(">> BloodPressureService.findAll error!!!");
+            System.out.println(">> BloodPressureService.findAll error!!!!");
             return null;
         } finally {
             System.out.println(">> BloodPressureService.findAll end");
