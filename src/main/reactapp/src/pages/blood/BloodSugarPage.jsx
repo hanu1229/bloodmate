@@ -90,7 +90,6 @@ export default function BloodSugarPage(props) {
         { 
             field: "measureDate", 
             headerName: "측정일", 
-            // width: 120, 
             flex : 1,
             headerAlign : "center",
             align : "center", 
@@ -100,7 +99,6 @@ export default function BloodSugarPage(props) {
         {
             field: "measureTime",
             headerName: "측정 시간",
-            // width: 150,
             flex : 1,
             headerAlign : "center",
             align : "center", 
@@ -111,7 +109,6 @@ export default function BloodSugarPage(props) {
         {
             field: "contextLabel",
             headerName: "측정 상황",
-            // width: 150,
             flex : 1,
             headerAlign : "center",
             align : "center", 
@@ -123,7 +120,6 @@ export default function BloodSugarPage(props) {
             field: "value",
             headerName: "측정값(혈당값)",
             type: 'number',
-            // width: 110,
             flex : 1,
             headerAlign : "center",
             align : "center", 
@@ -195,13 +191,9 @@ export default function BloodSugarPage(props) {
 
     return (
         <>
-            <Box sx = {{boxSizing : "border-box", padding : "24px", backgroundColor : "inherit", width : "100%"}}>
+            <Box sx = {{boxSizing : "border-box", padding : "40px", backgroundColor : "inherit", width : "100%"}}>
                 <Box sx = {{display : "flex", flexDirection : "column", minHeight : 0}}>
-                    {/* <Typography>혈당</Typography> */}
-                    {/* <Typography>{JSON.stringify(bloodSugarInfo)}</Typography> */}
-                    {/* <Box sx = {{height : "32px"}}></Box> */}
                     {/* <Box sx = {{height : "320px"}}></Box> */}
-                    {/* <Box sx = {{height : "32px"}}></Box> */}
                     {/* 가이드 */}
                     <Box onClick = {() => {setSugarGuide(!sugarGuide);}} sx = {{display : "flex", alignItems : "center", "&:hover" : {cursor : "pointer", fontWeight : "bold"}}}>
                         {sugarGuide ? <ArrowDropDown /> : <ArrowRight />}

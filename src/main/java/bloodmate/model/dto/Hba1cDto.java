@@ -17,6 +17,8 @@ public class Hba1cDto {
     private BigDecimal hba1cValue;
     /// 측정일
     private LocalDateTime measuredAt;
+    ///  검사 예정일
+    private LocalDateTime nextTestAt;
     /// 작성일
     private LocalDateTime createdAt;
     /// 수정일
@@ -27,7 +29,7 @@ public class Hba1cDto {
     /// Dto --> Entity
     public Hba1cEntity toEntity() {
         return Hba1cEntity.builder()
-                .hba1cId(this.hba1cId).hba1cValue(this.hba1cValue).measuredAt(this.measuredAt)
+                .hba1cId(this.hba1cId).hba1cValue(this.hba1cValue).measuredAt(this.measuredAt).nextTextAt(this.nextTestAt)
                 .build();
     }
 

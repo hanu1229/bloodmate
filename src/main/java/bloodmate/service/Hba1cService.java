@@ -8,6 +8,7 @@ import bloodmate.model.repository.UserRepository;
 import bloodmate.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class Hba1cService {
     private final JwtUtil jwtUtil;
 
     /// 당화혈색소 정보 저장 - C
-    public boolean create(String token, Hba1cDto hba1cDto) {
+    public ResponseEntity<Boolean> create(String token, Hba1cDto hba1cDto) {
         System.out.println(">> Hba1cService.create start");
         try {
             int userId = jwtUtil.validateToken(token);
@@ -38,43 +39,44 @@ public class Hba1cService {
                     hba1cEntity = hba1cRepository.save(hba1cEntity);
                     if(hba1cEntity.getHba1cId() > 0) {
                         System.out.println(">> hba1cEntity = " + hba1cEntity);
-                        return true;
+                        return ResponseEntity.status(201).body(true);
                     }
                 }
             }
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> Hba1cService.create error!!!");
-            return false;
+            return ResponseEntity.status(201).body(false);
         } finally {
             System.out.println(">> Hba1cService.create end");
         }
-        return false;
+        return ResponseEntity.status(201).body(false);
     }
 
     /// 당화혈색소 정보 전체 불러오기 - R
-    public List<Hba1cDto> findAll(String token) {
+    public ResponseEntity<List<Hba1cDto>> findAll(String token) {
         System.out.println(">> Hba1cService.findAll start");
         try {
             int userId = jwtUtil.validateToken(token);
             if(userId > 0) {
                 List<Hba1cEntity> hba1cEntityList = hba1cRepository.findByUserIdToHba1c(userId);
                 System.out.println(">> hba1cEntityList = " + hba1cEntityList);
+                List<Hba1cDto> result = hba1cEntityList.stream().map(Hba1cEntity::toDto).toList();
                 // 스트림을 이용한 변환
-                return hba1cEntityList.stream().map(Hba1cEntity::toDto).toList();
+                return ResponseEntity.status(200).body(result);
             }
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> Hba1cService.findAll error!!!");
-            return null;
+            return ResponseEntity.status(400).body(null);
         } finally {
             System.out.println(">> Hba1cService.findAll end");
         }
-        return null;
+        return ResponseEntity.status(400).body(null);
     }
 
     /// 당화혈색소 정보 수정하기 - U
-    public boolean update(String token, Hba1cDto hba1cDto, int hba1cId) {
+    public ResponseEntity<Boolean> update(String token, Hba1cDto hba1cDto, int hba1cId) {
         System.out.println(">> Hba1cService.update start");
         try {
             int userId = jwtUtil.validateToken(token);
@@ -82,31 +84,32 @@ public class Hba1cService {
                 Optional<Hba1cEntity> optional = hba1cRepository.findById(hba1cId);
                 if(optional.isPresent()) {
                     Hba1cEntity hba1cEntity = optional.get();
-                    if(hba1cEntity.getUserEntity().getUserId() != userId) { return false; }
+                    if(hba1cEntity.getUserEntity().getUserId() != userId) { return ResponseEntity.status(400).body(false); }
                     hba1cEntity.setHba1cValue(hba1cDto.getHba1cValue());
                     hba1cEntity.setMeasuredAt(hba1cDto.getMeasuredAt());
+                    hba1cEntity.setNextTextAt(hba1cDto.getNextTestAt());
                     System.out.println(">> hba1cEntity = " + hba1cEntity);
-                    return true;
+                    return ResponseEntity.status(200).body(true);
                 }
             }
-            return false;
+            return ResponseEntity.status(400).body(false);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> Hba1cService.update error!!!");
-            return false;
+            return ResponseEntity.status(400).body(false);
         } finally {
             System.out.println(">> Hba1cService.update end");
         }
     }
 
     /// 당화혈색소 정보 삭제하기 - D
-    public boolean delete(String token, int hba1cId) {
+    public ResponseEntity<Boolean> delete(String token, int hba1cId) {
         System.out.println(">> Hba1cService.delete start");
         int userId = jwtUtil.validateToken(token);
-        if(userId <= 0) { return false; }
+        if(userId <= 0) { return ResponseEntity.status(400).body(false); }
         boolean result = hba1cRepository.deleteByHba1cIdAndUserId(hba1cId, userId) > 0;
         System.out.println(">> Hba1cService.delete end");
-        return result;
+        return ResponseEntity.status(200).body(result);
     }
 
 }

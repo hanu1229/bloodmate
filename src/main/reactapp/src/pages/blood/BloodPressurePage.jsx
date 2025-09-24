@@ -1,9 +1,9 @@
-import { Box, Button, IconButton, Table, Typography } from "@mui/joy";
+import { Box, Button, Typography } from "@mui/joy";
 import useCustomNavigate from "../../useCustomNavigate";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { serverDomain } from "../../ApiDomain";
-import { DataGrid, gridPaginatedVisibleSortedGridRowEntriesSelector, useGridApiRef } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { ArrowDropDown, ArrowDropUp, ArrowRight } from "@mui/icons-material";
 import { LineChart } from "@mui/x-charts";
 import { CustomModal } from "../modals/CustomModal";
@@ -15,7 +15,7 @@ import CreatePressureModal from "../modals/blood/pressure/CreatePressureModal";
 export default function BloodPressurePage(props) {
     const checkLogin = useCustomNavigate();
 
-    const [bloodSugarInfo, setBloodSugarInfo] = useState([]);
+    const [bloodPressureInfo, setBloodPressureInfo] = useState([]);
     const [createModal, setCreateModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
@@ -48,7 +48,7 @@ export default function BloodPressurePage(props) {
         });
         console.log("temp");
         console.log(temp);
-        setBloodSugarInfo(temp);
+        setBloodPressureInfo(temp);
     }
 
      const columns = [
@@ -164,7 +164,7 @@ export default function BloodPressurePage(props) {
 
     return (
         <>
-            <Box sx = {{boxSizing : "border-box", padding : "24px", backgroundColor : "inherit", width : "100%"}}>
+            <Box sx = {{boxSizing : "border-box", padding : "40px", backgroundColor : "inherit", width : "100%"}}>
                 <Box sx = {{display : "flex", flexDirection : "column", minHeight : 0}}>
                     {/* <Box sx = {{height : "320px"}}></Box> */}
                     {/* 가이드 */}
@@ -232,7 +232,7 @@ export default function BloodPressurePage(props) {
                     <Box sx = {{display : "flex", width : "100%", height : "484px", alignItems : "start"}}>
                         <DataGrid
                             // apiRef = {apiRef}
-                            rows = {bloodSugarInfo}
+                            rows = {bloodPressureInfo}
                             columns = {columns}
                             rowHeight = {40}
                             columnHeaderHeight = {40}

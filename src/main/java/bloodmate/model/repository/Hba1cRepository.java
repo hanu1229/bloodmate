@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface Hba1cRepository extends JpaRepository<Hba1cEntity, Integer> {
 
     /// 당화혈색소 정보 전체 불러오기 - R
-    @Query(value = "select * from user_hba1c where user_id = :userId", nativeQuery = true)
+    @Query(value = "select * from user_hba1c where user_id = :userId order by measured_at DESC", nativeQuery = true)
     List<Hba1cEntity> findByUserIdToHba1c(@Param("userId") int userId);
 
     /// 당화혈색소 정보 삭제하기 - D
