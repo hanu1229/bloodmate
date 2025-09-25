@@ -4,6 +4,7 @@ import bloodmate.model.dto.board.BoardRequestDto;
 import bloodmate.model.dto.board.BoardResponseDto;
 import bloodmate.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,20 +38,20 @@ public class BoardController {
 
     /// 게시물 카테고리별 전체 출력 - R
     @GetMapping("/category/{boardCategoryTitle}")
-    public List<BoardResponseDto> findAllCategory(@PathVariable("boardCategoryTitle") String boardCategoryTitle) {
+    public ResponseEntity<List<BoardResponseDto>> findAllCategory(@PathVariable("boardCategoryTitle") String boardCategoryTitle) {
         System.out.println(">> BoardController.findAllCategory start");
         System.out.println(">> boardCategoryTitle = " + boardCategoryTitle);
-        List<BoardResponseDto> result = boardService.findAllCategory(boardCategoryTitle);
+        ResponseEntity<List<BoardResponseDto>> result = boardService.findAllCategory(boardCategoryTitle);
         System.out.println(">> BoardController.findAllCategory end\n");
         return result;
     }
 
     /// 게시물 상세 보기 - R
     @GetMapping("{boardPostId}")
-    public BoardResponseDto findDetail(@PathVariable("boardPostId") int boardPostId) {
+    public ResponseEntity<BoardResponseDto> findDetail(@PathVariable("boardPostId") int boardPostId) {
         System.out.println(">> BoardController.findDetail start");
         System.out.println(">> boardPostId = " + boardPostId);
-        BoardResponseDto result = boardService.findDetail(boardPostId);
+        ResponseEntity<BoardResponseDto> result = boardService.findDetail(boardPostId);
         System.out.println(">> BoardController.findDetail end\n");
         return result;
     }

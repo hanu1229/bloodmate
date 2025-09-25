@@ -1,7 +1,9 @@
+import { Box } from "@mui/joy";
+
 export default function BoardPage(props) {
     return(
-        <>
-            <div>게시판 페이지</div>
-        </>
+        <Box sx = {{boxSizing : "border-box", padding : "40px", backgroundColor : "inherit", width : "100%"}}>
+            게시판
+        </Box>
     );
 }

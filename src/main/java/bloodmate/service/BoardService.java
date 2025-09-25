@@ -13,6 +13,7 @@ import bloodmate.model.repository.UserRepository;
 import bloodmate.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -68,24 +69,25 @@ public class BoardService {
     }
 
     /// 게시물 카테고리별 전체 출력 - R
-    public List<BoardResponseDto> findAllCategory(String boardCategoryTitle) {
+    public ResponseEntity<List<BoardResponseDto>> findAllCategory(String boardCategoryTitle) {
         System.out.println(">> BoardService.findAllCategory start");
         try {
             BoardCategoryEntity boardCategoryEntity = boardCategoryRepository.findByTitle(boardCategoryTitle);
             if(boardCategoryEntity == null) { return null; }
             List<BoardEntity> boardEntityList = boardRepository.findAllCategory(boardCategoryEntity.getBoardCategoryId());
-            return boardEntityList.stream().map(BoardEntity::toDto).toList();
+            List<BoardResponseDto> result = boardEntityList.stream().map(BoardEntity::toDto).toList();
+            return ResponseEntity.status(200).body(result);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BoardService.findAllCategory error!!!");
-            return null;
+            return ResponseEntity.status(400).body(null);
         } finally {
             System.out.println(">> BoardService.findAllCategory end");
         }
     }
 
     /// 게시물 상세 보기 - R
-    public BoardResponseDto findDetail(int boardPostId) {
+    public ResponseEntity<BoardResponseDto> findDetail(int boardPostId) {
         System.out.println(">> BoardService.findDetail start");
         try {
             if(boardRepository.existBoardPostStateIsNormal(boardPostId) <= 0) { return null; }
@@ -98,13 +100,13 @@ public class BoardService {
                 List<CommentDto> commentDtoList = commentEntityList.stream().map(CommentEntity::toDto).toList();
                 boardResponseDto.setCommentDtoList(commentDtoList);
                 System.out.println(">> boardDto = " + boardResponseDto);
-                return boardResponseDto;
+                return ResponseEntity.status(200).body(boardResponseDto);
             }
-            return null;
+            return ResponseEntity.status(400).body(null);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BoardService.findDetail error!!!");
-            return null;
+            return ResponseEntity.status(400).body(null);
         } finally {
             System.out.println(">> BoardService.findDetail end");
         }
