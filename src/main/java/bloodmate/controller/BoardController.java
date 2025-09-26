@@ -1,5 +1,6 @@
 package bloodmate.controller;
 
+import bloodmate.model.dto.CommentDto;
 import bloodmate.model.dto.board.BoardRequestDto;
 import bloodmate.model.dto.board.BoardResponseDto;
 import bloodmate.service.BoardService;

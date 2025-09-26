@@ -96,7 +96,7 @@ public class BoardService {
             if(optional.isPresent()) {
                 BoardEntity boardEntity = optional.get();
                 BoardResponseDto boardResponseDto = boardEntity.toDto();
-                List<CommentEntity> commentEntityList = commentRepository.findByBoardPostId(boardPostId);
+                List<CommentEntity> commentEntityList = commentRepository.findByBoardPostIdASC(boardPostId);
                 List<CommentDto> commentDtoList = commentEntityList.stream().map(CommentEntity::toDto).toList();
                 boardResponseDto.setCommentDtoList(commentDtoList);
                 System.out.println(">> boardDto = " + boardResponseDto);
@@ -155,5 +155,6 @@ public class BoardService {
         System.out.println(">> BoardService.delete end");
         return false;
     }
+
 
 }

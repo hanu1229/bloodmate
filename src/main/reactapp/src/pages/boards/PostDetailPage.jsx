@@ -2,32 +2,132 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { serverDomain } from "../../ApiDomain";
 import { useEffect, useState } from "react";
-import { Box, Button, Card, CardContent, Textarea, Typography } from "@mui/joy";
+import { Box, Button, Card, CardContent, Dropdown, IconButton, Menu, MenuButton, MenuItem, Textarea, Typography } from "@mui/joy";
 import { btnColor, inputFocusColor } from "../../styles/commonStyle";
+import { MoreHoriz, Refresh } from "@mui/icons-material";
 
 export default function PostDetailPage(props) {
 
     const {id} = useParams();
 
+    /// 게시물 정보
     const [info, setInfo] = useState({});
+    /// 댓글 목록
+    const [comments, setComments] = useState([]);
+    /// 댓글 추가를 위한 함수
+    const [comment, setComment] = useState("");
+    /// 게시물의 최신 수정일
     const [isUpdateAt, setIsUpdatedAt] = useState(false);
+    /// 댓글이 존재하는지 구분하는 함수
     const [isComment, setIsComment] = useState(false);
+    /// 댓글 수정을 위한 함수
+    const [changeComment, setChangeComment] = useState("");
+    /// 댓글 등록순
+    const [isOld, setIsOld] = useState(true);
+    /// 댓글 최신순
+    const [isNew, setIsNew] = useState(false);
+    /// 댓글 수정창
+    const [commentInput, setCommentInput] = useState();
 
     const bottomPx = "12px";
 
     useEffect(() => { findNotice(); }, [id]);
+    useEffect(() => { findComments(); }, [isOld, isNew]);
 
     const findNotice = async () => {
         try {
             const response = await axios.get(`${serverDomain}/board/${id}`, {withCredentials : true});
             if(response.status === 200) {
-                console.log(response.data);
-                response.data.updatedAt ? setIsUpdatedAt(true) : setIsUpdatedAt(false);
-                response.data.commentDtoList.length !== 0 ? setIsComment(true) : setIsComment(false);
-                setInfo(response.data);
+                const commentInfo = response.data["commentDtoList"];
+                let PostInfo = response.data;
+                delete PostInfo.commentDtoList;
+                console.log(PostInfo);
+                console.log(commentInfo);
+                PostInfo.updatedAt ? setIsUpdatedAt(true) : setIsUpdatedAt(false);
+                commentInfo.length !== 0 ? setIsComment(true) : setIsComment(false);
+                setInfo(PostInfo);
+                setComments(commentInfo);
             }
         } catch(e) {
             if(e.response.status === 400) { alert("정보를 가져오는데 실패했습니다."); }
+        }
+    }
+    /// 댓글 새로고침
+    const findComments = async () => {
+        try {
+            let sort;
+            if(isNew === true) { sort = "DESC"; console.log("DESC"); } else if(isOld === true) { sort = "ASC"; console.log("ASC"); }
+            const response = await axios.get(`${serverDomain}/board/comment/${id}?sort=${sort}`, {withCredentials : true});
+            if(response.status === 200) {
+                console.log(response.data);
+                setComments(response.data);
+            }
+        } catch(e) {
+            if(e.response.status === 400) {
+                console.log("새로운 댓글이 없습니다.");
+            }
+        }
+    }
+    /// 댓글 추가하기
+    const createComment = async () => {
+        try {
+            const token = localStorage.getItem("Token");
+            const obj = {boardCommentContent : comment}
+            const response = await axios.post(`${serverDomain}/board/comment/${id}`, obj, {withCredentials : true, headers : {Authorization : token}});
+            if(response.status === 201) {
+                setComment("");
+                findComments();
+            }
+        } catch(e) {
+            if(e.response.status === 400) { alert("정상적으로 처리하지 못했습니다."); }
+        }
+    }
+    /// 댓글 수정하기
+    const updateComment = async (boardCommentId) => {
+        try {
+            const token = localStorage.getItem("Token");
+            const obj = {boardCommentContent : changeComment}
+            const response = await axios.put(`${serverDomain}/board/comment/${boardCommentId}`, obj, {withCredentials : true, headers : {Authorization : token}});
+            if(response.status === 200) {
+                setChangeComment("");
+                setCommentInput(0);
+                findComments();
+            }
+        } catch(e) {
+            if(e.response.status === 400) {
+                alert("정상적으로 처리하지 못했습니다.");
+            }
+        }
+    }
+    /// 댓글 수정을 위한 TextArea
+    const openTextArea = async (boardCommentId) => {
+        const token = localStorage.getItem("Token");
+        if(token == null) { alert("본인이 작성한 댓글이 아닙니다."); return; }
+        try { 
+            const response = await axios.get(`${serverDomain}/board/comment/check-writer/${boardCommentId}`, {withCredentials : true, headers : {Authorization : token}});
+            if(response.status === 200) {
+                setCommentInput(boardCommentId);
+            }
+        } catch(e) {
+            console.log("여기 들어오기는 하니?");
+            if(e.response.status === 400) {
+                console.log("여기 들어오기는 하니??");
+                alert("본인이 작성한 댓글이 아닙니다.");
+            }
+        }
+    }
+    /// 댓글 삭제하기
+    const deleteComment = async (boardCommentId) => {
+        const answer = confirm("정말 삭제하시겠습니까?");
+        if(!answer) { return; }
+        try {
+            const token = localStorage.getItem("Token");
+            const response = await axios.delete(`${serverDomain}/board/comment/${boardCommentId}`, {withCredentials : true, headers : {Authorization : token}});
+            if(response.status === 200) {
+                findComments();
+            }
+        } catch(e) {
+            if(e.response.status === 400) { alert("정상적으로 처리하지 못했습니다."); }
         }
     }
 
@@ -47,14 +147,21 @@ export default function PostDetailPage(props) {
                     {info.boardPostContent}
                 </Box>
                 <Box sx = {{padding : "12px 8px", borderTop : "2px solid grey"}}>
-                    <Typography sx = {{paddingBottom : bottomPx, fontSize : "20px", fontWeight : "bold"}}>{isComment ? "댓글" : null}</Typography>
-                    {/* {JSON.stringify(isComment ? info.commentDtoList : null)} */}
+                    <Box sx = {{paddingBottom : bottomPx, display : "flex", alignItems : "center"}}>
+                        <Typography sx = {{fontSize : "20px", fontWeight : "bold"}}>댓글</Typography>
+                        <IconButton onClick = {findComments}>
+                            <Refresh sx = {{width : "20px", height : "20px"}} />
+                        </IconButton>
+                    </Box>
+                    {/* {JSON.stringify(isComment ? comment : null)} */}
                     <Textarea 
+                    value = {comment}
+                    onChange = {(event) => { setComment(event.target.value); }}
                     minRows = {4}
                     maxRows = {6}
                     endDecorator = {
                         <Box sx = {{textAlign : "center"}}>
-                            <Button sx = {{...btnColor, borderRadius : "4px"}}>추가하기</Button>
+                            <Button onClick = {createComment} sx = {{...btnColor, borderRadius : "4px"}}>추가하기</Button>
                         </Box>
                     }
                     sx = {{
@@ -66,15 +173,57 @@ export default function PostDetailPage(props) {
                         "& .MuiTextarea-endDecorator" : {margin : "0px", marginTop : "12px", display : "flex", justifyContent : "end"}
                     }} 
                     />
+                    <Box sx = {{marginBottom : "12px", display : "flex", alignItem : "center"}}>
+                        <Typography onClick = {() => { setIsNew(false); setIsOld(true); }} sx = {{color : isOld ? "black" : "gray", cursor : "pointer"}}>등록순</Typography>
+                        <Typography sx = {{margin : "0px 6px"}}>│</Typography>
+                        <Typography onClick = {() => { setIsOld(false); setIsNew(true); }} sx = {{color : isNew ? "black" : "gray", cursor : "pointer"}}>최신순</Typography>
+                    </Box>
                     <Box>
                         {
-                            isComment ? info.commentDtoList.map((item) => (
-                                <Box sx = {{marginBottom : bottomPx, paddingBottom : bottomPx, display : "flex", flexDirection : "column", borderBottom : "1px solid grey"}}>
-                                    <Typography>{item.userNickname}</Typography>
-                                    <Typography>{item.boardCommentContent}</Typography>
-                                    <Typography>{item.updatedAt.split("T")[0]}</Typography>
-                                </Box>
-                            )) : null
+                            isComment ? comments.map((item) => {
+                                const [date, time] = item.updatedAt.split("T");
+                                const [hour, minute, second] = time.split(":");
+                                return (
+                                <Box key = {item.boardCommentId} sx = {{marginBottom : bottomPx, paddingBottom : bottomPx, display : "flex", flexDirection : "column", borderBottom : "1px solid grey"}}>
+                                    <Box sx = {{display : "flex", flexDirection : "column", justifyContent : "space-between"}}>
+                                        {commentInput === item.boardCommentId ? 
+                                            <Textarea
+                                                autoFocus
+                                                value = {changeComment}
+                                                onChange = {(event) => { setChangeComment(event.target.value); }}
+                                                minRows={4}
+                                                maxRows={6}
+                                                endDecorator = {
+                                                    <Box sx = {{display : "flex", justifyContent : "end"}}>
+                                                        <Button onClick = {() => { setChangeComment(""); setCommentInput(0); }} color = "neutral" sx = {{borderRadius : "4px", marginRight : "12px"}}>취소하기</Button>
+                                                        <Button onClick = {() => { updateComment(item.boardCommentId); }} sx = {{...btnColor, borderRadius : "4px"}}>수정하기</Button>
+                                                    </Box>
+                                            }
+                                                sx = {{
+                                                    ...inputFocusColor,
+                                                    padding : "12px",
+                                                    marginBottom : bottomPx,
+                                                    borderRadius : "4px",
+                                                    "& .MuiTextarea-textarea" : {padding : "0px"},
+                                                    "& .MuiTextarea-endDecorator" : {margin : "0px", marginTop : "12px", display : "flex", justifyContent : "end"}
+                                                }} 
+                                            /> : ""
+                                        }
+                                        <Box sx = {{display : "flex", justifyContent : "space-between"}}>
+                                            <Typography sx = {{marginBottom : "8px", fontWeight : "bold"}}>{item.userNickname}</Typography>
+                                            <Dropdown>
+                                                <MenuButton variant = "plain"><MoreHoriz/></MenuButton>
+                                                <Menu>
+                                                    <MenuItem onClick = {() => { openTextArea(item.boardCommentId); }}>수정</MenuItem>
+                                                    <MenuItem onClick = {() => { deleteComment(item.boardCommentId); }}>삭제</MenuItem>
+                                                </Menu>
+                                            </Dropdown>
+                                        </Box>
+                                    </Box>
+                                    <Typography sx = {{marginBottom : "8px"}}>{item.boardCommentContent}</Typography>
+                                    <Typography>{`${date} ${hour}:${minute}`}</Typography>
+                                </Box>);
+                            }) : null
                         }
                     </Box>
                 </Box>

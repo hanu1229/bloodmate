@@ -1,6 +1,7 @@
 package bloodmate.service;
 
 import bloodmate.model.dto.CommentDto;
+import bloodmate.model.entity.BoardEntity;
 import bloodmate.model.entity.CommentEntity;
 import bloodmate.model.entity.UserEntity;
 import bloodmate.model.repository.BoardRepository;
@@ -9,8 +10,11 @@ import bloodmate.model.repository.UserRepository;
 import bloodmate.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,64 +29,108 @@ public class CommentService {
     private final JwtUtil jwtUtil;
 
     /// 댓글 작성 - C
-    public boolean create(String token, CommentDto commentDto, int boardPostId) {
+    public ResponseEntity<Boolean> create(String token, CommentDto commentDto, int boardPostId) {
         System.out.println(">> CommentService.create start");
         try {
             int userId = jwtUtil.validateToken(token);
-            if(userId <= 0) { return false; }
+            if(userId <= 0) { return ResponseEntity.status(400).body(false); }
             commentDto.setBoardCommentState(1);
             CommentEntity commentEntity = commentDto.toEntity();
             commentEntity.setUserEntity(userRepository.findById(userId).orElse(null));
             commentEntity.setBoardEntity(boardRepository.findById(boardPostId).orElse(null));
             commentEntity = commentRepository.save(commentEntity);
-            if(commentEntity.getBoardCommentId() <= 0) { return false; }
+            if(commentEntity.getBoardCommentId() <= 0) { return ResponseEntity.status(400).body(false); }
             System.out.println(">> commentEntity = " + commentEntity);
-            return true;
+            return ResponseEntity.status(201).body(true);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> CommentService.create error!!!");
-            return false;
+            return ResponseEntity.status(400).body(false);
         } finally {
             System.out.println(">> CommentService.create end");
         }
     }
 
+    /// 댓글 출력 - R
+    public ResponseEntity<List<CommentDto>> findComment(int boardPostId, String sort) {
+        System.out.println(">> CommentService.findComment start");
+        try {
+            List<CommentEntity> entityList;
+            if(sort.equals("DESC")) {
+                entityList = commentRepository.findByBoardPostIdDESC(boardPostId);
+            } else {
+                entityList = commentRepository.findByBoardPostIdASC(boardPostId);
+            }
+            List<CommentDto> dtoList = entityList.stream().map(CommentEntity::toDto).toList();
+            return ResponseEntity.status(200).body(dtoList);
+        } catch(Exception e) {
+            System.out.println(">> " + e);
+            System.out.println(">> CommentService.findComment error!!!");
+            return ResponseEntity.status(400).body(null);
+        } finally {
+            System.out.println(">> CommentService.findComment end");
+        }
+    }
+
     /// 댓글 수정 - U
-    public boolean update(String token, CommentDto commentDto, int boardPostId, int boardCommentId) {
+    public ResponseEntity<Boolean> update(String token, CommentDto commentDto, int boardCommentId) {
         System.out.println(">> CommentService.update start");
         try {
             int userId = jwtUtil.validateToken(token);
-            if(userId <= 0) { return false; }
-            Optional<CommentEntity> optional = commentRepository.updateByComment(userId, boardPostId, boardCommentId);
+            if(userId <= 0) { return ResponseEntity.status(400).body(false); }
+            Optional<CommentEntity> optional = commentRepository.updateByComment(userId, boardCommentId);
             if(optional.isPresent()) {
                 CommentEntity commentEntity = optional.get();
                 commentEntity.setBoardCommentContent(commentDto.getBoardCommentContent());
                 System.out.println(">> commentEntity = " + commentEntity);
-                return true;
+                return ResponseEntity.status(200).body(true);
             }
-            return false;
+            return ResponseEntity.status(400).body(false);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> CommentService.update error!!!");
-            return false;
+            return ResponseEntity.status(400).body(false);
         } finally {
             System.out.println(">> CommentService.update end");
         }
     }
 
     /// 댓글 삭제 - D
-    public boolean delete(String token, int boardCommentId) {
+    public ResponseEntity<Boolean> delete(String token, int boardCommentId) {
         System.out.println(">> CommentService.delete start");
         int userId = jwtUtil.validateToken(token);
-        if(userId <= 0) { return false; }
+        if(userId <= 0) { return ResponseEntity.status(400).body(false); }
         Optional<CommentEntity> optional = commentRepository.deleteByComment(userId, boardCommentId);
         if(optional.isPresent()) {
             CommentEntity commentEntity = optional.get();
             commentEntity.setBoardCommentState(0);
-            return true;
+            System.out.println("하이요??");
+            return ResponseEntity.status(200).body(true);
         }
         System.out.println(">> CommentService.delete end");
-        return false;
+        return ResponseEntity.status(400).body(false);
     }
 
+    /// 댓글 작성자 확인 - R
+    public ResponseEntity<Boolean> findWriter(String token, int boardCommentId) {
+        System.out.println(">> CommentService.findWriter start");
+        try {
+            int userId = jwtUtil.validateToken(token);
+            if(userId <= 0) { return ResponseEntity.status(400).body(false); }
+            Optional<CommentEntity> commentOptional = commentRepository.findById(boardCommentId);
+            if(commentOptional.isPresent()) {
+                CommentEntity commentEntity = commentOptional.get();
+                if(userId == commentEntity.getUserEntity().getUserId()) {
+                    return ResponseEntity.status(200).body(true);
+                }
+            }
+            return ResponseEntity.status(400).body(false);
+        } catch(Exception e) {
+            System.out.println(">> " + e);
+            System.out.println(">> CommentService.findWriter error!!!");
+            return ResponseEntity.status(400).body(false);
+        } finally {
+            System.out.println(">> CommentService.findWriter end");
+        }
+    }
 }
