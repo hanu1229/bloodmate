@@ -30,9 +30,9 @@ public class BoardController {
 
     /// 게시물 전체 출력 - R --> 추후 페이징 적용 예정
     @GetMapping("")
-    public List<BoardResponseDto> findAll() {
+    public ResponseEntity<List<BoardResponseDto>> findAll() {
         System.out.println(">> BoardController.findAll start");
-        List<BoardResponseDto> result = boardService.findAll();
+        ResponseEntity<List<BoardResponseDto>> result = boardService.findAll();
         System.out.println(">> BoardController.findAll end\n");
         return result;
     }
@@ -71,12 +71,23 @@ public class BoardController {
 
     /// 게시물 삭제 - D
     @DeleteMapping("/{boardPostId}")
-    public boolean delete(@RequestHeader("Authorization") String token, @PathVariable("boardPostId") int boardPostId) {
+    public ResponseEntity<Boolean> delete(@RequestHeader("Authorization") String token, @PathVariable("boardPostId") int boardPostId) {
         System.out.println(">> BoardController.delete start");
         System.out.println(">> token = " + token);
         System.out.println(">> boardPostId = " + boardPostId);
-        boolean result = boardService.delete(token, boardPostId);
+        ResponseEntity<Boolean> result = boardService.delete(token, boardPostId);
         System.out.println(">> BoardController.delete end\n");
+        return result;
+    }
+
+    /// 게시물 작성자 확인 - R
+    @GetMapping("/check-writer/{boardPostId}")
+    public ResponseEntity<Boolean> findWriter(@RequestHeader("Authorization") String token, @PathVariable("boardPostId") int boardPostId) {
+        System.out.println(">> BoardController.findWriter start");
+        System.out.println(">> token = " + token);
+        System.out.println(">> boardPostId = " + boardPostId);
+        ResponseEntity<Boolean> result = boardService.findWriter(token, boardPostId);
+        System.out.println(">> BoardController.findWriter end\n");
         return result;
     }
 

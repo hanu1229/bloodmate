@@ -14,6 +14,8 @@ import ResetPasswordPage from "./users/ResetPasswordPage";
 import HomePage from "./HomePage";
 import MyInfoPage from "./users/MyInfoPage";
 import PostDetailPage from "./boards/PostDetailPage";
+import CreatePostPage from "./boards/CreatePostPage";
+import UpdatePostPage from "./boards/UpdatePostPage";
 
 export default function App(props) {
     return (
@@ -28,6 +30,8 @@ export default function App(props) {
                     <Route path = "/blood/pressure" element = {<BloodPressurePage/>}/>
                     <Route path = "/board" element = {<BoardPage/>}/>
                     <Route path = "/board/:id" element = {<PostDetailPage />}/>
+                    <Route path = "/board/create" element = {<CreatePostPage />}/>
+                    <Route path = "/board/update/:id" element = {<UpdatePostPage />}/>
                     <Route path = "/myinfo" element = {<MyInfoPage/>}/>
                 </Route>
                 <Route path = "/login" element = {<LoginPage/>}/>

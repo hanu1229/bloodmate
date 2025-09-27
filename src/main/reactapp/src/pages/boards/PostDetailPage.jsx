@@ -1,32 +1,35 @@
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { serverDomain } from "../../ApiDomain";
 import { useEffect, useState } from "react";
-import { Box, Button, Card, CardContent, Dropdown, IconButton, Menu, MenuButton, MenuItem, Textarea, Typography } from "@mui/joy";
+import { Box, Button, Dropdown, IconButton, Menu, MenuButton, MenuItem, Textarea, Typography } from "@mui/joy";
 import { btnColor, inputFocusColor } from "../../styles/commonStyle";
-import { MoreHoriz, Refresh } from "@mui/icons-material";
+import { MoreHoriz, MoreVert, Refresh } from "@mui/icons-material";
 
 export default function PostDetailPage(props) {
 
     const {id} = useParams();
+    const navigate = useNavigate();
 
-    /// 게시물 정보
+    /** 게시물 정보 */
     const [info, setInfo] = useState({});
-    /// 댓글 목록
+    /** 댓글 목록 */
     const [comments, setComments] = useState([]);
-    /// 댓글 추가를 위한 함수
+    /** 댓글 추가를 위한 함수 */
     const [comment, setComment] = useState("");
-    /// 게시물의 최신 수정일
+    /** 게시물의 최신 수정일 */
     const [isUpdateAt, setIsUpdatedAt] = useState(false);
-    /// 댓글이 존재하는지 구분하는 함수
+    /** 게시물 작성자 확인 */
+    const [postSetting, setPostSetting] = useState();
+    /** 댓글이 존재하는지 구분하는 함수 */
     const [isComment, setIsComment] = useState(false);
-    /// 댓글 수정을 위한 함수
+    /** 댓글 수정을 위한 함수 */
     const [changeComment, setChangeComment] = useState("");
-    /// 댓글 등록순
+    /** 댓글 등록순 */
     const [isOld, setIsOld] = useState(true);
-    /// 댓글 최신순
+    /** 댓글 최신순 */
     const [isNew, setIsNew] = useState(false);
-    /// 댓글 수정창
+    /** 댓글 수정창 */
     const [commentInput, setCommentInput] = useState();
 
     const bottomPx = "12px";
@@ -52,7 +55,43 @@ export default function PostDetailPage(props) {
             if(e.response.status === 400) { alert("정보를 가져오는데 실패했습니다."); }
         }
     }
-    /// 댓글 새로고침
+    /** 게시물 본인 확인 */
+    const checkPostWriter = async () => {
+        try {
+            const token = localStorage.getItem("Token");
+            if(token == null) { alert("본인이 작성한 게시물이 아닙니다."); return false; }
+            const response = await axios.get(`${serverDomain}/board/check-writer/${id}`, {withCredentials : true, headers : {Authorization : token}});
+            if(response.status === 200) {
+                setPostSetting(response.data);
+                return true;
+            }
+        } catch(e) {
+            if(e.response.status === 400) {
+                alert("본인이 작성한 게시물이 아닙니다.");
+                return false;
+            }
+        }
+    }
+    /** 게시물 수정하기 */
+    /** 게시물 삭제하기 */
+    const deletePost = async () => {
+        try {
+            const check = checkPostWriter();
+            if(check) {
+                const token = localStorage.getItem("Token");
+                const response = await axios.delete(`${serverDomain}/board/${id}`, {withCredentials : true, headers : {Authorization : token}});
+                if(response.status === 200) {
+                    alert("게시물을 삭제하였습니다.");
+                    navigate("/board");
+                }
+            }
+        } catch(e) {
+            if(e.response.status === 400) {
+                alert("게시물을 삭제하지 못했습니다.");
+            }
+        }
+    }
+    /** 댓글 새로고침 */
     const findComments = async () => {
         try {
             let sort;
@@ -68,10 +107,11 @@ export default function PostDetailPage(props) {
             }
         }
     }
-    /// 댓글 추가하기
+    /** 댓글 추가하기 */
     const createComment = async () => {
         try {
             const token = localStorage.getItem("Token");
+            if(token == null) { alert("로그인 해주세요"); return; }
             const obj = {boardCommentContent : comment}
             const response = await axios.post(`${serverDomain}/board/comment/${id}`, obj, {withCredentials : true, headers : {Authorization : token}});
             if(response.status === 201) {
@@ -79,10 +119,10 @@ export default function PostDetailPage(props) {
                 findComments();
             }
         } catch(e) {
-            if(e.response.status === 400) { alert("정상적으로 처리하지 못했습니다."); }
+            if(e.response.status === 400) { alert("정상적으로 처리하지 못했습니다."); return; }
         }
     }
-    /// 댓글 수정하기
+    /** 댓글 수정하기 */
     const updateComment = async (boardCommentId) => {
         try {
             const token = localStorage.getItem("Token");
@@ -99,7 +139,7 @@ export default function PostDetailPage(props) {
             }
         }
     }
-    /// 댓글 수정을 위한 TextArea
+    /** 댓글 수정 Textarea 열기 */
     const openTextArea = async (boardCommentId) => {
         const token = localStorage.getItem("Token");
         if(token == null) { alert("본인이 작성한 댓글이 아닙니다."); return; }
@@ -109,14 +149,12 @@ export default function PostDetailPage(props) {
                 setCommentInput(boardCommentId);
             }
         } catch(e) {
-            console.log("여기 들어오기는 하니?");
             if(e.response.status === 400) {
-                console.log("여기 들어오기는 하니??");
-                alert("본인이 작성한 댓글이 아닙니다.");
+                alert("본인이 작성한 댓글이  아닙니다.");
             }
         }
     }
-    /// 댓글 삭제하기
+    /** 댓글 삭제하기 */
     const deleteComment = async (boardCommentId) => {
         const answer = confirm("정말 삭제하시겠습니까?");
         if(!answer) { return; }
@@ -130,6 +168,7 @@ export default function PostDetailPage(props) {
             if(e.response.status === 400) { alert("정상적으로 처리하지 못했습니다."); }
         }
     }
+    
 
     return (
         <Box sx = {{boxSizing : "border-box", padding : "40px", backgroundColor : "inherit", width : "100%"}}>
@@ -141,6 +180,13 @@ export default function PostDetailPage(props) {
                     <Box sx = {{display : "inherit", justifyContent : "space-between", textAlign : "center"}}>
                         <Typography sx = {{marginRight : "20px", fontSize : "20px", fontWeight : "bold"}}>{info.userNickname}</Typography>
                         <Typography sx = {{fontSize : "20px", fontWeight : "bold"}}>{isUpdateAt ? info.updatedAt.split("T")[0] : null}</Typography>
+                        <Dropdown>
+                            <MenuButton variant = "plain" sx = {{padding : "0px", paddingLeft : "20px"}}><MoreVert/></MenuButton>
+                            <Menu>
+                                <MenuItem>수정하기</MenuItem>
+                                <MenuItem onClick = {deletePost}>삭제하기</MenuItem>
+                            </Menu>
+                        </Dropdown>
                     </Box>
                 </Box>
                 <Box sx = {{margin : "12px 8px", padding : "12px 8px", }}>

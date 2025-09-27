@@ -54,15 +54,16 @@ public class BoardService {
     }
 
     /// 게시물 전체 출력 - R --> 추후 페이징 적용 예정
-    public List<BoardResponseDto> findAll() {
+    public ResponseEntity<List<BoardResponseDto>> findAll() {
         System.out.println(">> BoardService.findAll start");
         try {
             List<BoardEntity> boardEntityList = boardRepository.findAllByBoardStateIsNormal();
-            return boardEntityList.stream().map(BoardEntity::toDto).toList();
+            List<BoardResponseDto> result = boardEntityList.stream().map(BoardEntity::toDto).toList();
+            return ResponseEntity.status(200).body(result);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BoardService.findAll error!!!");
-            return null;
+            return ResponseEntity.status(400).body(null);
         } finally {
             System.out.println(">> BoardService.findAll end");
         }
@@ -142,19 +143,41 @@ public class BoardService {
     }
 
     /// 게시물 삭제 - D
-    public boolean delete(String token, int boardPostId) {
+    public ResponseEntity<Boolean> delete(String token, int boardPostId) {
         System.out.println(">> BoardService.delete start");
         int userId = jwtUtil.validateToken(token);
-        if(userId <= 0) { return false; }
+        if(userId <= 0) { return ResponseEntity.status(400).body(false); }
         Optional<BoardEntity> optional = boardRepository.findByBoardPostIdToUserId(boardPostId, userId);
         if(optional.isPresent()) {
             BoardEntity boardEntity = optional.get();
             boardEntity.setBoardPostState(0);
-            return true;
+            return ResponseEntity.status(200).body(true);
         }
         System.out.println(">> BoardService.delete end");
-        return false;
+        return ResponseEntity.status(400).body(false);
     }
 
+    /// 게시물 작성자 확인 - R
+    public ResponseEntity<Boolean> findWriter(String token, int boardPostId) {
+        System.out.println(">> BoardService.findWriter start");
+        try {
+            int userId = jwtUtil.validateToken(token);
+            if(userId <= 0) { return ResponseEntity.status(400).body(false); }
+            Optional<BoardEntity> optional = boardRepository.findById(boardPostId);
+            if(optional.isPresent()) {
+                BoardEntity boardEntity = optional.get();
+                if(userId == boardEntity.getUserEntity().getUserId()) {
+                    return ResponseEntity.status(200).body(true);
+                }
+            }
+            return ResponseEntity.status(400).body(false);
+        } catch(Exception e) {
+            System.out.println(">> " + e);
+            System.out.println(">> BoardService.findWriter error!!!");
+            return ResponseEntity.status(400).body(false);
+        } finally {
+            System.out.println(">> BoardService.findWriter end");
+        }
+    }
 
 }

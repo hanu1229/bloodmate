@@ -34,27 +34,38 @@ export default function HomePage(props) {
         <>
             <Box sx = {{boxSizing : "border-box", padding : "40px", backgroundColor : "inherit", width : "100%"}}>
                 <Box sx = {{borderTop : "1px solid black", backgroundColor : "#FFFFFF"}}>
-                    <List sx = {{padding : "0px", display : "flex", alignItems : "start"}}>
-                        <ListItem 
-                            sx = {{
-                                display : "flex", justifyContent : "space-between", 
-                                width : "100%", height : "48px",
-                                 textAlign : "center", borderBottom : "1px solid black"
-                            }}
-                        >
-                            <ListItemText 
-                                primary = "번호" 
-                                sx = {{width : "4%", maxWidth : "4%", "& span" : {fontWeight : "bold"}}} />
-                            <ListItemText 
-                                primary = "제목" 
-                                sx = {{ "& span" : {fontWeight : "bold"}}} />
-                            <ListItemText 
-                                primary = "작성자" 
-                                sx = {{width : "12%", maxWidth : "12%", "& span" : {fontWeight : "bold"}}} />
-                            <ListItemText 
-                                primary = "작성일" 
-                                sx = {{width : "12%", maxWidth : "12%", "& span" : {fontWeight : "bold"}}} />
-                        </ListItem>
+                    <Box 
+                        sx = {{
+                            position: "sticky",
+                            top: 0,
+                            zIndex: 10,
+                            backgroundColor : "#FFFFFF"
+                        }}
+                    >
+                        <List sx = {{padding : "0px", display : "flex", alignItems : "start", borderBottom : "1px solid black"}}>
+                            <ListItem 
+                                sx = {{
+                                    display : "flex", justifyContent : "space-between", 
+                                    width : "100%", height : "48px",
+                                    textAlign : "center", borderBottom : "1px solid black"
+                                }}
+                            >
+                                <ListItemText 
+                                    primary = "분류" 
+                                    sx = {{width : "4%", maxWidth : "4%", "& span" : {fontWeight : "bold"}}} />
+                                <ListItemText 
+                                    primary = "제목" 
+                                    sx = {{ "& span" : {fontWeight : "bold"}}} />
+                                <ListItemText 
+                                    primary = "작성자" 
+                                    sx = {{width : "12%", maxWidth : "12%", "& span" : {fontWeight : "bold"}}} />
+                                <ListItemText 
+                                    primary = "작성일" 
+                                    sx = {{width : "12%", maxWidth : "12%", "& span" : {fontWeight : "bold"}}} />
+                            </ListItem>
+                        </List>
+                    </Box>
+                    <List sx = {{padding : "0px", display : "flex", alignItems : "start", borderBottom : "1px solid black"}}>
                         {
                             notices.map((item) => (
                                 <ListItem 
