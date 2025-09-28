@@ -31,23 +31,23 @@ public class BoardService {
     private final JwtUtil jwtUtil;
 
     /// 게시물 작성 - C
-    public boolean create(String token, BoardRequestDto boardRequestDto) {
+    public ResponseEntity<Boolean> create(String token, BoardRequestDto boardRequestDto) {
         System.out.println(">> BoardService.create start");
         try {
             int userId = jwtUtil.validateToken(token);
-            if(userId <= 0) { return false; }
+            if(userId <= 0) { return ResponseEntity.status(400).body(false); }
             boardRequestDto.setBoardPostState(1);
             BoardEntity boardEntity = boardRequestDto.toEntity();
             boardEntity.setBoardCategoryEntity(boardCategoryRepository.findByTitle(boardRequestDto.getBoardCategoryTitle()));
             boardEntity.setUserEntity(userRepository.findById(userId).orElse(null));
             boardEntity = boardRepository.save(boardEntity);
-            if(boardEntity.getBoardPostId() <= 0) { return false; }
+            if(boardEntity.getBoardPostId() <= 0) { return ResponseEntity.status(400).body(false); }
             System.out.println(">> boardEntity = " + boardEntity);
-            return true;
+            return ResponseEntity.status(201).body(true);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BoardService.create error!!!");
-            return false;
+            return ResponseEntity.status(400).body(false);
         } finally {
             System.out.println(">> BoardService.create end");
         }

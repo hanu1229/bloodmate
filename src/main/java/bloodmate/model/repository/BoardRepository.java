@@ -19,11 +19,11 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
     int increasePostView(@Param("boardPostId") int boardPostId);
 
     /// 게시물 전체 출력 - R
-    @Query(value = "select * from board_post where board_post_state = 1", nativeQuery = true)
+    @Query(value = "select * from board_post where board_post_state = 1 order by board_post_id DESC", nativeQuery = true)
     List<BoardEntity> findAllByBoardStateIsNormal();
 
     /// 게시물 카테고리별 전체 출력 - R
-    @Query(value = "select * from board_post where board_category_id = :boardCategoryId and board_post_state = 1", nativeQuery = true)
+    @Query(value = "select * from board_post where board_category_id = :boardCategoryId and board_post_state = 1 order by board_post_id DESC", nativeQuery = true)
     List<BoardEntity> findAllCategory(@Param("boardCategoryId") int boardCategoryId);
 
     /// 게시물 상세 보기 - R

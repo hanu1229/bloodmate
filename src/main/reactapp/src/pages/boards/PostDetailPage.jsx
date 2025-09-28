@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Box, Button, Dropdown, IconButton, Menu, MenuButton, MenuItem, Textarea, Typography } from "@mui/joy";
 import { btnColor, inputFocusColor } from "../../styles/commonStyle";
 import { MoreHoriz, MoreVert, Refresh } from "@mui/icons-material";
+import DOMPurify from "dompurify";
 
 export default function PostDetailPage(props) {
 
@@ -31,6 +32,9 @@ export default function PostDetailPage(props) {
     const [isNew, setIsNew] = useState(false);
     /** 댓글 수정창 */
     const [commentInput, setCommentInput] = useState();
+
+    /** 게시물 내용 출력을 위한 변수 */
+    const clean = DOMPurify.sanitize(info.boardPostContent);
 
     const bottomPx = "12px";
 
@@ -189,8 +193,9 @@ export default function PostDetailPage(props) {
                         </Dropdown>
                     </Box>
                 </Box>
-                <Box sx = {{margin : "12px 8px", padding : "12px 8px", }}>
-                    {info.boardPostContent}
+                <Box sx = {{margin : "12px 8px", padding : "12px 8px"}}>
+                    {/* HTML을 렌더링 해줌 */}
+                    <div className = "post-body" dangerouslySetInnerHTML = {{__html : clean}} />
                 </Box>
                 <Box sx = {{padding : "12px 8px", borderTop : "2px solid grey"}}>
                     <Box sx = {{paddingBottom : bottomPx, display : "flex", alignItems : "center"}}>

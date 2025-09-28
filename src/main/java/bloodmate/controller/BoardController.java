@@ -19,11 +19,11 @@ public class BoardController {
 
     /// 게시물 작성 - C
     @PostMapping("")
-    public boolean create(@RequestHeader("Authorization") String token, @RequestBody BoardRequestDto boardRequestDto) {
+    public ResponseEntity<Boolean> create(@RequestHeader("Authorization") String token, @RequestBody BoardRequestDto boardRequestDto) {
         System.out.println(">> BoardController.create start");
         System.out.println(">> token = " + token);
         System.out.println(">> boardDto = " + boardRequestDto);
-        boolean result = boardService.create(token, boardRequestDto);
+        ResponseEntity<Boolean> result = boardService.create(token, boardRequestDto);
         System.out.println(">> BoardController.create end\n");
         return result;
     }

@@ -59,6 +59,12 @@ export default function BoardPage(props) {
             }
         }
     }
+    /** 추가하기 버튼 */
+    const createPost = async () => {
+        const token = localStorage.getItem("Token");
+        if(token == null) { alert("로그인 해주세요."); return; }
+        navigate("/board/create");
+    }
 
     return(
         <Box sx = {{boxSizing : "border-box", padding : "40px", backgroundColor : "inherit", width : "100%"}}>
@@ -78,7 +84,7 @@ export default function BoardPage(props) {
                         {tabComponents}
                     </TabList>
                     <Box sx = {{padding : "8px 16px", paddingBottom : "0px", display : "flex", justifyContent : "end"}}>
-                        <Button onClick = {() => { navigate("/board/create"); }} sx = {{...btnColor}}>추가하기</Button>
+                        <Button onClick = {createPost} sx = {{...btnColor}}>추가하기</Button>
                     </Box>
                     <List sx = {{padding : "8px 16px", paddingBottom : "0px", display : "flex", alignItems : "start"}}>
                         <ListItem 
