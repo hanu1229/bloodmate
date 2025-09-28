@@ -22,7 +22,7 @@ public class BoardEntity extends BaseTime {
     @Column(name = "board_post_title", nullable = false, length = 60)
     private String boardPostTitle;
     /// 게시물 내용
-    @Column(name = "board_post_content", nullable = false)
+    @Column(columnDefinition = "LongText", name = "board_post_content", nullable = false)
     private String boardPostContent;
     /// 게시물 조회수
     @Column(name = "board_post_view")

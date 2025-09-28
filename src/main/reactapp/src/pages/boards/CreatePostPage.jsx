@@ -44,9 +44,9 @@ export default function CreatePostPage(props) {
 
 
     return (
-        <Box sx = {{boxSizing : "border-box", padding : "40px", backgroundColor : "inherit", width : "100%"}}>
-            <Box sx = {{display : "flex"}}>
-                <Card sx = {{width : "66%"}}>
+        <Box sx = {{boxSizing : "border-box", padding : "40px", backgroundColor : "inherit", width : "100%", height : "100%"}}>
+            <Box sx = {{display : "flex", minHeight : 0, height : "inherit", overflow : "hidden"}}>
+                <Card sx = {{boxSizing : "border-box", justifyContent : "space-between", width : "66%"}}>
                     <Typography sx = {{fontSize : "20px", fontWeight : "bold"}}>카테고리(분류)</Typography>
                     <Select value = {category} onChange = {(event, value) => {setCategory(value);}} placeholder = "선택해주세요">
                         <Option value = {"공지"}>공지</Option>
@@ -58,7 +58,7 @@ export default function CreatePostPage(props) {
                     <Typography sx = {{fontSize : "20px", fontWeight : "bold"}}>제목</Typography>
                     <Input type = "text" value = {title} onChange = {(event) => {setTitle(event.target.value);}} placeholder = "제목을 입력해주세요" />
                     <Typography sx = {{fontSize : "20px", fontWeight : "bold"}}>내용</Typography>
-                    <CustomEditor value = {content} onChange = {setContent} />
+                    <CustomEditor onChange = {setContent} height = "240px" />
                     <Box sx = {{display : "flex", justifyContent : "end"}}>
                         <Button onClick = {createPost} sx = {{...btnColor}}>작성하기</Button>
                         <Button onClick = {cancelPost} color = "neutral" sx = {{marginLeft : "20px"}}>취소하기</Button>

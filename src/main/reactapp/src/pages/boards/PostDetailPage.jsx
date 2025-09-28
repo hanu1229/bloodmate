@@ -2,7 +2,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { serverDomain } from "../../ApiDomain";
 import { useEffect, useState } from "react";
-import { Box, Button, Dropdown, IconButton, Menu, MenuButton, MenuItem, Textarea, Typography } from "@mui/joy";
+import { Box, Button, Card, Dropdown, IconButton, Menu, MenuButton, MenuItem, Textarea, Typography } from "@mui/joy";
 import { btnColor, inputFocusColor } from "../../styles/commonStyle";
 import { MoreHoriz, MoreVert, Refresh } from "@mui/icons-material";
 import DOMPurify from "dompurify";
@@ -11,6 +11,8 @@ export default function PostDetailPage(props) {
 
     const {id} = useParams();
     const navigate = useNavigate();
+
+    const[isScroll, setIsScroll] = useState(false);
 
     /** 게시물 정보 */
     const [info, setInfo] = useState({});
@@ -22,8 +24,6 @@ export default function PostDetailPage(props) {
     const [isUpdateAt, setIsUpdatedAt] = useState(false);
     /** 게시물 작성자 확인 */
     const [postSetting, setPostSetting] = useState();
-    /** 댓글이 존재하는지 구분하는 함수 */
-    const [isComment, setIsComment] = useState(false);
     /** 댓글 수정을 위한 함수 */
     const [changeComment, setChangeComment] = useState("");
     /** 댓글 등록순 */
@@ -51,7 +51,6 @@ export default function PostDetailPage(props) {
                 console.log(PostInfo);
                 console.log(commentInfo);
                 PostInfo.updatedAt ? setIsUpdatedAt(true) : setIsUpdatedAt(false);
-                commentInfo.length !== 0 ? setIsComment(true) : setIsComment(false);
                 setInfo(PostInfo);
                 setComments(commentInfo);
             }
@@ -77,6 +76,9 @@ export default function PostDetailPage(props) {
         }
     }
     /** 게시물 수정하기 */
+    const updatePost = () => {
+        navigate(`/board/update/${id}`, {state : {id : id, category : info.boardCategoryTitle, title : info.boardPostTitle, content : info.boardPostContent}});
+    }
     /** 게시물 삭제하기 */
     const deletePost = async () => {
         try {
@@ -175,109 +177,121 @@ export default function PostDetailPage(props) {
     
 
     return (
-        <Box sx = {{boxSizing : "border-box", padding : "40px", backgroundColor : "inherit", width : "100%"}}>
+        <Box sx = {{boxSizing : "border-box", padding : "40px", backgroundColor : "inherit", width : "100%", height : "100%", overflow : "hidden"}}>
             {/* {JSON.stringify(info)} */}
-            <Box>
-                {/* 제목, 닉네임, 날짜 */}
-                <Box sx = {{padding : "0px 8px", paddingBottom : bottomPx, display : "flex", justifyContent : "space-between", alignItems : "center", borderBottom : "2px solid grey"}}>
-                    <Typography sx = {{flex : 1, fontSize : "20px", fontWeight : "bold"}}>{info.boardPostTitle}</Typography>
-                    <Box sx = {{display : "inherit", justifyContent : "space-between", textAlign : "center"}}>
-                        <Typography sx = {{marginRight : "20px", fontSize : "20px", fontWeight : "bold"}}>{info.userNickname}</Typography>
-                        <Typography sx = {{fontSize : "20px", fontWeight : "bold"}}>{isUpdateAt ? info.updatedAt.split("T")[0] : null}</Typography>
-                        <Dropdown>
-                            <MenuButton variant = "plain" sx = {{padding : "0px", paddingLeft : "20px"}}><MoreVert/></MenuButton>
-                            <Menu>
-                                <MenuItem>수정하기</MenuItem>
-                                <MenuItem onClick = {deletePost}>삭제하기</MenuItem>
-                            </Menu>
-                        </Dropdown>
-                    </Box>
-                </Box>
-                <Box sx = {{margin : "12px 8px", padding : "12px 8px"}}>
-                    {/* HTML을 렌더링 해줌 */}
-                    <div className = "post-body" dangerouslySetInnerHTML = {{__html : clean}} />
-                </Box>
-                <Box sx = {{padding : "12px 8px", borderTop : "2px solid grey"}}>
-                    <Box sx = {{paddingBottom : bottomPx, display : "flex", alignItems : "center"}}>
-                        <Typography sx = {{fontSize : "20px", fontWeight : "bold"}}>댓글</Typography>
-                        <IconButton onClick = {findComments}>
-                            <Refresh sx = {{width : "20px", height : "20px"}} />
-                        </IconButton>
-                    </Box>
-                    {/* {JSON.stringify(isComment ? comment : null)} */}
-                    <Textarea 
-                    value = {comment}
-                    onChange = {(event) => { setComment(event.target.value); }}
-                    minRows = {4}
-                    maxRows = {6}
-                    endDecorator = {
-                        <Box sx = {{textAlign : "center"}}>
-                            <Button onClick = {createComment} sx = {{...btnColor, borderRadius : "4px"}}>추가하기</Button>
+            <Box sx = {{display : "flex", minHeight : 0, height : "100%"}}>
+                    <Card sx = {{boxSizing : "border-box", width : "66%"}}>
+                        <Box sx = {{minHeight : 0, overflowY : "auto", scrollBarGutter : "stable"}}>    
+                            {/* 제목, 닉네임, 날짜 */}
+                            <Box 
+                                sx = {{
+                                    padding : "0px 8px", paddingBottom : bottomPx, 
+                                    display : "flex", justifyContent : "space-between", alignItems : "center", 
+                                    borderBottom : "2px solid grey"
+                                }}>
+                                <Typography sx = {{flex : 1, fontSize : "20px", fontWeight : "bold"}}>{info.boardPostTitle}</Typography>
+                                <Box sx = {{display : "inherit", justifyContent : "space-between", textAlign : "center"}}>
+                                    <Typography sx = {{marginRight : "20px", fontSize : "20px", fontWeight : "bold"}}>{info.userNickname}</Typography>
+                                    <Typography sx = {{fontSize : "20px", fontWeight : "bold"}}>{isUpdateAt ? info.updatedAt.split("T")[0] : null}</Typography>
+                                    <Dropdown>
+                                        <MenuButton variant = "plain" sx = {{padding : "0px", paddingLeft : "20px"}}><MoreVert/></MenuButton>
+                                        <Menu>
+                                            <MenuItem onClick = {updatePost}>수정하기</MenuItem>
+                                            <MenuItem onClick = {deletePost}>삭제하기</MenuItem>
+                                        </Menu>
+                                    </Dropdown>
+                                </Box>
+                            </Box>
+                            <Box sx = {{margin : "12px 8px", padding : "12px 8px"}}>
+                                {/* HTML을 렌더링 해줌 */}
+                                <div className = "post-body" dangerouslySetInnerHTML = {{__html : clean}} />
+                            </Box>
                         </Box>
-                    }
-                    sx = {{
-                        ...inputFocusColor,
-                        padding : "12px",
-                        marginBottom : bottomPx,
-                        borderRadius : "4px",
-                        "& .MuiTextarea-textarea" : {padding : "0px"},
-                        "& .MuiTextarea-endDecorator" : {margin : "0px", marginTop : "12px", display : "flex", justifyContent : "end"}
-                    }} 
-                    />
-                    <Box sx = {{marginBottom : "12px", display : "flex", alignItem : "center"}}>
-                        <Typography onClick = {() => { setIsNew(false); setIsOld(true); }} sx = {{color : isOld ? "black" : "gray", cursor : "pointer"}}>등록순</Typography>
-                        <Typography sx = {{margin : "0px 6px"}}>│</Typography>
-                        <Typography onClick = {() => { setIsOld(false); setIsNew(true); }} sx = {{color : isNew ? "black" : "gray", cursor : "pointer"}}>최신순</Typography>
-                    </Box>
-                    <Box>
-                        {
-                            isComment ? comments.map((item) => {
-                                const [date, time] = item.updatedAt.split("T");
-                                const [hour, minute, second] = time.split(":");
-                                return (
-                                <Box key = {item.boardCommentId} sx = {{marginBottom : bottomPx, paddingBottom : bottomPx, display : "flex", flexDirection : "column", borderBottom : "1px solid grey"}}>
-                                    <Box sx = {{display : "flex", flexDirection : "column", justifyContent : "space-between"}}>
-                                        {commentInput === item.boardCommentId ? 
-                                            <Textarea
-                                                autoFocus
-                                                value = {changeComment}
-                                                onChange = {(event) => { setChangeComment(event.target.value); }}
-                                                minRows={4}
-                                                maxRows={6}
-                                                endDecorator = {
-                                                    <Box sx = {{display : "flex", justifyContent : "end"}}>
-                                                        <Button onClick = {() => { setChangeComment(""); setCommentInput(0); }} color = "neutral" sx = {{borderRadius : "4px", marginRight : "12px"}}>취소하기</Button>
-                                                        <Button onClick = {() => { updateComment(item.boardCommentId); }} sx = {{...btnColor, borderRadius : "4px"}}>수정하기</Button>
-                                                    </Box>
-                                            }
-                                                sx = {{
-                                                    ...inputFocusColor,
-                                                    padding : "12px",
-                                                    marginBottom : bottomPx,
-                                                    borderRadius : "4px",
-                                                    "& .MuiTextarea-textarea" : {padding : "0px"},
-                                                    "& .MuiTextarea-endDecorator" : {margin : "0px", marginTop : "12px", display : "flex", justifyContent : "end"}
-                                                }} 
-                                            /> : ""
-                                        }
-                                        <Box sx = {{display : "flex", justifyContent : "space-between"}}>
-                                            <Typography sx = {{marginBottom : "8px", fontWeight : "bold"}}>{item.userNickname}</Typography>
-                                            <Dropdown>
-                                                <MenuButton variant = "plain"><MoreHoriz/></MenuButton>
-                                                <Menu>
-                                                    <MenuItem onClick = {() => { openTextArea(item.boardCommentId); }}>수정</MenuItem>
-                                                    <MenuItem onClick = {() => { deleteComment(item.boardCommentId); }}>삭제</MenuItem>
-                                                </Menu>
-                                            </Dropdown>
-                                        </Box>
-                                    </Box>
-                                    <Typography sx = {{marginBottom : "8px"}}>{item.boardCommentContent}</Typography>
-                                    <Typography>{`${date} ${hour}:${minute}`}</Typography>
-                                </Box>);
-                            }) : null
+                    </Card>
+
+                <Card sx = {{marginLeft : "1%", width : "33%"}}>
+                    <Box sx = {{padding : "12px 8px", minHeight : 0, height : "100%", overflowY : "auto", scrollBarGutter : isScroll ? "stable" : null}}>
+                        <Box sx = {{paddingBottom : bottomPx, display : "flex", alignItems : "center"}}>
+                            <Typography sx = {{fontSize : "20px", fontWeight : "bold"}}>댓글</Typography>
+                            <IconButton onClick = {findComments}>
+                                <Refresh sx = {{width : "20px", height : "20px"}} />
+                            </IconButton>
+                        </Box>
+                        {/* {JSON.stringify(isComment ? comment : null)} */}
+                        <Textarea 
+                        value = {comment}
+                        onChange = {(event) => { setComment(event.target.value); }}
+                        minRows = {4}
+                        maxRows = {6}
+                        endDecorator = {
+                            <Box sx = {{textAlign : "center"}}>
+                                <Button onClick = {createComment} sx = {{...btnColor, borderRadius : "4px"}}>작성하기</Button>
+                            </Box>
                         }
+                        sx = {{
+                            ...inputFocusColor,
+                            padding : "12px",
+                            marginBottom : bottomPx,
+                            borderRadius : "4px",
+                            "& .MuiTextarea-textarea" : {padding : "0px"},
+                            "& .MuiTextarea-endDecorator" : {margin : "0px", marginTop : "12px", display : "flex", justifyContent : "end"}
+                        }} 
+                        />
+                        <Box sx = {{marginBottom : "12px", display : "flex", alignItem : "center"}}>
+                            <Typography onClick = {() => { setIsNew(false); setIsOld(true); }} sx = {{color : isOld ? "black" : "gray", cursor : "pointer"}}>등록순</Typography>
+                            <Typography sx = {{margin : "0px 6px"}}>│</Typography>
+                            <Typography onClick = {() => { setIsOld(false); setIsNew(true); }} sx = {{color : isNew ? "black" : "gray", cursor : "pointer"}}>최신순</Typography>
+                        </Box>
+                        <Box>
+                            {
+                                comments.length > 0 ? comments.map((item) => {
+                                    const [date, time] = item.updatedAt.split("T");
+                                    const [hour, minute, second] = time.split(":");
+                                    return (
+                                    <Box key = {item.boardCommentId} sx = {{marginBottom : bottomPx, paddingBottom : bottomPx, display : "flex", flexDirection : "column", borderBottom : "1px solid grey"}}>
+                                        <Box sx = {{display : "flex", flexDirection : "column", justifyContent : "space-between"}}>
+                                            {commentInput === item.boardCommentId ? 
+                                                <Textarea
+                                                    autoFocus
+                                                    value = {changeComment}
+                                                    onChange = {(event) => { setChangeComment(event.target.value); }}
+                                                    minRows={4}
+                                                    maxRows={6}
+                                                    endDecorator = {
+                                                        <Box sx = {{display : "flex", justifyContent : "end"}}>
+                                                            <Button onClick = {() => { updateComment(item.boardCommentId); }} sx = {{...btnColor, borderRadius : "4px"}}>수정하기</Button>
+                                                            <Button onClick = {() => { setChangeComment(""); setCommentInput(0); }} color = "neutral" sx = {{borderRadius : "4px", marginLeft : "12px"}}>취소하기</Button>
+                                                        </Box>
+                                                }
+                                                    sx = {{
+                                                        ...inputFocusColor,
+                                                        padding : "12px",
+                                                        marginBottom : bottomPx,
+                                                        borderRadius : "4px",
+                                                        "& .MuiTextarea-textarea" : {padding : "0px"},
+                                                        "& .MuiTextarea-endDecorator" : {margin : "0px", marginTop : "12px", display : "flex", justifyContent : "end"}
+                                                    }} 
+                                                /> : ""
+                                            }
+                                            <Box sx = {{display : "flex", justifyContent : "space-between"}}>
+                                                <Typography sx = {{marginBottom : "8px", fontWeight : "bold"}}>{item.userNickname}</Typography>
+                                                <Dropdown>
+                                                    <MenuButton variant = "plain"><MoreHoriz/></MenuButton>
+                                                    <Menu>
+                                                        <MenuItem onClick = {() => { openTextArea(item.boardCommentId); }}>수정</MenuItem>
+                                                        <MenuItem onClick = {() => { deleteComment(item.boardCommentId); }}>삭제</MenuItem>
+                                                    </Menu>
+                                                </Dropdown>
+                                            </Box>
+                                        </Box>
+                                        <Typography sx = {{marginBottom : "8px"}}>{item.boardCommentContent}</Typography>
+                                        <Typography>{`${date} ${hour}:${minute}`}</Typography>
+                                    </Box>);
+                                }) : null
+                            }
+                        </Box>
                     </Box>
-                </Box>
+                </Card>
             </Box>
         </Box>
     );
