@@ -11,6 +11,9 @@ import bloodmate.util.VerificationNumber;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,6 +25,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final VerificationRepository verificationRepository;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     private final JwtUtil jwtUtil;
 
@@ -38,6 +42,8 @@ public class UserService {
                 System.out.println(">> 중복되는 아이디와 닉네임이 없음으로 회원가입을 진행합니다.");
                 userDto.setUserState(1);
                 System.out.println("userDto = " + userDto);
+                String hashPassword = encoder.encode(userDto.getUserPassword());
+                userDto.setUserPassword(hashPassword);
                 UserEntity userEntity = userRepository.save(userDto.toEntity());
                 int id = userEntity.getUserId();
                 result = id > 0;
@@ -56,15 +62,19 @@ public class UserService {
     public String logIn(UserDto userDto) {
         System.out.println(">> UserService.logIn start");
         String token = null;
-        Optional<UserEntity> optional = userRepository.findByUserLoginId(userDto.getUserLoginId(), userDto.getUserPassword());
+        Optional<UserEntity> optional = userRepository.findByUserLoginId(userDto.getUserLoginId());
         if(optional.isPresent()) {
             UserDto user = optional.get().toDto();
             if(user.getUserState() == 1) {
                 int userId = user.getUserId();
                 System.out.println(">> 정상적인 회원입니다.");
                 System.out.println(">> userId = " + userId);
-                token = jwtUtil.createToken(userId);
-                System.out.println(">> token = " + token);
+                if(encoder.matches(userDto.getUserPassword(), user.getUserPassword())) {
+                    token = jwtUtil.createToken(userId);
+                    System.out.println(">> token = " + token);
+                } else {
+                    token = "아이디 또는 비밀번호를 다시 확인해주세요.";
+                }
             } else if(user.getUserState() == 2) {
                 token = "휴먼(장기미접속) 회원입니다.";
             } else if(user.getUserState() == 3) {
@@ -158,8 +168,8 @@ public class UserService {
                     }
                 } else if(receive.containsKey("newPassword")) {
                     String newPassword = receive.getOrDefault("newPassword", null);
-                    if(userEntity.getUserPassword().equals(password)) {
-                        userEntity.setUserPassword(newPassword);
+                    if(encoder.matches(password, userEntity.getUserPassword())) {
+                        userEntity.setUserPassword(encoder.encode(newPassword));
                         return ResponseEntity.status(200).body(true);
                     }
                 }
@@ -177,7 +187,7 @@ public class UserService {
     }
 
     /// 비밀번호 수정 - U
-    public boolean updatePassword(String token, Map<String, String> passInfo) {
+    public ResponseEntity<Boolean> updatePassword(String token, Map<String, String> passInfo) {
         System.out.println(">> UserService.updatePassword start");
         int userId = jwtUtil.validateToken(token);
         if(userId > 0) {
@@ -185,17 +195,24 @@ public class UserService {
             if(optional.isPresent()) {
                 UserEntity userEntity = optional.get();
                 UserDto userDto = userEntity.toDto();
-                if(userDto.getUserPassword().equals(passInfo.get("userPassword"))) {
+                if(encoder.matches(passInfo.get("password"), userDto.getUserPassword())) {
                     userEntity.setUserPassword(passInfo.get("newPassword"));
                     System.out.println(">> UserService.updatePassword end");
-                    return true;
+                    return ResponseEntity.status(200).body(true);
                 } else {
                     System.out.println(">> 기존 비밀번호가 틀립니다.");
                 }
+//                if(userDto.getUserPassword().equals(passInfo.get("userPassword"))) {
+//                    userEntity.setUserPassword(passInfo.get("newPassword"));
+//                    System.out.println(">> UserService.updatePassword end");
+//                    return true;
+//                } else {
+//                    System.out.println(">> 기존 비밀번호가 틀립니다.");
+//                }
             }
         }
         System.out.println(">> UserService.updatePassword end");
-        return false;
+        return ResponseEntity.status(400).body(false);
     }
 
     /// 회원 탈퇴 - D
@@ -389,9 +406,9 @@ public class UserService {
             if(!bool) { return ResponseEntity.status(404).body(false); }
             UserEntity userEntity = userRepository.findByUserNameAndUserPhoneAndUserLoginId(userName, userPhone, userLoginId);
             if(userEntity == null) { return ResponseEntity.status(404).body(false); }
-            if(userEntity.getUserPassword().equals(newPassword)) { return ResponseEntity.status(201).body(false); }
-            userEntity.setUserPassword(newPassword);
-            return ResponseEntity.status(201).body(true);
+            if(encoder.matches(newPassword, userEntity.getUserPassword())) { return ResponseEntity.status(200).body(false); }
+            userEntity.setUserPassword(encoder.encode(newPassword));
+            return ResponseEntity.status(200).body(true);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> UserService.resetPassword error!!!");

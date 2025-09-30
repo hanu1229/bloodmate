@@ -24,7 +24,7 @@ public class UserEntity extends BaseTime {
     @Column(name = "user_login_id", nullable = false, length = 12, unique = true)
     private String userLoginId;
     // 비밀번호
-    @Column(name = "user_password", nullable = false, length = 15)
+    @Column(name = "user_password", nullable = false)
     private String userPassword;
     // 닉네임
     @Column(name = "user_nickname", nullable = false, length = 30, unique = true)

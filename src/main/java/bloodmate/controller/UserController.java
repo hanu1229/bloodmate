@@ -46,9 +46,10 @@ public class UserController {
         ResponseEntity<String> result = null;
         if (
                 token.equals("휴먼(장기미접속) 회원입니다.") || token.equals("정지된 회원입니다.") ||
-                token.equals("탈퇴된 회원입니다.") || token.equals("존재하지 않는 회원입니다.")
+                token.equals("탈퇴된 회원입니다.") || token.equals("존재하지 않는 회원입니다.") ||
+                token.equals("아이디 또는 비밀번호를 다시 확인해주세요.")
         ) {
-            result = ResponseEntity.status(201).body(token);
+            result = ResponseEntity.status(400).body(token);
         } else {
             result = ResponseEntity.status(200).body(token);
         }
@@ -123,11 +124,11 @@ public class UserController {
 
     /// 비밀번호 수정(비밀번호 찾기) - U
     @PutMapping("/password")
-    public boolean updatePassword(@RequestHeader("Authorization") String token, @RequestBody Map<String, String> passInfo) {
+    public ResponseEntity<Boolean> updatePassword(@RequestHeader("Authorization") String token, @RequestBody Map<String, String> passInfo) {
         System.out.println(">> UserController.updatePassword start");
         System.out.println("token = " + token);
         System.out.println("passInfo = " + passInfo);
-        boolean result = userService.updatePassword(token, passInfo);
+        ResponseEntity<Boolean> result = userService.updatePassword(token, passInfo);
         System.out.println(">> UserController.updatePassword end\n");
         return result;
     }

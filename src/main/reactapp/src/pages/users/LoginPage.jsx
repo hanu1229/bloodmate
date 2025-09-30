@@ -4,6 +4,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {btnColor, inputFocusColor} from "../../styles/commonStyle.js";
+import { serverDomain } from "../../ApiDomain.js";
 
 export default function LoginPage(props) {
 
@@ -19,17 +20,17 @@ export default function LoginPage(props) {
     const loginBtnClick = async () => {
         // alert(`아이디 : ${info["userLoginId"]}\n비밀번호 : ${info.userPassword}`);
         try {
-            const response = await axios.post("http://raunriu.iptime.org:8080/api/user/login", info, {withCredentials : true});
-            if(response.status == 200) {
+            const response = await axios.post(`${serverDomain}/user/login`, info, {withCredentials : true});
+            if(response.status === 200) {
                 console.log(response.data);
                 localStorage.setItem("Token", response.data);
                 alert("로그인에 성공했습니다.");
                 navigate("/");
-            } else {
-                alert(response.data);
             }
         } catch(e) {
-            console.log(e);
+            if(e.response.status === 400) {
+                alert(e.response.data);
+            }
         }
     }
     // boxShadow : "2px 2px 10px #A097D4"

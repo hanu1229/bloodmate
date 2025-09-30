@@ -2,11 +2,15 @@
 insert into users(
 user_login_id, user_password, user_nickname, user_name, user_birth_date, user_phone, user_email, user_role, user_state, created_at, updated_at
 ) values
-('admin', '!admin1234', '관리자', '한웅재', '1997-12-29', '010-1111-1111', 'han494127@gmail.com', 1, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
-('tester19', '!a1234', '테스터19', '홍길동', '1970-05-04', '010-2222-2222', 'tester19@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
-('tester97', '!b1234', '테스터97', '김영희', '1950-11-27', '010-3333-3333', 'tester97@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
-('tester12', '!c1234', '테스터12', '이철수', '1988-02-17', '010-4444-4444', 'tester12@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
-('tester29', '!d1234', '테스터29', '최희수', '2002-08-08', '010-5555-5555', 'tester29@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07');
+('admin', '$2a$10$8yGOjtsXG2vRqMBNe48A0uVC.iKylcc75Zw7dIr828pjYLKZLYW8W', '관리자', '한웅재', '1997-12-29', '010-1111-1111', 'han494127@gmail.com', 1, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
+('tester19', '$2a$10$AAFW63cem6sbVMToV436je.sitS7fifuwq9hKZR7vKHA5258AxATK', '테스터19', '홍길동', '1970-05-04', '010-2222-2222', 'tester19@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
+('tester97', '$2a$10$AAFW63cem6sbVMToV436je.sitS7fifuwq9hKZR7vKHA5258AxATK', '테스터97', '김영희', '1950-11-27', '010-3333-3333', 'tester97@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
+('tester12', '$2a$10$AAFW63cem6sbVMToV436je.sitS7fifuwq9hKZR7vKHA5258AxATK', '테스터12', '이철수', '1988-02-17', '010-4444-4444', 'tester12@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07'),
+('tester29', '$2a$10$AAFW63cem6sbVMToV436je.sitS7fifuwq9hKZR7vKHA5258AxATK', '테스터29', '최희수', '2002-08-08', '010-5555-5555', 'tester29@gmail.com', 0, 1, '2025-08-06 14:12:07', '2025-08-06 14:12:07');
+
+-- 비크립트 10 버전 비밀번호
+-- !admin1234 : $2a$10$8yGOjtsXG2vRqMBNe48A0uVC.iKylcc75Zw7dIr828pjYLKZLYW8W
+-- !a1234 : $2a$10$AAFW63cem6sbVMToV436je.sitS7fifuwq9hKZR7vKHA5258AxATK
 
 -- 당화혈색소 정보 샘플
 insert into user_hba1c(hba1c_value, measured_at, next_test_at, user_id, created_at, updated_at) values
@@ -69,7 +73,12 @@ insert into board_category(board_category_title) values ("공지"), ("자유"), 
 insert into board_post(
 board_post_title, board_post_content, board_post_view, created_at, updated_at, board_post_state, user_id, board_category_id
 ) values
-("공지1", "공지1 내용입니다.", 0, "2025-08-07T17:05:25", "2025-08-07T17:05:25", 1, 1, 1),
+("추후 업데이트 예정 기능",
+'1. 특정 기간 선택에 따라 그래프를 보여 시각적 효과를 극대화하겠습니다.<br/>'
+'2. 게시판에 이미지를 추가하여 게시할 수 있도록 하겠습니다.<br/>'
+'3. 대시보드를 만들어 당화혈색소, 혈당, 혈압의 정보를 한 눈에 쉽게 볼 수 있도록 하겠습니다.<br/>'
+'4. 게시판, 수치 표를 좀 더 쉽게 볼 수 있도록 페이지 처리를 하겠습니다.',
+ 0, "2025-08-07T17:05:25", "2025-08-07T17:05:25", 1, 1, 1),
 ("자유1", "자유1 내용입니다.", 0, "2025-08-07T17:05:25", "2025-08-07T17:05:25", 1, 2, 2),
 ("혈당1", "혈당1 내용입니다.", 0, "2025-08-07T17:05:25", "2025-08-07T17:05:25", 1, 3, 3),
 ("혈압1", "혈압1 내용입니다.", 0, "2025-08-07T17:05:25", "2025-08-07T17:05:25", 1, 4, 4),

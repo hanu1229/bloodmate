@@ -43,7 +43,7 @@ export default function ResetPasswordPage(props) {
     const resetBtnClick = async () => {
         try {
             const response = await axios.post(`${serverDomain}/user/reset-password/${token}`, {...state, newPassword : newPassword}, {withCredentials : true});
-            if(response.status == 201) {
+            if(response.status == 200) {
                 if(response.data) {
                     alert("비밀번호 변경 완료");
                     navigate("/login");

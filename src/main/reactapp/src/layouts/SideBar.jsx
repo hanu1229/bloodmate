@@ -25,11 +25,11 @@ export default function SideBar(props) {
                     </Box>
                 </Link>
                 {/* 대시보드 */}
-                <Link to = "/dashboard" style = {{textDecoration : "none", color : "black", fontWeight : "bold"}}>
+                {/* <Link to = "/dashboard" style = {{textDecoration : "none", color : "black", fontWeight : "bold"}}>
                     <Box sx = {{padding : "8px 0px 8px 12px", height : "24px", backgroundColor : isActive("/dashboard") ? "#FFFFFF" : "inherit"}}>
                         대시보드 
                     </Box>
-                </Link>
+                </Link> */}
                 {/* 당화혈색소 */}
                 <Link to = "/blood/hba1c" style = {{textDecoration : "none", color : "black", fontWeight : "bold"}}>
                     <Box sx = {{padding : "8px 0px 8px 12px", height : "24px", backgroundColor : isActive("/blood/hba1c") ? "#FFFFFF" : "inherit"}}>

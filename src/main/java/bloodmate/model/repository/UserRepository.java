@@ -11,8 +11,8 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
-    @Query(value = "select * from users where user_login_id = :userLoginId and user_password = :userPassword", nativeQuery = true)
-    Optional<UserEntity> findByUserLoginId(@Param("userLoginId") String userLoginId, @Param("userPassword") String userPassword);
+    @Query(value = "select * from users where user_login_id = :userLoginId", nativeQuery = true)
+    Optional<UserEntity> findByUserLoginId(@Param("userLoginId") String userLoginId);
 
     /// 닉네임 중복 확인 - R
     boolean existsByUserNickname(@Param("userNickname") String userNickname);
