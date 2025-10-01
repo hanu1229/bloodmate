@@ -1,6 +1,6 @@
 import { Box, Button, IconButton, Input, Tooltip, Typography } from "@mui/joy";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { btnColor, inputFocusColor } from "../../styles/commonStyle";
+import { btnColor, iconColor, inputFocusColor } from "../../styles/commonStyle";
 import { useState } from "react";
 import { Key, Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
@@ -86,7 +86,7 @@ export default function ResetPasswordPage(props) {
                         <Input 
                             name = "newPassword" type = {show1 ? "text" : "password"} placeholder = "새로운 비밀번호" 
                             value = {newPassword} onChange = {changePassword} 
-                            startDecorator = {<Key/>} endDecorator = {<IconButton onClick = {() => {setShow1(!show1)}} sx = {{color : "#A097D4"}}>{show1 ? <VisibilityOff/> : <Visibility/>}</IconButton>}
+                            startDecorator = {<Key sx = {{...iconColor}} />} endDecorator = {<IconButton onClick = {() => {setShow1(!show1)}} sx = {{color : "#A097D4"}}>{show1 ? <VisibilityOff/> : <Visibility/>}</IconButton>}
                             sx = {{...inputFocusColor, marginBottom : "20px"}} 
                         />
                         
@@ -94,7 +94,7 @@ export default function ResetPasswordPage(props) {
                         <Input 
                             name = "checkPassword" type = {show2 ? "text" : "password"} placeholder = "새로운 비밀번호 확인" 
                             value = {checkPassword} onChange = {changePassword} 
-                            startDecorator = {<Key/>}  endDecorator = {<IconButton onClick = {() => {setShow2(!show2)}} sx = {{color : "#A097D4"}}>{show2 ? <VisibilityOff/> : <Visibility/>}</IconButton>}
+                            startDecorator = {<Key sx = {{...iconColor}} />}  endDecorator = {<IconButton onClick = {() => {setShow2(!show2)}} sx = {{color : "#A097D4"}}>{show2 ? <VisibilityOff/> : <Visibility/>}</IconButton>}
                             sx = {{
                                     marginBottom : "20px", backgroundColor : "#FFFFFF", 
                                     borderColor : lastCheck ? "#A097D4" : "red", 

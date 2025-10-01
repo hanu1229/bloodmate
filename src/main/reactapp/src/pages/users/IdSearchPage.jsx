@@ -13,6 +13,17 @@ export default function IdSearchPage(props) {
     const [userPhone, setUserPhone] = useState("");
     const [code, setCode] = useState("");
 
+    /** 전화번호 */
+    const changePhone = (event) => {
+        let value = event.target.value.replace(/\D/g, "");
+        if(value.length > 3 && value.length <= 7) {
+            value = value.substring(0, 3) + "-" + value.substring(3);
+        } else if(value.length > 7) {
+            value = value.substring(0, 3) + "-" + value.substring(3, 7) + "-" + value.substring(7, 11);
+        }
+        setUserPhone(value);
+    }
+
     /** 인증번호 발송 */
     const receiveCodeNumber = async () => {
         alert("인증번호 발송");
@@ -86,7 +97,7 @@ export default function IdSearchPage(props) {
                         <Input type = "text" value = {userName} onChange = {(event) => { setUserName(event.target.value); }} placeholder = "이름..." sx = {{marginBottom : "20px", ...inputFocusColor}}/>
                         {/* 전화번호 */}
                         <Box sx = {{display : "flex", justifyContent : "space-between", marginBottom : "20px"}}>
-                            <Input type = "text" value = {userPhone} onChange = {(event) => { setUserPhone(event.target.value); }} placeholder = "전화번호(010-XXXX-XXXX)" sx = {{flex : 1, marginRight : "20px", ...inputFocusColor}}/>
+                            <Input type = "text" value = {userPhone} onChange = {changePhone} placeholder = "전화번호(010-XXXX-XXXX)" sx = {{flex : 1, marginRight : "20px", ...inputFocusColor}}/>
                             <Button onClick = {receiveCodeNumber} sx = {{...btnColor}}>인증번호 발송</Button>
                         </Box>
                         {/* 인증번호 */}

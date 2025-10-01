@@ -1,5 +1,5 @@
-import { Box, Button, Input, Option, Select, Tooltip, Typography } from "@mui/joy";
-import { CalendarMonth, CalendarMonthOutlined, Email, EmailOutlined, Key, Person, PersonOutline, Smartphone, SmartphoneOutlined } from "@mui/icons-material";
+import { Box, Button, IconButton, Input, Option, Select, Tooltip, Typography } from "@mui/joy";
+import { CalendarMonth, CalendarMonthOutlined, Email, EmailOutlined, Key, Person, PersonOutline, Smartphone, SmartphoneOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { btnColor, iconColor, inputFocusColor } from "../../styles/commonStyle";
@@ -25,10 +25,33 @@ export default function SignupPage(props) {
     const [lastCheck, setLastCheck] = useState(true);
     /** 체크 항목 관리 */
     const [checkInfo, setCheckInfo] = useState({userLoginId : false, userNickname : false, userPhone : false});
+    /** 비밀번호 visible */
+    const [showPassword1, setShowPassword1] = useState(false);
+    /** 비밀번호 확인 visible */
+    const [showPassword2, setShowPassword2] = useState(false);
 
-
+    /** 입력값 */
     const changeInfo = (event) => {
-        setInfo({...info, [event.target.name] : event.target.value});
+        if(event.target.name === "userBirthDate") {
+            let value = event.target.value.replace(/\D/g, "");
+            if(value.length > 4 && value.length <= 6) {
+                value = value.substring(0, 4) + "-" + value.substring(4);
+            } else if(value.length > 6) {
+                value = value.substring(0, 4) + "-" + value.substring(4, 6) + "-" + value.substring(6, 8);
+            }
+            setInfo({...info, [event.target.name] : value});
+        } else if(event.target.name === "userPhone") {
+            let value = event.target.value.replace(/\D/g, "");
+            if(value.length > 3 && value.length <= 7) {
+                value = value.substring(0, 3) + "-" + value.substring(3);
+            } else if(value.length > 7) {
+                value = value.substring(0, 3) + "-" + value.substring(3, 7) + "-" + value.substring(7, 11);
+            }
+            setInfo({...info, [event.target.name] : value});
+        } else {
+            setInfo({...info, [event.target.name] : event.target.value});
+        }
+       
     }
 
     /** 비밀번호 확인 */
@@ -162,10 +185,49 @@ export default function SignupPage(props) {
                         </Box>
                         
                         {/* 비밀번호 */}
-                        <Input className = "input-style" name = "userPassword" type = "password" placeholder = "비밀번호" value = {info.userPassword} onChange = {changePassword} startDecorator = {<Key sx = {{...iconColor}} />} sx = {{...inputFocusColor}} />
+                        <Input 
+                            className = "input-style" 
+                            name = "userPassword" 
+                            type = {showPassword1 ? "text" : "password"} 
+                            placeholder = "비밀번호" 
+                            value = {info.userPassword} 
+                            onChange = {changePassword} 
+                            startDecorator = {<Key sx = {{...iconColor}} />} 
+                            endDecorator = {
+                                <IconButton 
+                                    onClick = {() => { setShowPassword1(!showPassword1); }}
+                                    sx = {{...iconColor}}
+                                >
+                                    {showPassword1 ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            } 
+                            sx = {{...inputFocusColor}} 
+                        />
                         
                         {/* 비밀번호 확인 */}
-                        <Input className = "input-style" name = "password" type = "password" placeholder = "비밀번호 확인" value = {checkPassword} onChange = {changePassword} startDecorator = {<Key sx = {{...iconColor}} />} sx = {{backgroundColor : "#FFFFFF", borderColor : lastCheck ? "#A097D4" : "red", "&:focus-within::before" : {boxShadow : lastCheck ? "inset 0 0 0 2px #A097D4" : "inset 0 0 0 2px red"}}}></Input>
+                        <Input 
+                            className = "input-style" 
+                            name = "password" 
+                            type = {showPassword2 ? "text" : "password"} 
+                            placeholder = "비밀번호 확인" 
+                            value = {checkPassword} 
+                            onChange = {changePassword} 
+                            startDecorator = {<Key sx = {{...iconColor}} />}
+                            endDecorator = {
+                                <IconButton 
+                                    onClick = {() => { setShowPassword2(!showPassword2); }}
+                                    sx = {{...iconColor}}
+                                >
+                                    {showPassword2 ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            } 
+                            sx = {{
+                                backgroundColor : "#FFFFFF", 
+                                borderColor : lastCheck ? "#A097D4" : "red", "&:focus-within::before" : {
+                                    boxShadow : lastCheck ? "inset 0 0 0 2px #A097D4" : "inset 0 0 0 2px red"
+                                    }
+                            }}
+                        />
                         
                         {/* 회원가입 버튼 */}
                         <Box>

@@ -14,7 +14,19 @@ export default function PhoneModal(props) {
     
     // console.log(props.email);
 
-    const changeEmail = async () => {
+    /** 변경할 전화번호 */
+    const changeNewPhone = (event) => {
+        let value = event.target.value.replace(/\D/g, "");
+        if(value.length > 3 && value.length <= 7) {
+            value = value.substring(0, 3) + "-" + value.substring(3);
+        } else if(value.length > 7) {
+            value = value.substring(0, 3) + "-" + value.substring(3, 7) + "-" + value.substring(7, 11);
+        }
+        setNewPhone(value);
+    }
+
+
+    const changePhone = async () => {
         const info = {phone : phone, newPhone : newPhone, password : password};
         try {
             const token = localStorage.getItem("Token");
@@ -38,7 +50,7 @@ export default function PhoneModal(props) {
                 <Input 
                     type = "text"
                     value = {newPhone}
-                    onChange = {(event) => { setNewPhone(event.target.value); }} 
+                    onChange = {changeNewPhone} 
                     placeholder = "변경할 전화번호" 
                     startDecorator = {<Smartphone sx = {{...iconColor}} />} 
                     sx = {{...inputFocusColor}}
@@ -60,7 +72,7 @@ export default function PhoneModal(props) {
                     sx = {{...inputFocusColor}} 
                 />
             </Box>
-            <Button onClick = {changeEmail} sx = {{...btnColor, marginTop : "12px"}}>변경하기</Button>
+            <Button onClick = {changePhone} sx = {{...btnColor, marginTop : "12px"}}>변경하기</Button>
         </Box>
     );
 }

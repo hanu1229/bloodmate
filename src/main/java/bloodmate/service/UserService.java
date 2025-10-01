@@ -155,14 +155,14 @@ public class UserService {
                 if(receive.containsKey("email")) {
                     String email = receive.getOrDefault("email", null);
                     String newEmail = receive.getOrDefault("newEmail", null);
-                    if(userEntity.getUserEmail().equals(email) && userEntity.getUserPassword().equals(password)) {
+                    if(userEntity.getUserEmail().equals(email) && encoder.matches(password, userEntity.getUserPassword())) {
                         userEntity.setUserEmail(newEmail);
                         return ResponseEntity.status(200).body(true);
                     }
                 } else if(receive.containsKey("phone")) {
                     String phone = receive.getOrDefault("phone", null);
                     String newPhone = receive.getOrDefault("newPhone", null);
-                    if(userEntity.getUserPhone().equals(phone) && userEntity.getUserPassword().equals(password)) {
+                    if(userEntity.getUserPhone().equals(phone) && encoder.matches(password, userEntity.getUserPassword())) {
                         userEntity.setUserPhone(newPhone);
                         return ResponseEntity.status(200).body(true);
                     }
