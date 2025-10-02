@@ -139,7 +139,7 @@ export default function CreateHba1cModal(props) {
                     />
                 </Box>
             </Box>
-            <Button onClick = {createHba1c} sx = {{...btnColor, marginTop : "12px"}}>추가하기</Button>
+            <Button onClick = {createHba1c} sx = {{...btnColor, marginTop : "12px"}}>작성하기</Button>
         </Box>
     );
 }

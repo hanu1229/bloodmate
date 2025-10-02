@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,7 +59,16 @@ public class BoardService {
         System.out.println(">> BoardService.findAll start");
         try {
             List<BoardEntity> boardEntityList = boardRepository.findAllByBoardStateIsNormal();
-            List<BoardResponseDto> result = boardEntityList.stream().map(BoardEntity::toDto).toList();
+            List<BoardResponseDto> notices = boardEntityList.stream()
+                    .filter(entity -> entity.getBoardCategoryEntity().getBoardCategoryTitle().equals("공지"))
+                    .map(BoardEntity::toDto).toList();
+            List<BoardResponseDto> boards = boardEntityList.stream()
+                    .filter(entity -> !entity.getBoardCategoryEntity().getBoardCategoryTitle().equals("공지"))
+                    .map(BoardEntity::toDto).toList();
+            List<BoardResponseDto> result = new ArrayList<>();
+            result.addAll(notices);
+            result.addAll(boards);
+            // List<BoardResponseDto> result = boardEntityList.stream().map(BoardEntity::toDto).toList();
             return ResponseEntity.status(200).body(result);
         } catch(Exception e) {
             System.out.println(">> " + e);

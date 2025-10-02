@@ -172,7 +172,7 @@ export default function CreatePressureModal(props) {
                     />
                 </Box>
             </Box>
-            <Button onClick = {createPressure} sx = {{...btnColor, marginTop : "12px"}}>추가하기</Button>
+            <Button onClick = {createPressure} sx = {{...btnColor, marginTop : "12px"}}>작성하기</Button>
         </Box>
     );
 }

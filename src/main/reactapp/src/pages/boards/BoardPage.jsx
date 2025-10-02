@@ -84,7 +84,7 @@ export default function BoardPage(props) {
                         {tabComponents}
                     </TabList>
                     <Box sx = {{padding : "8px 16px", paddingBottom : "0px", display : "flex", justifyContent : "end"}}>
-                        <Button onClick = {createPost} sx = {{...btnColor}}>추가하기</Button>
+                        <Button onClick = {createPost} sx = {{...btnColor}}>작성하기</Button>
                     </Box>
                     <List sx = {{padding : "8px 16px", paddingBottom : "0px", display : "flex", alignItems : "start"}}>
                         <ListItem 

@@ -133,7 +133,7 @@ export default function CreateSugarModal(props) {
                     />
                 </Box>
             </Box>
-            <Button onClick = {createSugar} sx = {{...btnColor, marginTop : "12px"}}>추가하기</Button>
+            <Button onClick = {createSugar} sx = {{...btnColor, marginTop : "12px"}}>작성하기</Button>
         </Box>
     );
 }

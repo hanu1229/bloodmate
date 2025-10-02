@@ -204,7 +204,7 @@ export default function BloodPressurePage(props) {
                     </Box>
                     {/* 추가하기 버튼 */}
                     <Box sx = {{marginBottom : "8px", display : "flex", justifyContent : "end"}}>
-                        <Button onClick = {() => setCreateModal(true)} sx = {{...btnColor}}>추가하기</Button>
+                        <Button onClick = {() => setCreateModal(true)} sx = {{...btnColor}}>작성하기</Button>
                         <CustomModal
                             open = {createModal}
                             onClose = {(event, reason) => { reason === "backdropClick" ? setCreateModal(true) : setCreateModal(false) }}
