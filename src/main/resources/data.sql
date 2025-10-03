@@ -73,6 +73,7 @@ insert into board_category(board_category_title) values ("공지"), ("자유"), 
 insert into board_post(
 board_post_title, board_post_content, board_post_view, created_at, updated_at, board_post_state, user_id, board_category_id
 ) values
+("공지1", "공지1 내용입니다.", 0, "2025-08-07T17:05:25", "2025-08-07T17:05:25", 1, 1, 1),
 ("추후 업데이트 예정 기능",
 '1. 특정 기간 선택에 따라 그래프를 보여 시각적 효과를 극대화하겠습니다.<br/>'
 '2. 게시판에 이미지를 추가하여 게시할 수 있도록 하겠습니다.<br/>'
@@ -87,7 +88,8 @@ board_post_title, board_post_content, board_post_view, created_at, updated_at, b
 ("자유2", "자유2 내용입니다.", 0, "2025-08-07T17:05:25", "2025-08-07T17:05:25", 1, 2, 2),
 ("혈당2", "혈당2 내용입니다.", 0, "2025-08-07T17:05:25", "2025-08-07T17:05:25", 1, 3, 3),
 ("혈압2", "혈압2 내용입니다.", 0, "2025-08-07T17:05:25", "2025-08-07T17:05:25", 1, 4, 4),
-("운동2", "운동2 내용입니다.", 0, "2025-08-07T17:05:25", "2025-08-07T17:05:25", 1, 5, 5);
+("운동2", "운동2 내용입니다.", 0, "2025-08-07T17:05:25", "2025-08-07T17:05:25", 1, 5, 5),
+("현재 업데이트 완료된 기능 알림", "페이지 처리 구현 중입니다.<br/> 조금만 더 기다려주세요.", 0, "2025-08-07T17:05:25", "2025-08-07T17:05:25", 1, 1, 1);
 
 -- 게시판 댓글 샘플
 insert into board_comment(board_comment_content, created_at, updated_at, board_comment_state, user_id, board_post_id) values

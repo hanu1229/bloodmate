@@ -12,10 +12,26 @@ export default function BoardPage(props) {
 
     /** 탭 인덱스 */
     const [tabIndex, setTabIndex] = useState(0);
-    /** 카테고별 게시물 배열 */
+    /** 카테고별 게시물 리스트 */
     const [posts, setPosts] = useState([]);
+    /** 공지 게시물 리스트 */
+    const [notices, setNotices] = useState([]);
+    /** 공지 탭 접근 */
+    const [noticeTab, setNoticeTab] = useState(false);
 
-    useEffect(() => { findPostByCategory(tabIndex); }, [tabIndex]);
+    useEffect(() => {
+        if(tabIndex === 1) {
+            setNoticeTab(true);
+        } else {
+            setNoticeTab(false);
+        }
+        (async () => {
+            if(tabIndex !== 1) {
+               await findNotices();
+            }
+            await findPostByCategory(tabIndex); 
+        })();
+    }, [tabIndex]);
 
     const categoryTitle = {1 : "공지", 2 : "자유", 3 : "혈당", 4 : "혈압", 5 : "운동"};
 
@@ -36,20 +52,36 @@ export default function BoardPage(props) {
         <Tab sx = {{...tabColor}}>혈압</Tab>,
         <Tab sx = {{...tabColor}}>운동</Tab>
     ];
+    /** 공지 게시물 불러오기 */
+    const findNotices = async () => {
+        try {
+            const response = await axios.get(`${serverDomain}/board/notice`, {withCredentials : true});
+            if(response.status === 200) {
+                console.log("공지 ↓");
+                console.table(response.data);
+                setNotices(response.data);
+            }
+        } catch(e) {
+            if(e.response.status === 400) {
+                console.log(e);
+                setNotices([]);
+            }
+        }
+    }
     /** 카테고리별 게시물 불러오기 */
     const findPostByCategory = async (tabIndex) => {
         try {
             if(tabIndex === 0) {
                 const response = await axios.get(`${serverDomain}/board`, {withCredentials : true});
                 if(response.status === 200) {
-                    console.log(response.data);
+                    console.table(response.data);
                     setPosts(response.data);
                 }
             } else {
                 const title = categoryTitle[tabIndex];
                 const response = await axios.get(`${serverDomain}/board/category/${title}`, {withCredentials : true});
                 if(response.status === 200) {
-                    console.log(response.data);
+                    console.table(response.data);
                     setPosts(response.data);
                 }
             }
@@ -110,33 +142,76 @@ export default function BoardPage(props) {
                     </List>
                 </Box>
                 {
+
+                }
+                {
                     tabComponents.map((element, index) => (
-                        <TabPanel value = {index} sx = {{padding : "16px", paddingTop : "0px", backgroundColor : "#FFFFFF"}}>
-                            <List sx = {{padding : "0px", display : "flex", alignItems : "start", borderBottom : "1px solid black"}}>
+                        <Box>
+                            <TabPanel value = {index} sx = {{padding : "16px", paddingTop : "0px", backgroundColor : "#FFFFFF"}}>
+                                {/* 공지 리스트 (최대 3개) */}
                                 {
-                                    posts.map((item) => (
-                                        <ListItem 
-                                            key = {item.boardPostId}
-                                            onClick = {() => { navigate(`/board/${item.boardPostId}`); }} 
-                                            sx = {{width : "100%", height : "48px", cursor : "pointer", "&:hover" : {backgroundColor : "rgba(160, 151, 212, 0.12)"}}}
-                                        >
-                                            <ListItemText 
-                                                primary = {item.boardCategoryTitle} 
-                                                sx = {{width : "4%", maxWidth : "4%", textAlign : "center", "& span" : {fontWeight : "bold"}}} />
-                                            <ListItemText 
-                                                primary = {item.boardPostTitle} 
-                                                sx = {{flex : 1, marginLeft : "8px"}} />
-                                            <ListItemText 
-                                                primary = {item.userNickname} 
-                                                sx = {{width : "12%", maxWidth : "12%", textAlign : "center"}} />
-                                            <ListItemText 
-                                                primary = {item.updatedAt.split("T")[0]} 
-                                                sx = {{width : "12%", maxWidth : "12%", textAlign : "center"}} />                                                
-                                        </ListItem>
-                                    ))
+                                    noticeTab ? null : 
+                                    <List sx = {{padding : "0px", display : "flex", alignItems : "start", borderBottom : "1px solid black"}}>
+                                        {
+                                            notices.map((item) => (
+                                                <ListItem
+                                                    key = {item.boardPostId}
+                                                    onClick = {() => { navigate(`/board/${item.boardPostId}`); }} 
+                                                    sx = {{width : "100%", height : "48px", cursor : "pointer", "&:hover" : {backgroundColor : "rgba(160, 151, 212, 0.12)"}}}
+                                                >
+                                                    <ListItemText 
+                                                        primary = {item.boardCategoryTitle} 
+                                                        sx = {{width : "4%", maxWidth : "4%", textAlign : "center", "& span" : {fontWeight : "bold"}}}
+                                                    />
+                                                    <ListItemText 
+                                                        primary = {item.boardPostTitle} 
+                                                        sx = {{flex : 1, marginLeft : "8px"}}
+                                                    />
+                                                    <ListItemText 
+                                                        primary = {item.userNickname} 
+                                                        sx = {{width : "12%", maxWidth : "12%", textAlign : "center"}}
+                                                    />
+                                                    <ListItemText 
+                                                        primary = {item.updatedAt.split("T")[0]} 
+                                                        sx = {{width : "12%", maxWidth : "12%", textAlign : "center"}} 
+                                                    />
+                                                </ListItem>
+                                            ))
+                                        }
+                                    </List>
                                 }
-                            </List>
-                        </TabPanel>
+                                
+                                {/* 그외 카테고리 게시물 리스트 */}
+                                <List sx = {{padding : "0px", display : "flex", alignItems : "start", borderBottom : "1px solid black"}}>
+                                    {
+                                        posts.map((item) => (
+                                            <ListItem 
+                                                key = {item.boardPostId}
+                                                onClick = {() => { navigate(`/board/${item.boardPostId}`); }} 
+                                                sx = {{width : "100%", height : "48px", cursor : "pointer", "&:hover" : {backgroundColor : "rgba(160, 151, 212, 0.12)"}}}
+                                            >
+                                                <ListItemText 
+                                                    primary = {item.boardCategoryTitle} 
+                                                    sx = {{width : "4%", maxWidth : "4%", textAlign : "center", "& span" : {fontWeight : "bold"}}} 
+                                                />
+                                                <ListItemText 
+                                                    primary = {item.boardPostTitle} 
+                                                    sx = {{flex : 1, marginLeft : "8px"}} 
+                                                />
+                                                <ListItemText 
+                                                    primary = {item.userNickname} 
+                                                    sx = {{width : "12%", maxWidth : "12%", textAlign : "center"}} 
+                                                />
+                                                <ListItemText 
+                                                    primary = {item.updatedAt.split("T")[0]} 
+                                                    sx = {{width : "12%", maxWidth : "12%", textAlign : "center"}} 
+                                                />                                                
+                                            </ListItem>
+                                        ))
+                                    }
+                                </List>
+                            </TabPanel>
+                        </Box>
                     ))
                 }
             </Tabs>

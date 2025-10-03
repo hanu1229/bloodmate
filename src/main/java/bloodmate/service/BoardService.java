@@ -54,22 +54,38 @@ public class BoardService {
         }
     }
 
-    /// 게시물 전체 출력 - R --> 추후 페이징 적용 예정
+    /// 공지 게시물 출력 - R
+    public ResponseEntity<List<BoardResponseDto>> findNotices() {
+        System.out.println(">> BoardService.findNotices start");
+        try {
+            List<BoardEntity> boardEntityList = boardRepository.findNotices();
+            List<BoardResponseDto> boardDto = boardEntityList.stream().map(BoardEntity::toDto).toList();
+            return ResponseEntity.status(200).body(boardDto);
+        } catch(Exception e) {
+            System.out.println(">> " + e);
+            System.out.println(">> BoardService.findNotices error!!!");
+            return ResponseEntity.status(400).body(null);
+        } finally {
+            System.out.println(">> BoardService.findNotices end");
+        }
+    }
+
+    /// (공지 제외)게시물 전체 출력 - R --> 추후 페이징 적용 예정
     public ResponseEntity<List<BoardResponseDto>> findAll() {
         System.out.println(">> BoardService.findAll start");
         try {
             List<BoardEntity> boardEntityList = boardRepository.findAllByBoardStateIsNormal();
-            List<BoardResponseDto> notices = boardEntityList.stream()
-                    .filter(entity -> entity.getBoardCategoryEntity().getBoardCategoryTitle().equals("공지"))
-                    .map(BoardEntity::toDto).toList();
+            //List<BoardResponseDto> notices = boardEntityList.stream()
+            //        .filter(entity -> entity.getBoardCategoryEntity().getBoardCategoryTitle().equals("공지"))
+            //        .map(BoardEntity::toDto).toList();
             List<BoardResponseDto> boards = boardEntityList.stream()
                     .filter(entity -> !entity.getBoardCategoryEntity().getBoardCategoryTitle().equals("공지"))
                     .map(BoardEntity::toDto).toList();
-            List<BoardResponseDto> result = new ArrayList<>();
-            result.addAll(notices);
-            result.addAll(boards);
+            //List<BoardResponseDto> result = new ArrayList<>();
+            //result.addAll(notices);
+            //result.addAll(boards);
             // List<BoardResponseDto> result = boardEntityList.stream().map(BoardEntity::toDto).toList();
-            return ResponseEntity.status(200).body(result);
+            return ResponseEntity.status(200).body(boards);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BoardService.findAll error!!!");

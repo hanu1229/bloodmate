@@ -18,6 +18,10 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
     @Query(value = "update board_post set board_post_view = board_post_view + 1 where board_post_id = :boardPostId", nativeQuery = true)
     int increasePostView(@Param("boardPostId") int boardPostId);
 
+    /// 공지 게시물 출력 - R
+    @Query(value = "select * from board_post where board_post_state = 1 and board_category_id = 1 order by board_post_id DESC limit 3", nativeQuery = true)
+    List<BoardEntity> findNotices();
+
     /// 게시물 전체 출력 - R
     @Query(value = "select * from board_post where board_post_state = 1 order by board_post_id DESC", nativeQuery = true)
     List<BoardEntity> findAllByBoardStateIsNormal();

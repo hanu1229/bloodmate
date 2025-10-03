@@ -28,7 +28,16 @@ public class BoardController {
         return result;
     }
 
-    /// 게시물 전체 출력 - R --> 추후 페이징 적용 예정
+    /// 공지 게시물 출력 - R
+    @GetMapping("/notice")
+    public ResponseEntity<List<BoardResponseDto>> findNotices() {
+        System.out.println(">> BoardController.findNotices start");
+        ResponseEntity<List<BoardResponseDto>> result = boardService.findNotices();
+        System.out.println(">> BoardController.findNotices end\n");
+        return result;
+    }
+
+    /// (공지 제외)게시물 전체 출력 - R --> 추후 페이징 적용 예정
     @GetMapping("")
     public ResponseEntity<List<BoardResponseDto>> findAll() {
         System.out.println(">> BoardController.findAll start");

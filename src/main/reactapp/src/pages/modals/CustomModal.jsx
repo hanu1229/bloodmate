@@ -1,4 +1,6 @@
-import { Box, Modal, ModalClose, Sheet, Typography } from "@mui/joy";
+import { Info } from "@mui/icons-material";
+import { Box, Modal, ModalClose, Sheet, Tooltip, Typography } from "@mui/joy";
+import { btnColor } from "../../styles/commonStyle";
 
 export function CustomModal(props) {
     return (
@@ -26,7 +28,19 @@ export function CustomModal(props) {
                 }}
             >
                 <ModalClose variant = "outlined"/>
-                <Typography sx = {{marginLeft : "12px", marginBottom : "12px", fontSize : "20px", fontWeight : "bold"}}>{props.title}</Typography>
+                <Typography sx = {{marginLeft : "12px", marginBottom : "12px", fontSize : "20px", fontWeight : "bold"}}>
+                    {
+                        <Box sx = {{display : "flex", alignItems : "center"}}>
+                            {props.title}
+                            <Tooltip
+                                title = "본 서비스는 개인 건강정보의 기록·보관을 위한 용도입니다."
+                                sx = {{...btnColor}}
+                            >
+                                <Info sx ={{width : "20px", height : "20px", color : "grey", marginLeft : "4px"}} />
+                            </Tooltip>
+                        </Box>
+                    }
+                </Typography>
                 <Box sx = {{width : "100%", height : "100%", overflowY : "auto", overflowX : "hidden", minHeight : 0}}>
                     {props.children}
                 </Box>
