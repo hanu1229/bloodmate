@@ -92,6 +92,7 @@ export default function MyInfoPage(props) {
                                 open = {phoneModal} 
                                 onClose = {(event, reason) => { reason == "backdropClick" ? setPhoneModal(true) : setPhoneModal(false) }}
                                 title = "전화번호 수정"
+                                isInfo = {false}
                             >
                                 <PhoneModal
                                     phone = {myInfo.userPhone} findInfo = {findInfo}

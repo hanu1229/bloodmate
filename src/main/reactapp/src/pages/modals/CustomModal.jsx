@@ -32,12 +32,14 @@ export function CustomModal(props) {
                     {
                         <Box sx = {{display : "flex", alignItems : "center"}}>
                             {props.title}
-                            <Tooltip
-                                title = "본 서비스는 개인 건강정보의 기록·보관을 위한 용도입니다."
-                                sx = {{...btnColor}}
-                            >
-                                <Info sx ={{width : "20px", height : "20px", color : "grey", marginLeft : "4px"}} />
-                            </Tooltip>
+                            {
+                                props.isInfo ? <Tooltip
+                                    title = "본 서비스는 개인 건강정보의 기록·보관을 위한 용도입니다."
+                                    sx = {{...btnColor}}
+                                >
+                                    <Info sx ={{width : "20px", height : "20px", color : "grey", marginLeft : "4px"}} />
+                                </Tooltip> : null
+                            }
                         </Box>
                     }
                 </Typography>

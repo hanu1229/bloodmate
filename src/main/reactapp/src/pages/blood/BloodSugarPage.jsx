@@ -228,6 +228,7 @@ export default function BloodSugarPage(props) {
                             open = {createModal}
                             onClose = {(event, reason) => { reason === "backdropClick" ? setCreateModal(true) : setCreateModal(false) }}
                             title = "혈당 수치 추가하기"
+                            isInfo = {true}
                         >
                             <CreateSugarModal findAll = {findAll} onClose = {() => {setCreateModal(false);}} />
                         </CustomModal>
@@ -237,6 +238,7 @@ export default function BloodSugarPage(props) {
                         open = {updateModal}
                         onClose = {(event, reason) => { reason === "backdropClick" ? setUpdateModal(true) : setUpdateModal(false) }}
                         title = "혈당 수치 수정하기"
+                        isInfo = {true}
                     >
                         <UpdateSugarModal rowInfo = {rowInfo} findAll = {findAll} onClose = {() => {setUpdateModal(false);}} />
                     </CustomModal>
@@ -244,6 +246,7 @@ export default function BloodSugarPage(props) {
                         open = {deleteModal}
                         onClose = {(event, reason) => { reason === "backdropClick" ? setDeleteModal(true) : setDeleteModal(false) }}
                         title = "혈당 수치 삭제하기"
+                        isInfo = {true}
                     >
                         <DeleteSugarModal rowInfo = {rowInfo} findAll = {findAll} onClose = {() => {setDeleteModal(false);}} />
                     </CustomModal>

@@ -192,6 +192,7 @@ export default function BloodSugarPage(props) {
                             open = {createModal}
                             onClose = {(event, reason) => { reason === "backdropClick" ? setCreateModal(true) : setCreateModal(false) }}
                             title = "당화혈색소 수치 추가하기"
+                            isInfo = {true}
                         >
                             <CreateHba1cModal findAll = {findAll} onClose = {() => {setCreateModal(false);}} />
                         </CustomModal>
@@ -201,6 +202,7 @@ export default function BloodSugarPage(props) {
                         open = {updateModal}
                         onClose = {(event, reason) => { reason === "backdropClick" ? setUpdateModal(true) : setUpdateModal(false) }}
                         title = "당화혈색소 수치 수정하기"
+                        isInfo = {true}
                     >
                         <UpdateHba1cModal rowInfo = {rowInfo} findAll = {findAll} onClose = {() => {setUpdateModal(false);}} />
                     </CustomModal>
@@ -208,6 +210,7 @@ export default function BloodSugarPage(props) {
                         open = {deleteModal}
                         onClose = {(event, reason) => { reason === "backdropClick" ? setDeleteModal(true) : setDeleteModal(false) }}
                         title = "당화혈색소 수치 삭제하기"
+                        isInfo = {true}
                     >
                         <DeleteHba1cModal rowInfo = {rowInfo} findAll = {findAll} onClose = {() => {setDeleteModal(false);}} />
                     </CustomModal>

@@ -209,6 +209,7 @@ export default function BloodPressurePage(props) {
                             open = {createModal}
                             onClose = {(event, reason) => { reason === "backdropClick" ? setCreateModal(true) : setCreateModal(false) }}
                             title = "혈압 수치 추가하기"
+                            isInfo = {true}
                         >
                             <CreatePressureModal findAll = {findAll} onClose = {() => {setCreateModal(false);}} />
                         </CustomModal>
@@ -218,6 +219,7 @@ export default function BloodPressurePage(props) {
                         open = {updateModal}
                         onClose = {(event, reason) => { reason === "backdropClick" ? setUpdateModal(true) : setUpdateModal(false) }}
                         title = "혈압 수치 수정하기"
+                        isInfo = {true}
                     >
                         <UpdatePressureModal rowInfo = {rowInfo} findAll = {findAll} onClose = {() => {setUpdateModal(false);}} />
                     </CustomModal>
@@ -225,6 +227,7 @@ export default function BloodPressurePage(props) {
                         open = {deleteModal}
                         onClose = {(event, reason) => { reason === "backdropClick" ? setDeleteModal(true) : setDeleteModal(false) }}
                         title = "혈압 수치 삭제하기"
+                        isInfo = {true}
                     >
                         <DeletePressureModal rowInfo = {rowInfo} findAll = {findAll} onClose = {() => {setDeleteModal(false);}} />
                     </CustomModal>
