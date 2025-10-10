@@ -21,6 +21,9 @@ export default function BloodSugarPage(props) {
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [rowInfo, setRowInfo] = useState({});
+    const [totalElements, setTotalElements] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [paginationModel, setPaginationModel] = useState({page : 0, pageSize : 10});
     /** true : 펼침 | false : 닫힘 */
     const [sugarGuide, setSugarGuide] = useState(false);
     /** 차트에 필요 - DataGrid를 조작할 수 있게 해줌 */
@@ -30,7 +33,8 @@ export default function BloodSugarPage(props) {
     const [measureDates, setMeasureDates] = useState([]);
     */
     
-    useEffect(() => { checkLogin(); findAll(); }, []);
+    useEffect(() => { checkLogin(); findAll(); console.log(paginationModel.pageSize); }, []);
+    useEffect(() => { checkLogin(); findAll(); console.log(paginationModel.pageSize); }, [paginationModel]);
     /** 차트에 필요 */
     /*
     useEffect(() => {
@@ -63,9 +67,9 @@ export default function BloodSugarPage(props) {
 
     const findAll = async () => {
         const token = localStorage.getItem("Token");
-        const response = await axios.get(`${serverDomain}/blood/sugar`, {headers : {Authorization : token}});
+        const response = await axios.get(`${serverDomain}/blood/sugar?page=${paginationModel.page + 1}&size=${paginationModel.pageSize}&sorting=DESC`, {headers : {Authorization : token}});
         console.log(response.data);
-        const temp = response.data.map((item, index) => {
+        const temp = response.data.content.map((item, index) => {
             const time = item["measuredAt"].split("T")[1];
             const [hour, minute, second] = time.split(":");
 
@@ -83,6 +87,9 @@ export default function BloodSugarPage(props) {
         console.log("temp");
         console.log(temp);
         setBloodSugarInfo(temp);
+        setTotalElements(response.data.totalElements);
+        setTotalPages(response.data.totalPages);
+        console.log(response.data.size);
     }
 
 
@@ -251,19 +258,25 @@ export default function BloodSugarPage(props) {
                         <DeleteSugarModal rowInfo = {rowInfo} findAll = {findAll} onClose = {() => {setDeleteModal(false);}} />
                     </CustomModal>
                     {/* 표 */}
-                    <Box sx = {{display : "flex", width : "100%", height : "484px", alignItems : "start"}}>
+                    <Box sx = {{display : "flex", width : "100%", height : `${40 + 40 * paginationModel.pageSize + 40 + 4}px`, alignItems : "start"}}>
                         <DataGrid
                             // apiRef = {apiRef}
                             rows = {bloodSugarInfo}
                             columns = {columns}
                             rowHeight = {40}
                             columnHeaderHeight = {40}
-                            initialState = {{
-                                pagination : {
-                                    paginationModel : {pageSize : 10},
-                                }
-                            }}
-                            pageSizeOptions = {[10]}
+                            rowCount = {totalElements}
+                            pagination
+                            paginationMode = "server"
+                            paginationModel = {paginationModel}
+                            onPaginationModelChange = {setPaginationModel}
+                            sortingMode = "server"
+                            // initialState = {{
+                            //     pagination : {
+                            //         paginationModel : {pageSize : paginationModel.page},
+                            //     }
+                            // }}
+                            pageSizeOptions = {[5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70]}
                             // checkboxSelection
                             disableRowSelectionOnClick
                             sx = {{

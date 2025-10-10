@@ -11,6 +11,10 @@ import bloodmate.model.repository.UserRepository;
 import bloodmate.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -78,14 +82,57 @@ public class BloodSugarService {
     }
 
     /// 혈당 정보 전체 불러오기 - R
-    public List<BloodSugarResponseDto> findAll(String token) {
+//    public List<BloodSugarResponseDto> findAll(String token) {
+//        System.out.println(">> BloodSugarService.findAll start");
+//        try {
+//            int userId = jwtUtil.validateToken(token);
+//            if(userId <= 0) { return null; }
+//            List<BloodSugarEntity> bloodSugarEntityList = bloodSugarRepository.findByUserIdToBloodSugar(userId);
+//            if(bloodSugarEntityList == null) { return null; }
+//            return bloodSugarEntityList.stream().map(entity -> {
+//                BloodSugarResponseDto dto = entity.toDto();
+//                String code = entity.getMeasurementContextEntity().getMcCode();
+//                /// getOrDefault(key, default) --> Map 타입에서 key를 찾고 key가 없으면 default값을 반환 시킴
+//                String label = CONTEXT_LABELS.getOrDefault(code, code);
+//                dto.setMeasurementContextLabel(label);
+//                return dto;
+//            }).toList();
+//        } catch(Exception e) {
+//            System.out.println(">> " + e);
+//            System.out.println(">> BloodSugarService.findAll error!!!");
+//            return null;
+//        } finally {
+//            System.out.println(">> BloodSugarService.findAll end");
+//        }
+//    }
+
+    /// 혈당 정보 전체 불러오기 - R
+    public Page<BloodSugarResponseDto> findAll(String token, int page, int size, String sorting) {
         System.out.println(">> BloodSugarService.findAll start");
         try {
             int userId = jwtUtil.validateToken(token);
             if(userId <= 0) { return null; }
-            List<BloodSugarEntity> bloodSugarEntityList = bloodSugarRepository.findByUserIdToBloodSugar(userId);
-            if(bloodSugarEntityList == null) { return null; }
-            return bloodSugarEntityList.stream().map(entity -> {
+            Pageable pageable;
+            if(sorting.equals("DESC")) {
+                System.out.println(">> DESC");
+                pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "measuredAt"));
+            } else {
+                System.out.println(">> ASC");
+                pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "measuredAt"));
+            }
+            Page<BloodSugarEntity> bloodSugarEntityPage = bloodSugarRepository.findByUserEntity_UserId(userId, pageable);
+            if(bloodSugarEntityPage == null) { return null; }
+            return bloodSugarEntityPage.map(entity -> {
+                BloodSugarResponseDto dto = entity.toDto();
+                String code = entity.getMeasurementContextEntity().getMcCode();
+                /// getOrDefault(key, default) --> Map 타입에서 key를 찾고 key가 없으면 default값을 반환 시킴
+                String label = CONTEXT_LABELS.getOrDefault(code, code);
+                dto.setMeasurementContextLabel(label);
+                return dto;
+            });
+
+            /*
+            return bloodSugarEntityPage.stream().map(entity -> {
                 BloodSugarResponseDto dto = entity.toDto();
                 String code = entity.getMeasurementContextEntity().getMcCode();
                 /// getOrDefault(key, default) --> Map 타입에서 key를 찾고 key가 없으면 default값을 반환 시킴
@@ -93,6 +140,7 @@ public class BloodSugarService {
                 dto.setMeasurementContextLabel(label);
                 return dto;
             }).toList();
+            */
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BloodSugarService.findAll error!!!");
