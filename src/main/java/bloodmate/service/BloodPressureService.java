@@ -11,6 +11,10 @@ import bloodmate.model.repository.UserRepository;
 import bloodmate.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -59,24 +63,31 @@ public class BloodPressureService {
     }
 
     /// 혈압 정보 전체 불러오기 - R
-    public List<BloodPressureResponseDto> findAll(String token) {
+    public ResponseEntity<Page<BloodPressureResponseDto>> findAll(String token, int page, int size, String sorting) {
         System.out.println(">> BloodPressureService.findAll start");
         try {
             int userId = jwtUtil.validateToken(token);
             if(userId <= 0) { return null; }
-            List<BloodPressureEntity> bloodPressureEntityList = bloodPressureRepository.findByUserIdToBloodPressure(userId);
-            if(bloodPressureEntityList == null) { return null; }
-            return bloodPressureEntityList.stream().map(entity -> {
+            Pageable pageable;
+            if(sorting.equals("DESC")) {
+                pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "measuredAt"));
+            } else {
+                pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "measuredAt"));
+            }
+            Page<BloodPressureEntity> bloodPressureEntityPage = bloodPressureRepository.findByUserEntity_userId(userId, pageable);
+            if(bloodPressureEntityPage == null) { return null; }
+            Page<BloodPressureResponseDto> result = bloodPressureEntityPage.map(entity -> {
                 BloodPressureResponseDto dto = entity.toDto();
                 String code = entity.getMeasurementContextEntity().getMcCode();
                 String label = BloodSugarService.CONTEXT_LABELS.getOrDefault(code, code);
                 dto.setMeasurementContextLabel(label);
                 return dto;
-            }).toList();
+            });
+            return ResponseEntity.status(200).body(result);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BloodPressureService.findAll error!!!!");
-            return null;
+            return ResponseEntity.status(400).body(null);
         } finally {
             System.out.println(">> BloodPressureService.findAll end");
         }

@@ -8,6 +8,10 @@ import bloodmate.model.repository.UserRepository;
 import bloodmate.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -54,14 +58,20 @@ public class Hba1cService {
     }
 
     /// 당화혈색소 정보 전체 불러오기 - R
-    public ResponseEntity<List<Hba1cDto>> findAll(String token) {
+    public ResponseEntity<Page<Hba1cDto>> findAll(String token, int page, int size, String sorting) {
         System.out.println(">> Hba1cService.findAll start");
         try {
             int userId = jwtUtil.validateToken(token);
             if(userId > 0) {
-                List<Hba1cEntity> hba1cEntityList = hba1cRepository.findByUserIdToHba1c(userId);
-                System.out.println(">> hba1cEntityList = " + hba1cEntityList);
-                List<Hba1cDto> result = hba1cEntityList.stream().map(Hba1cEntity::toDto).toList();
+                Pageable pageable;
+                if(sorting.equals("DESC")) {
+                    pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "measuredAt"));
+                } else {
+                    pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "measuredAt"));
+                }
+                Page<Hba1cEntity> hba1cEntityPage = hba1cRepository.findByUserEntity_UserId(userId, pageable);
+                System.out.println(">> hba1cEntityPage = " + hba1cEntityPage);
+                Page<Hba1cDto> result = hba1cEntityPage.map(Hba1cEntity::toDto);
                 // 스트림을 이용한 변환
                 return ResponseEntity.status(200).body(result);
             }

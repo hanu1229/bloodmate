@@ -20,35 +20,60 @@ export default function BloodPressurePage(props) {
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [rowInfo, setRowInfo] = useState({});
+    const [totalElements, setTotalElements] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [paginationModel, setPaginationModel] = useState({page : 0, pageSize : 7})
     /** true : 펼침 | false : 닫힘 */
     const [sugarGuide, setSugarGuide] = useState(false);
 
-    useEffect(() => { checkLogin(); findAll(); }, []);
+    useEffect(() => { 
+        (async () => {
+            await checkLogin(); 
+            await findAll(); 
+            console.log(paginationModel.pageSize);
+        })();
+    }, [paginationModel]);
 
     const findAll = async () => {
-        const token = localStorage.getItem("Token");
-        const response = await axios.get(`${serverDomain}/blood/pressure`, {headers : {Authorization : token}});
-        console.log(response.data);
-        const temp = response.data.map((item, index) => {
-            const time = item["measuredAt"].split("T")[1];
-            const [hour, minute, second] = time.split(":");
-
-            const obj = {
-                id : index + 1,
-                measureDate : item["measuredAt"].split("T")[0],
-                measureTime : `${hour}:${minute}`,
-                contextLabel : item["measurementContextLabel"],
-                contextId : item["measurementContextId"],
-                systolicValue : item["bloodPressureSystolic"],
-                diastolicValue : item["bloodPressureDiastolic"],
-                pulseValue : item["bloodPressurePulse"],
-                bloodPressureId : item["bloodPressureId"]
+        try {
+            const token = localStorage.getItem("Token");
+            const response = await axios.get(
+                `${serverDomain}/blood/pressure`, 
+                {
+                    headers : {Authorization : token},
+                    params : {page : paginationModel.page + 1, size : paginationModel.pageSize, sorting : "DESC"}
+                }
+            );
+            if(response.status === 200) {
+                console.log(response.data);
+                const temp = response.data.content.map((item, index) => {
+                    const time = item["measuredAt"].split("T")[1];
+                    const [hour, minute, second] = time.split(":");
+    
+                    const obj = {
+                        id : index + 1,
+                        measureDate : item["measuredAt"].split("T")[0],
+                        measureTime : `${hour}:${minute}`,
+                        contextLabel : item["measurementContextLabel"],
+                        contextId : item["measurementContextId"],
+                        systolicValue : item["bloodPressureSystolic"],
+                        diastolicValue : item["bloodPressureDiastolic"],
+                        pulseValue : item["bloodPressurePulse"],
+                        bloodPressureId : item["bloodPressureId"]
+                    }
+                    return obj;
+                });
+                console.log("temp");
+                console.log(temp);
+                setBloodPressureInfo(temp);
+                setTotalElements(response.data.totalElements);
+                setTotalPages(response.data.totalPages);
             }
-            return obj;
-        });
-        console.log("temp");
-        console.log(temp);
-        setBloodPressureInfo(temp);
+        } catch(e) {
+            if(e.response.status === 400) {
+                alert("데이터가 존재하지 않습니다");
+            }
+        }
     }
 
      const columns = [
@@ -172,7 +197,7 @@ export default function BloodPressurePage(props) {
                         {sugarGuide ? <ArrowDropDown /> : <ArrowRight />}
                         <Typography sx = {{color : "inherit"}}>혈압 수치 기준</Typography>
                     </Box>
-                    <Box sx = {{margin : "16px 0px", paddingLeft : "24px", width : "600px"}}>
+                    <Box sx = {{marginBottom : "16px", paddingLeft : "24px", width : "600px"}}>
                         {
                             sugarGuide ? (<>
                                 <table style = {{width : "600px", background : "#FFFFFF", textAlign : "center", borderCollapse : "collapse"}}>
@@ -202,13 +227,13 @@ export default function BloodPressurePage(props) {
                             </>) : ""
                         }
                     </Box>
-                    {/* 추가하기 버튼 */}
+                    {/* 작성하기 버튼 */}
                     <Box sx = {{marginBottom : "8px", display : "flex", justifyContent : "end"}}>
                         <Button onClick = {() => setCreateModal(true)} sx = {{...btnColor}}>작성하기</Button>
                         <CustomModal
                             open = {createModal}
                             onClose = {(event, reason) => { reason === "backdropClick" ? setCreateModal(true) : setCreateModal(false) }}
-                            title = "혈압 수치 추가하기"
+                            title = "혈압 수치 작성하기"
                             isInfo = {true}
                         >
                             <CreatePressureModal findAll = {findAll} onClose = {() => {setCreateModal(false);}} />
@@ -232,29 +257,31 @@ export default function BloodPressurePage(props) {
                         <DeletePressureModal rowInfo = {rowInfo} findAll = {findAll} onClose = {() => {setDeleteModal(false);}} />
                     </CustomModal>
                     {/* 표 */}
-                    <Box sx = {{display : "flex", width : "100%", height : "484px", alignItems : "start"}}>
+                    <Box sx = {{display : "flex", width : "100%", height : `${56 + 52 * paginationModel.pageSize + 56 + 2.5}px`, alignItems : "start"}}>
                         <DataGrid
-                            // apiRef = {apiRef}
                             rows = {bloodPressureInfo}
                             columns = {columns}
-                            rowHeight = {40}
-                            columnHeaderHeight = {40}
-                            initialState = {{
-                                pagination : {
-                                    paginationModel : {pageSize : 10},
-                                }
-                            }}
-                            pageSizeOptions = {[10]}
+                            // rowHeight = {40}
+                            // columnHeaderHeight = {40}
+                            rowCount = {totalElements}
+                            // ↓ 서버에서 페이징한 값을 사용하기 위한 설정
+                            pagination
+                            paginationMode = "server"
+                            paginationModel = {paginationModel}
+                            onPaginationModelChange = {setPaginationModel}
+                            sortingMode = "server"
+                            // ↑ 서버에서 페이징한 값을 사용하기 위한 설정
+                            pageSizeOptions = {[5, 7, 10]}
                             // checkboxSelection
                             disableRowSelectionOnClick
                             sx = {{
                                 boxSizing : "border-box",
                                 height : "100%",
                                 // marginRight : "30px",
-                                border : "2px solid #e0e0e0",
+                                border : "1px solid #e0e0e0",
                                 borderRadius : 0,
-                                "& .MuiDataGrid-footerContainer" : {maxHeight : "40px", minHeight : "40px"},
-                                ".MuiToolbar-root" : {maxHeight : "40px", minHeight : "40px"}
+                                "& .MuiDataGrid-footerContainer" : {maxHeight : "56px", minHeight : "56px"},
+                                ".MuiToolbar-root" : {maxHeight : "56px", minHeight : "56px"}
                             }}
                         />
                     </Box>

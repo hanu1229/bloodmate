@@ -21,6 +21,9 @@ export default function BloodSugarPage(props) {
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [rowInfo, setRowInfo] = useState({});
+    const [totalElements, setTotalElements] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [paginationModel, setPaginationModel] = useState({page : 0, pageSize : 5})
     /** true : 펼침 | false : 닫힘 */
     const [hba1cGuide, setHba1cGuide] = useState(false);
     /** 차트에 필요 - DataGrid를 조작할 수 있게 해줌 */
@@ -30,31 +33,54 @@ export default function BloodSugarPage(props) {
     const [measureDates, setMeasureDates] = useState([]);
     */
     
-    useEffect(() => { checkLogin(); findAll(); }, []);
+    useEffect(() => { 
+        (async () => {
+            await checkLogin(); 
+            await findAll(); 
+            console.log(paginationModel.pageSize);
+        })();
+    }, [paginationModel]);
     /** 차트에 필요 */
 
     const findAll = async () => {
-        const token = localStorage.getItem("Token");
-        const response = await axios.get(`${serverDomain}/blood/hba1c`, {headers : {Authorization : token}});
-        console.log(response.data);
-        const temp = response.data.map((item, index) => {
-            const time = item["measuredAt"].split("T")[1];
-            const [hour, minute, second] = time.split(":");
-            const [testDate, testTime] = item["nextTestAt"].split("T");
-
-            const obj = {
-                id : index + 1,
-                measureDate : item["measuredAt"].split("T")[0],
-                measureTime : `${hour}:${minute}`,
-                nextTestAt : testTime === "00:00:00" ? testDate : item["nextTestAt"],
-                hba1cValue : item["hba1cValue"],
-                hba1cId : item["hba1cId"]
+        try {
+            const token = localStorage.getItem("Token");
+            const response = await axios.get(
+                `${serverDomain}/blood/hba1c`, 
+                {
+                    headers : {Authorization : token},
+                    params : {page : paginationModel.page + 1, size : paginationModel.pageSize, sorting : "DESC"}
+                }
+            );
+            if(response.status === 200) {
+                console.log(response.data);
+                const temp = response.data.content.map((item, index) => {
+                    const time = item["measuredAt"].split("T")[1];
+                    const [hour, minute, second] = time.split(":");
+                    const [testDate, testTime] = item["nextTestAt"].split("T");
+                    const date = testDate + " " + testTime.split(":")[0] + ":" + testTime.split(":")[1];
+        
+                    const obj = {
+                        id : index + 1,
+                        measureDate : item["measuredAt"].split("T")[0],
+                        measureTime : `${hour}:${minute}`,
+                        nextTestAt : date,
+                        hba1cValue : item["hba1cValue"],
+                        hba1cId : item["hba1cId"]
+                    }
+                    return obj;
+                });
+                console.log("temp");
+                console.log(temp);
+                setHba1cInfo(temp);
+                setTotalElements(response.data.totalElements);
+                setTotalPages(response.data.totalPages);
             }
-            return obj;
-        });
-        console.log("temp");
-        console.log(temp);
-        setHba1cInfo(temp);
+        } catch(e) {
+            if(e.response.status === 400) {
+                alert("데이터가 존재하지 않습니다");
+            }
+        }
     }
 
 
@@ -185,13 +211,13 @@ export default function BloodSugarPage(props) {
                             </>) : ""
                         }
                     </Box>
-                    {/* 추가하기 버튼 */}
+                    {/* 작성하기 버튼 */}
                     <Box sx = {{marginBottom : "8px", display : "flex", justifyContent : "end"}}>
                         <Button onClick = {() => setCreateModal(true)} sx = {{...btnColor}}>작성하기</Button>
                         <CustomModal
                             open = {createModal}
                             onClose = {(event, reason) => { reason === "backdropClick" ? setCreateModal(true) : setCreateModal(false) }}
-                            title = "당화혈색소 수치 추가하기"
+                            title = "당화혈색소 수치 작성하기"
                             isInfo = {true}
                         >
                             <CreateHba1cModal findAll = {findAll} onClose = {() => {setCreateModal(false);}} />
@@ -215,29 +241,31 @@ export default function BloodSugarPage(props) {
                         <DeleteHba1cModal rowInfo = {rowInfo} findAll = {findAll} onClose = {() => {setDeleteModal(false);}} />
                     </CustomModal>
                     {/* 표 */}
-                    <Box sx = {{display : "flex", width : "100%", height : "484px", alignItems : "start"}}>
+                    <Box sx = {{display : "flex", width : "100%", height : `${56 + 52 * paginationModel.pageSize + 56 + 2.5}px`, alignItems : "start"}}>
                         <DataGrid
-                            // apiRef = {apiRef}
                             rows = {hba1cInfo}
                             columns = {columns}
-                            rowHeight = {40}
-                            columnHeaderHeight = {40}
-                            initialState = {{
-                                pagination : {
-                                    paginationModel : {pageSize : 10},
-                                }
-                            }}
-                            pageSizeOptions = {[10]}
+                            // rowHeight = {40}
+                            // columnHeaderHeight = {40}
+                            rowCount = {totalElements}
+                            // ↓ 서버에서 페이징한 값을 사용하기 위한 설정
+                            pagination
+                            paginationMode = "server"
+                            paginationModel = {paginationModel}
+                            onPaginationModelChange = {setPaginationModel}
+                            sortingMode = "server"
+                            // ↑ 서버에서 페이징한 값을 사용하기 위한 설정
+                            pageSizeOptions = {[paginationModel.pageSize]}
                             // checkboxSelection
                             disableRowSelectionOnClick
                             sx = {{
                                 boxSizing : "border-box",
                                 height : "100%",
                                 // marginRight : "30px",
-                                border : "2px solid #e0e0e0",
+                                border : "1px solid #e0e0e0",
                                 borderRadius : 0,
-                                "& .MuiDataGrid-footerContainer" : {maxHeight : "40px", minHeight : "40px"},
-                                ".MuiToolbar-root" : {maxHeight : "40px", minHeight : "40px"}
+                                "& .MuiDataGrid-footerContainer" : {maxHeight : "56px", minHeight : "56px"},
+                                ".MuiToolbar-root" : {maxHeight : "56px", minHeight : "56px"}
                             }}
                         />
                         {/* <Box sx = {{flex : 1, height : "484px", backgroundColor  : "#FFFFFF"}}>

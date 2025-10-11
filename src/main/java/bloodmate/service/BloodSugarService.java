@@ -107,22 +107,20 @@ public class BloodSugarService {
 //    }
 
     /// 혈당 정보 전체 불러오기 - R
-    public Page<BloodSugarResponseDto> findAll(String token, int page, int size, String sorting) {
+    public ResponseEntity<Page<BloodSugarResponseDto>> findAll(String token, int page, int size, String sorting) {
         System.out.println(">> BloodSugarService.findAll start");
         try {
             int userId = jwtUtil.validateToken(token);
             if(userId <= 0) { return null; }
             Pageable pageable;
             if(sorting.equals("DESC")) {
-                System.out.println(">> DESC");
                 pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "measuredAt"));
             } else {
-                System.out.println(">> ASC");
                 pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "measuredAt"));
             }
             Page<BloodSugarEntity> bloodSugarEntityPage = bloodSugarRepository.findByUserEntity_UserId(userId, pageable);
             if(bloodSugarEntityPage == null) { return null; }
-            return bloodSugarEntityPage.map(entity -> {
+            Page<BloodSugarResponseDto> result = bloodSugarEntityPage.map(entity -> {
                 BloodSugarResponseDto dto = entity.toDto();
                 String code = entity.getMeasurementContextEntity().getMcCode();
                 /// getOrDefault(key, default) --> Map 타입에서 key를 찾고 key가 없으면 default값을 반환 시킴
@@ -130,21 +128,11 @@ public class BloodSugarService {
                 dto.setMeasurementContextLabel(label);
                 return dto;
             });
-
-            /*
-            return bloodSugarEntityPage.stream().map(entity -> {
-                BloodSugarResponseDto dto = entity.toDto();
-                String code = entity.getMeasurementContextEntity().getMcCode();
-                /// getOrDefault(key, default) --> Map 타입에서 key를 찾고 key가 없으면 default값을 반환 시킴
-                String label = CONTEXT_LABELS.getOrDefault(code, code);
-                dto.setMeasurementContextLabel(label);
-                return dto;
-            }).toList();
-            */
+            return ResponseEntity.status(200).body(result);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BloodSugarService.findAll error!!!");
-            return null;
+            return ResponseEntity.status(400).body(null);
         } finally {
             System.out.println(">> BloodSugarService.findAll end");
         }

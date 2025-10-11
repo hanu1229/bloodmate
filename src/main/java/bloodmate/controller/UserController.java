@@ -180,7 +180,7 @@ public class UserController {
         System.out.println(">> UserController.checkLoginState start");
         System.out.println("token = " + token);
         boolean result = userService.checkLoginState(token);
-        System.out.println(">> UserController.checkLoginState end\n");
+        System.out.println(">> UserController.checkLoginState end");
         return result;
     }
 

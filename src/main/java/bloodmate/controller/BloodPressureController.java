@@ -4,6 +4,7 @@ import bloodmate.model.dto.bloodpressure.BloodPressureRequestDto;
 import bloodmate.model.dto.bloodpressure.BloodPressureResponseDto;
 import bloodmate.service.BloodPressureService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,10 +31,18 @@ public class BloodPressureController {
 
     /// 혈압 정보 전체 불러오기 - R
     @GetMapping("")
-    public List<BloodPressureResponseDto> findAll(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Page<BloodPressureResponseDto>> findAll(
+            @RequestHeader("Authorization") String token,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "7") int size,
+            @RequestParam(name = "sorting", defaultValue = "DESC") String sorting
+            ) {
         System.out.println(">> BloodPressureController.findAll start");
         System.out.println(">> token = " + token);
-        List<BloodPressureResponseDto> result = bloodPressureService.findAll(token);
+        System.out.println(">> page = " + page);
+        System.out.println(">> size = " + size);
+        System.out.println(">> sorting = " + sorting);
+        ResponseEntity<Page<BloodPressureResponseDto>> result = bloodPressureService.findAll(token, page, size, sorting);
         System.out.println(">> BloodPressureController.findAll end\n");
         return result;
     }

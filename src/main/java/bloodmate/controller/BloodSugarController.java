@@ -31,10 +31,10 @@ public class BloodSugarController {
 
     /// 혈당 정보 전체 불러오기 - R
     @GetMapping("")
-    public Page<BloodSugarResponseDto> findAll(
+    public ResponseEntity<Page<BloodSugarResponseDto>> findAll(
             @RequestHeader("Authorization") String token,
             @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "size", defaultValue = "5") int size,
+            @RequestParam(name = "size", defaultValue = "7") int size,
             @RequestParam(name = "sorting", defaultValue = "DESC") String sorting
     ) {
         System.out.println(">> BloodSugarController.findAll start");
@@ -42,7 +42,7 @@ public class BloodSugarController {
         System.out.println(">> page = " + page);
         System.out.println(">> size = " + size);
         System.out.println(">> sorting = " + sorting);
-        Page<BloodSugarResponseDto> result = bloodSugarService.findAll(token, page, size, sorting);
+        ResponseEntity<Page<BloodSugarResponseDto>> result = bloodSugarService.findAll(token, page, size, sorting);
         System.out.println(">> BloodSugarController.findAll end\n");
         return result;
     }

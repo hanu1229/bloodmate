@@ -1,6 +1,8 @@
 package bloodmate.model.repository;
 
 import bloodmate.model.entity.Hba1cEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,8 +16,11 @@ import java.util.Optional;
 public interface Hba1cRepository extends JpaRepository<Hba1cEntity, Integer> {
 
     /// 당화혈색소 정보 전체 불러오기 - R
-    @Query(value = "select * from user_hba1c where user_id = :userId order by measured_at DESC", nativeQuery = true)
-    List<Hba1cEntity> findByUserIdToHba1c(@Param("userId") int userId);
+    // @Query(value = "select * from user_hba1c where user_id = :userId order by measured_at DESC", nativeQuery = true)
+    // List<Hba1cEntity> findByUserIdToHba1c(@Param("userId") int userId);
+
+    /// 당화혈색소 정보 전체 불러오기 - R
+    Page<Hba1cEntity> findByUserEntity_UserId(@Param("userId") int userId, Pageable pageable);
 
     /// 당화혈색소 정보 삭제하기 - D
     @Modifying
