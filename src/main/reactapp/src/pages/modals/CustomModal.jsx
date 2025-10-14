@@ -28,10 +28,10 @@ export function CustomModal(props) {
                 }}
             >
                 <ModalClose variant = "outlined"/>
-                <Typography sx = {{marginLeft : "12px", marginBottom : "12px", fontSize : "20px", fontWeight : "bold"}}>
+                <Box sx = {{marginLeft : "12px", marginBottom : "12px"}}>
                     {
                         <Box sx = {{display : "flex", alignItems : "center"}}>
-                            {props.title}
+                            <Typography sx = {{fontSize : "20px", fontWeight : "bold"}}>{props.title}</Typography>
                             {
                                 props.isInfo ? <Tooltip
                                     title = "본 서비스는 개인 건강정보의 기록·보관을 위한 용도입니다."
@@ -42,7 +42,7 @@ export function CustomModal(props) {
                             }
                         </Box>
                     }
-                </Typography>
+                </Box>
                 <Box sx = {{width : "100%", height : "100%", overflowY : "auto", overflowX : "hidden", minHeight : 0}}>
                     {props.children}
                 </Box>

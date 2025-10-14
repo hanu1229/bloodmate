@@ -139,20 +139,19 @@ public class BloodSugarService {
     }
 
     /// 혈당 정보 조건 불러오기(조건 : 날짜) - R
-    public List<BloodSugarResponseDto> findByDate(String token, LocalDateTime date) {
+    public List<BloodSugarResponseDto> findByDate(String token, LocalDateTime startDate, LocalDateTime endDate, int context, int page, int size, String sorting) {
         System.out.println(">> BloodSugarService.findByDate start");
         try {
             int userId = jwtUtil.validateToken(token);
             if(userId <= 0) { return null; }
-            LocalDate temp = date.toLocalDate();
-            System.out.println(">> temp = " + temp);
-            // 선택한 날의 시작 시간 설정 00:00:00
-            LocalDateTime start = temp.atStartOfDay();
-            System.out.println(">> start = " + start);
-            // 선택한 날의 하루 뒤로 설정하고 시작 시간 설정 00:00:00
-            LocalDateTime end = temp.plusDays(1).atStartOfDay();
-            System.out.println(">> end = " + end);
-            List<BloodSugarEntity> bloodSugarEntityList = bloodSugarRepository.findByDateToBloodSugar(userId, start, end);
+            Pageable pageable;
+            if(sorting.equals("DESC")) {
+                pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "measuredAt"));
+            } else {
+                pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "measuredAt"));
+            }
+            if(startDate.isEqual(endDate)) { endDate = endDate.plusDays(1); }
+            Page<BloodSugarEntity> bloodSugarEntityList = bloodSugarRepository.findByDateToBloodSugar(userId, startDate, endDate, context, pageable);
             if(bloodSugarEntityList == null) { return null; }
             return bloodSugarEntityList.stream().map(BloodSugarEntity::toDto).toList();
         } catch(Exception e) {

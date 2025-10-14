@@ -112,6 +112,54 @@ export default function BloodSugarPage(props) {
         }
     }
 
+    /** 검색하기 */
+    const findData = async () => {
+        try {
+            const token = localStorage.getItem("Token");
+            let params = {page : paginationModel.page + 1, size : paginationModel.pageSize, sorting : "DESC"};
+            if(startDate == "" || endDate == "") {
+                params = {...params, context : context};
+            }
+            if(context === 0) {
+                params = {...params, startDate : startDate, endDate : endDate};
+            }
+            const response = await axios.get(
+                `${serverDomain}/blood/sugar/date`,
+                {
+                    withCredentials : true,
+                    headers : {Authorization : token},
+                    params : params
+                }
+            )
+            if(response.status === 200) { 
+                const temp = response.data.content.map((item, index) => {
+                    const time = item["measuredAt"].split("T")[1];
+                    const [hour, minute, second] = time.split(":");
+        
+                    const obj = {
+                        id : index + 1,
+                        measureDate : item["measuredAt"].split("T")[0],
+                        measureTime : `${hour}:${minute}`,
+                        contextLabel : item["measurementContextLabel"],
+                        contextId : item["measurementContextId"],
+                        value : item["bloodSugarValue"],
+                        bloodSugarId : item["bloodSugarId"]
+                    }
+                    return obj;
+                });
+                console.log("temp");
+                console.log(temp);
+                setBloodSugarInfo(temp);
+                setTotalElements(response.data.totalElements);
+                setTotalPages(response.data.totalPages);
+             }
+        } catch(e) {
+            if(e.response.status === 400) { 
+                alert("데이터가 존재하지 않습니다"); 
+            }
+        }
+    }
+
 
     const columns = [
         { 
@@ -269,7 +317,7 @@ export default function BloodSugarPage(props) {
                         title = "조건 검색하기"
                         isInfo = {false}
                     >
-                        <SearchSugarModal findAll = {findAll} onClose = {() => {setSearchModal(false);}}  />
+                        <SearchSugarModal findAll = {findData} onClose = {() => {setSearchModal(false);}}  />
                     </CustomModal>
                     <CustomModal
                         open = {updateModal}

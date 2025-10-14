@@ -48,12 +48,35 @@ public class BloodSugarController {
     }
 
     /// 혈당 정보 조건 불러오기(조건 : 날짜) - R
+    /*
     @GetMapping("/date")
     public List<BloodSugarResponseDto> findByDate(@RequestHeader("Authorization") String token, @RequestParam("date") LocalDateTime date) {
         System.out.println(">> BloodSugarController.findByDate start");
         System.out.println(">> token = " + token);
         System.out.println(">> date = " + date);
         List<BloodSugarResponseDto> result = bloodSugarService.findByDate(token, date);
+        System.out.println(">> BloodSugarController.findByDate end\n");
+        return result;
+    }
+    */
+
+    /// 혈당 정보 조건 불러오기(조건 : 날짜) - R
+    @GetMapping("/date")
+    public List<BloodSugarResponseDto> findByDate(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("startDate") LocalDateTime startDate, @RequestParam("endDate") LocalDateTime endDate,
+            @RequestParam("context") int context, @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "7") int size, @RequestParam(name = "sorting", defaultValue = "DESC") String sorting
+    ) {
+        System.out.println(">> BloodSugarController.findByDate start");
+        System.out.println(">> token = " + token);
+        System.out.println(">> startDate = " + startDate);
+        System.out.println(">> endDate = " + endDate);
+        System.out.println(">> context = " + context);
+        System.out.println(">> page = " + page);
+        System.out.println(">> size = " + size);
+        System.out.println(">> sorting = " + sorting);
+        List<BloodSugarResponseDto> result = bloodSugarService.findByDate(token, startDate, endDate, context, page, size, sorting);
         System.out.println(">> BloodSugarController.findByDate end\n");
         return result;
     }

@@ -22,11 +22,30 @@ public interface BloodSugarRepository extends JpaRepository<BloodSugarEntity, In
     Page<BloodSugarEntity> findByUserEntity_UserId(@Param("userId") int userId, Pageable pageable);
 
     /// 혈당 정보 조건 불러오기(조건 : 날짜) - R
+//    @Query(
+//            value = "select * from user_blood_sugar where user_id = :userId and measured_at >= :start and measured_at < :end",
+//            nativeQuery = true
+//    )
+//    List<BloodSugarEntity> findByDateToBloodSugar(@Param("userId") int userId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    /// 혈당 정보 조건 불러오기(조건 : 날짜) - R
     @Query(
-            value = "select * from user_blood_sugar where user_id = :userId and measured_at >= :start and measured_at < :end",
+            value =
+                    """
+                    select * from user_blood_sugar
+                    where user_id = :userId and measured_at >= :startDate and measured_at < :endDate and measurement_context_id = :context
+                    """,
+            countQuery =
+                    """
+                    select * from user_blood_sugar
+                    where user_id = :userId and measured_at >= :startDate and measured_at < :endDate and measurement_context_id = :context
+                    """,
             nativeQuery = true
     )
-    List<BloodSugarEntity> findByDateToBloodSugar(@Param("userId") int userId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+    Page<BloodSugarEntity> findByDateToBloodSugar(
+            @Param("userId") int userId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate,
+            @Param("context") int context, Pageable pageable
+    );
 
 
 }
