@@ -45,7 +45,7 @@ export default function DeleteUserModal(props) {
     return (
         <Box sx = {{padding : "12px", display : "flex", flexDirection : "column", flex : 1, height : "100%"}}>
             <Box sx = {{marginBottom : "12px"}}>
-                <Typography sx = {{fontSize : "24px", fontWeight : "bold", color : "red"}}>※ 계정과 건강 데이터를 영구 삭제됩니다.<br/>※ 복구할 수 없습니다.</Typography>
+                <Typography sx = {{fontSize : "24px", fontWeight : "bold", color : "red"}}>※ 계정과 건강 데이터가 영구 삭제됩니다.<br/>※ 복구할 수 없습니다.</Typography>
             </Box>
             <Box sx = {{marginBottom : "12px"}}>
                 <Typography sx = {{marginLeft : "4px", marginBottom : "4px"}}>탈퇴를 희망하시면 "탈퇴"를 입력해주세요.</Typography>

@@ -130,7 +130,7 @@ export default function MyInfoPage(props) {
                             <Dangerous sx = {{marginRight : "8px", color : "red"}} />
                             <Typography sx = {{alignItems : "center", fontSize : "20px", fontWeight : "bold", color : "red"}}>회원탈퇴</Typography>    
                         </Box>
-                        <Typography sx = {{marginBottom : "32px"}}>※ 계정과 건강 데이터를 영구 삭제됩니다.<br/>※ 복구할 수 없습니다.</Typography>
+                        <Typography sx = {{marginBottom : "32px"}}>※ 계정과 건강 데이터가 영구 삭제됩니다.<br/>※ 복구할 수 없습니다.</Typography>
                         <Box sx = {{display : "flex", justifyContent : "space-between", alignItems : "center"}}>
                             <Button size = "sm" color = "danger" sx = {{width : "100%"}} onClick = {() => { setDeleteModal(true); }}>탈퇴하기</Button>
                             <CustomModal 

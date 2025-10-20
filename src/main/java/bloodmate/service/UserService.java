@@ -224,7 +224,7 @@ public class UserService {
             if(optional.isPresent()) {
                 UserEntity userEntity = optional.get();
                 String key = receive.getOrDefault("key", null);
-                if(key.equals("탈퇴") && userEntity.getUserPassword().equals(receive.getOrDefault("password", null))) {
+                if(key.equals("탈퇴") && encoder.matches(receive.getOrDefault("password", null), userEntity.getUserPassword())) {
                     userEntity.setUserState(0);
                     jwtUtil.deleteToken(userId);
                     System.out.println(">> UserService.deleteUser end");
