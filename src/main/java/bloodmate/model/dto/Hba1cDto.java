@@ -29,7 +29,7 @@ public class Hba1cDto {
     /// Dto --> Entity
     public Hba1cEntity toEntity() {
         return Hba1cEntity.builder()
-                .hba1cId(this.hba1cId).hba1cValue(this.hba1cValue).measuredAt(this.measuredAt).nextTextAt(this.nextTestAt)
+                .hba1cId(this.hba1cId).hba1cValue(this.hba1cValue).measuredAt(this.measuredAt).nextTestAt(this.nextTestAt)
                 .build();
     }
 

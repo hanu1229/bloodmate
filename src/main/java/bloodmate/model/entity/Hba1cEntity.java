@@ -28,7 +28,7 @@ public class Hba1cEntity extends BaseTime {
     private LocalDateTime measuredAt;
     // 검사 예정일
     @Column(name = "next_test_at")
-    private LocalDateTime nextTextAt;
+    private LocalDateTime nextTestAt;
     // 회원번호(FK)
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -38,7 +38,7 @@ public class Hba1cEntity extends BaseTime {
     /// Entity --> Dto
     public Hba1cDto toDto() {
         return Hba1cDto.builder()
-                .hba1cId(this.hba1cId).hba1cValue(this.hba1cValue).measuredAt(this.measuredAt).nextTestAt(this.nextTextAt)
+                .hba1cId(this.hba1cId).hba1cValue(this.hba1cValue).measuredAt(this.measuredAt).nextTestAt(this.nextTestAt)
                 .createdAt(this.getCreatedAt()).updatedAt(this.getUpdatedAt()).userId(this.userEntity.getUserId())
                 .build();
     }

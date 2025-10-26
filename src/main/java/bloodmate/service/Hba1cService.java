@@ -50,11 +50,11 @@ public class Hba1cService {
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> Hba1cService.create error!!!");
-            return ResponseEntity.status(201).body(false);
+            return ResponseEntity.status(400).body(false);
         } finally {
             System.out.println(">> Hba1cService.create end");
         }
-        return ResponseEntity.status(201).body(false);
+        return ResponseEntity.status(400).body(false);
     }
 
     /// 당화혈색소 정보 전체 불러오기 - R
@@ -65,9 +65,9 @@ public class Hba1cService {
             if(userId > 0) {
                 Pageable pageable;
                 if(sorting.equals("DESC")) {
-                    pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "measuredAt"));
+                    pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Order.desc("measuredAt"), Sort.Order.desc("hba1cId")));
                 } else {
-                    pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "measuredAt"));
+                    pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Order.asc("measuredAt"), Sort.Order.asc("hba1cId")));
                 }
                 Page<Hba1cEntity> hba1cEntityPage = hba1cRepository.findByUserEntity_UserId(userId, pageable);
                 System.out.println(">> hba1cEntityPage = " + hba1cEntityPage);
@@ -97,7 +97,7 @@ public class Hba1cService {
                     if(hba1cEntity.getUserEntity().getUserId() != userId) { return ResponseEntity.status(400).body(false); }
                     hba1cEntity.setHba1cValue(hba1cDto.getHba1cValue());
                     hba1cEntity.setMeasuredAt(hba1cDto.getMeasuredAt());
-                    hba1cEntity.setNextTextAt(hba1cDto.getNextTestAt());
+                    hba1cEntity.setNextTestAt(hba1cDto.getNextTestAt());
                     System.out.println(">> hba1cEntity = " + hba1cEntity);
                     return ResponseEntity.status(200).body(true);
                 }
