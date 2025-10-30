@@ -68,12 +68,12 @@ public class BoardController {
 
     /// 게시물 수정 - U
     @PutMapping("/{boardPostId}")
-    public boolean update(@RequestHeader("Authorization") String token, @RequestBody BoardRequestDto boardRequestDto, @PathVariable("boardPostId") int boardPostId) {
+    public ResponseEntity<Boolean> update(@RequestHeader("Authorization") String token, @RequestBody BoardRequestDto boardRequestDto, @PathVariable("boardPostId") int boardPostId) {
         System.out.println(">> BoardController.update start");
         System.out.println(">> token = " + token);
         System.out.println(">> boardDto = " + boardRequestDto);
         System.out.println(">> boardPostId = " + boardPostId);
-        boolean result = boardService.update(token, boardRequestDto, boardPostId);
+        ResponseEntity<Boolean> result = boardService.update(token, boardRequestDto, boardPostId);
         System.out.println(">> BoardController.update end\n");
         return result;
     }

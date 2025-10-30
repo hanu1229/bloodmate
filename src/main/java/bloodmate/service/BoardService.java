@@ -38,6 +38,7 @@ public class BoardService {
             int userId = jwtUtil.validateToken(token);
             if(userId <= 0) { return ResponseEntity.status(400).body(false); }
             boardRequestDto.setBoardPostState(1);
+            if(boardRequestDto.getBoardCategoryTitle().equals("공지")) { return ResponseEntity.status(400).body(false); }
             BoardEntity boardEntity = boardRequestDto.toEntity();
             boardEntity.setBoardCategoryEntity(boardCategoryRepository.findByTitle(boardRequestDto.getBoardCategoryTitle()));
             boardEntity.setUserEntity(userRepository.findById(userId).orElse(null));
@@ -140,11 +141,11 @@ public class BoardService {
     }
 
     /// 게시물 수정 - U
-    public boolean update(String token, BoardRequestDto boardRequestDto, int boardPostId) {
+    public ResponseEntity<Boolean> update(String token, BoardRequestDto boardRequestDto, int boardPostId) {
         System.out.println(">> BoardService.update start");
         try {
             int userId = jwtUtil.validateToken(token);
-            if(userId <= 0) { return false; }
+            if(userId <= 0) { return ResponseEntity.status(400).body(false); }
             Optional<BoardEntity> optional = boardRepository.findByBoardPostIdToUserId(boardPostId, userId);
             if(optional.isPresent()) {
                 BoardEntity boardEntity = optional.get();
@@ -155,13 +156,13 @@ public class BoardService {
                     boardEntity.setBoardCategoryEntity(boardCategoryEntity);
                 }
                 System.out.println(">> boardEntity = " + boardEntity);
-                return true;
+                return ResponseEntity.status(200).body(true);
             }
-            return false;
+            return ResponseEntity.status(400).body(false);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BoardService.update error!!!");
-            return false;
+            return ResponseEntity.status(400).body(false);
         } finally {
             System.out.println(">> BoardService.update end");
         }
