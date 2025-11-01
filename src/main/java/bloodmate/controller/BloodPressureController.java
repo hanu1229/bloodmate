@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -80,6 +81,16 @@ public class BloodPressureController {
         System.out.println(">> bloodPressureId = " + bloodPressureId);
         ResponseEntity<Boolean> result = bloodPressureService.delete(token, bloodPressureId);
         System.out.println(">> BloodPressureController.delete end\n");
+        return result;
+    }
+
+    /// 혈압 측정 상황별 15개 최소, 최대 평균 불러오기 - R
+    @GetMapping("/average")
+    public ResponseEntity<HashMap<String, String>> findAverage(@RequestHeader("Authorization") String token, @RequestParam("measurementContextLabel") String label) {
+        System.out.println(">> BloodPressureController.findAverage start");
+        System.out.println(">> token = " + token);
+        ResponseEntity<HashMap<String, String>> result = bloodPressureService.findAverage(token, label);
+        System.out.println(">> BloodPressureController.findAverage end\n");
         return result;
     }
 

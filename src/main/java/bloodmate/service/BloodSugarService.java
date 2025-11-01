@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -48,6 +45,21 @@ public class BloodSugarService {
             Map.entry("BEFORE_SLEEP", "취침 전"),
             Map.entry("WAKE_UP", "기상"),
             Map.entry("OTHER", "기타")
+    );
+
+    /// Map.ofEntries() --> readOnly
+    public static final Map<String, String> CONTEXT_REVERSE_LABELS = Map.ofEntries(
+            Map.entry("아침 식전", "MORNING_BEFORE_MEAL"),
+            Map.entry("아침 식후", "MORNING_AFTER_MEAL"),
+            Map.entry("점심 식전", "LUNCH_BEFORE_MEAL"),
+            Map.entry("점심 식후", "LUNCH_AFTER_MEAL"),
+            Map.entry("저녁 식전", "DINNER_BEFORE_MEAL"),
+            Map.entry("저녁 식후", "DINNER_AFTER_MEAL"),
+            Map.entry("운동 전", "BEFORE_EXERCISE"),
+            Map.entry("운동 후", "AFTER_EXERCISE"),
+            Map.entry("취침 전", "BEFORE_SLEEP"),
+            Map.entry("기상", "WAKE_UP"),
+            Map.entry("기타", "OTHER")
     );
 
     /// 혈당 정보 작성 - C
@@ -212,6 +224,40 @@ public class BloodSugarService {
         bloodSugarRepository.deleteById(bloodSugarId);
         System.out.println(">> BloodSugarService.delete end");
         return ResponseEntity.status(400).body(false);
+    }
+
+    /// 혈당 측정 상황별 15개 최소, 최대 평균 불러오기 - R
+    public ResponseEntity<HashMap<String, String>> findAverage(String token, String label) {
+        System.out.println(">> BloodSugarService.findAverage start");
+        try {
+            int total = 0, min = 0, max = 0;
+            double avg = 0;
+            int userId = jwtUtil.validateToken(token);
+            if(userId <= 0) { return ResponseEntity.status(400).body(null); }
+            String code = CONTEXT_REVERSE_LABELS.get(label);
+            System.out.println(">> code = " + code);
+            if(code == null) { return ResponseEntity.status(400).body(null); }
+            int mcId = mcRepository.findByMCId(code);
+            List<BloodSugarEntity> entityList = bloodSugarRepository.findAverage(userId, mcId);
+            if(entityList == null) { return ResponseEntity.status(400).body(null); }
+            OptionalInt tempMin = entityList.stream().mapToInt(BloodSugarEntity::getBloodSugarValue).min();
+            OptionalInt tempMax = entityList.stream().mapToInt(BloodSugarEntity::getBloodSugarValue).max();
+            OptionalDouble tempAvg = entityList.stream().mapToDouble(BloodSugarEntity::getBloodSugarValue).average();
+            min = tempMin.orElse(0);
+            max = tempMax.orElse(0);
+            avg = tempAvg.orElse(0);
+            HashMap<String, String> temp = new HashMap<>();
+            temp.put("min", Integer.toString(min));
+            temp.put("max", Integer.toString(max));
+            temp.put("avg", Double.toString(avg));
+            return ResponseEntity.status(200).body(temp);
+        } catch(Exception e) {
+            System.out.println(">> error : " + e);
+            System.out.println(">> BloodSugarService.findAverage error!!!");
+            return ResponseEntity.status(400).body(null);
+        } finally {
+            System.out.println(">> BloodSugarService.findAverage end");
+        }
     }
 
 }

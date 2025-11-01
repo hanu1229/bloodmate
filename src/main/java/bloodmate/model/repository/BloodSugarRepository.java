@@ -47,5 +47,9 @@ public interface BloodSugarRepository extends JpaRepository<BloodSugarEntity, In
             @Param("context") int context, Pageable pageable
     );
 
+    /// 혈당 측정 상황별 15개 최소, 최대 평균 불러오기 - R
+    @Query(value = "select * from user_blood_sugar where user_id = :userId and measurement_context_id = :measurementContextId order by measured_at limit 15", nativeQuery = true)
+    List<BloodSugarEntity> findAverage(@Param("userId") int userId, @Param("measurementContextId") int measurementContextId);
+
 
 }

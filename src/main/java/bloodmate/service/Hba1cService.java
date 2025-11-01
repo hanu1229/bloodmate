@@ -122,4 +122,15 @@ public class Hba1cService {
         return ResponseEntity.status(200).body(result);
     }
 
+    /// 당화혈색소 최근 1개 정보 불러오기 - R
+    public ResponseEntity<Hba1cDto> findLatest(String token) {
+        System.out.println(">> Hba1cService.findLatest start");
+        int userId = jwtUtil.validateToken(token);
+        if(userId <= 0) { return ResponseEntity.status(400).body(null); }
+        Hba1cEntity entity = hba1cRepository.findLatest(userId);
+        if(entity == null) { return ResponseEntity.status(400).body(null); }
+        System.out.println(">> Hba1cService.findLatest end");
+        return ResponseEntity.status(200).body(entity.toDto());
+    }
+
 }

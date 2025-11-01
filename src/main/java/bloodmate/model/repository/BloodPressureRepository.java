@@ -1,6 +1,7 @@
 package bloodmate.model.repository;
 
 import bloodmate.model.entity.BloodPressureEntity;
+import bloodmate.model.entity.BloodSugarEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,6 +27,10 @@ public interface BloodPressureRepository extends JpaRepository<BloodPressureEnti
             nativeQuery = true
     )
     List<BloodPressureEntity> findByDateToBloodPressure(@Param("userId") int userId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    /// 혈압 측정 상황별 15개 최소, 최대 평균 불러오기 - R
+    @Query(value = "select * from user_blood_pressure where user_id = :userId and measurement_context_id = :measurementContextId order by measured_at limit 15", nativeQuery = true)
+    List<BloodPressureEntity> findAverage(@Param("userId") int userId, @Param("measurementContextId") int measurementContextId);
 
 
 }

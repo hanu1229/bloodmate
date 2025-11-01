@@ -66,4 +66,14 @@ public class Hba1cController {
         return result;
     }
 
+    /// 당화혈색소 최근 1개 정보 불러오기 - R
+    @GetMapping("/latest")
+    public ResponseEntity<Hba1cDto> findLatest(@RequestHeader("Authorization") String token) {
+        System.out.println(">> Hba1cController.findLatest start");
+        System.out.println(">> token = " + token);
+        ResponseEntity<Hba1cDto> result = hba1cService.findLatest(token);
+        System.out.println(">> Hba1cController.findLatest end\n");
+        return result;
+    }
+
 }

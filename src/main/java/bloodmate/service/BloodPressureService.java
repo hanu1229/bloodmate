@@ -3,6 +3,7 @@ package bloodmate.service;
 import bloodmate.model.dto.bloodpressure.BloodPressureRequestDto;
 import bloodmate.model.dto.bloodpressure.BloodPressureResponseDto;
 import bloodmate.model.entity.BloodPressureEntity;
+import bloodmate.model.entity.BloodSugarEntity;
 import bloodmate.model.entity.MeasurementContextEntity;
 import bloodmate.model.entity.UserEntity;
 import bloodmate.model.repository.BloodPressureRepository;
@@ -20,8 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
@@ -163,6 +163,71 @@ public class BloodPressureService {
         }
         System.out.println(">> BloodPressureService.delete end");
         return ResponseEntity.status(400).body(false);
+    }
+
+    /// 혈압 측정 상황별 15개 최소, 최대 평균 불러오기 - R
+    public ResponseEntity<HashMap<String, String>> findAverage(String token, String label) {
+        System.out.println(">> BloodPressureService.findAverage start");
+        try {
+            int sysMin = 0, sysMax = 0, diaMin = 0, diaMax = 0, pulseMin = 0, pulseMax = 0;
+            double sysAvg = 0, diaAvg = 0, pulseAvg = 0;
+            int userId = jwtUtil.validateToken(token);
+            if(userId <= 0) { return ResponseEntity.status(400).body(null); }
+            String code = BloodSugarService.CONTEXT_REVERSE_LABELS.get(label);
+            System.out.println(">> code = " + code);
+            if(code == null) { return ResponseEntity.status(400).body(null); }
+            int mcId = measurementContextRepository.findByMCId(code);
+            System.out.println(">> mcId = " + mcId);
+            List<BloodPressureEntity> entityList = bloodPressureRepository.findAverage(userId, mcId);
+            if(entityList == null) { return ResponseEntity.status(400).body(null); }
+
+            System.out.println(">> size = " + entityList.size());
+            System.out.println(">> sys = " + entityList.stream().map(BloodPressureEntity::getBloodPressureSystolic).toList());
+            System.out.println(">> dia = " + entityList.stream().map(BloodPressureEntity::getBloodPressureDiastolic).toList());
+            System.out.println(">> pulse = " + entityList.stream().map(BloodPressureEntity::getBloodPressurePulse).toList());
+
+            entityList.forEach(e -> System.out.println("id=" + e.getBloodPressureId() + ", at=" + e.getMeasuredAt()));
+
+            OptionalInt tempSysMin = entityList.stream().mapToInt(BloodPressureEntity::getBloodPressureSystolic).min();
+            OptionalInt tempSysMax = entityList.stream().mapToInt(BloodPressureEntity::getBloodPressureSystolic).max();
+            OptionalDouble tempSysAvg = entityList.stream().mapToDouble(BloodPressureEntity::getBloodPressureSystolic).average();
+            OptionalInt tempDiaMin = entityList.stream().mapToInt(BloodPressureEntity::getBloodPressureDiastolic).min();
+            OptionalInt tempDiaMax = entityList.stream().mapToInt(BloodPressureEntity::getBloodPressureDiastolic).max();
+            OptionalDouble tempDiaAvg = entityList.stream().mapToDouble(BloodPressureEntity::getBloodPressureDiastolic).average();
+            OptionalInt tempPulseMin = entityList.stream().mapToInt(BloodPressureEntity::getBloodPressurePulse).min();
+            OptionalInt tempPulseMax = entityList.stream().mapToInt(BloodPressureEntity::getBloodPressurePulse).max();
+            OptionalDouble tempPulseAvg = entityList.stream().mapToDouble(BloodPressureEntity::getBloodPressurePulse).average();
+
+            sysMin = tempSysMin.orElse(0);
+            sysMax = tempSysMax.orElse(0);
+            sysAvg = tempSysAvg.orElse(0);
+            diaMin = tempDiaMin.orElse(0);
+            diaMax = tempDiaMax.orElse(0);
+            diaAvg = tempDiaAvg.orElse(0);
+            pulseMin = tempPulseMin.orElse(0);
+            pulseMax = tempPulseMax.orElse(0);
+            pulseAvg = tempPulseAvg.orElse(0);
+
+
+            HashMap<String, String> temp = new HashMap<>();
+            temp.put("sysMin", Integer.toString(sysMin));
+            temp.put("sysMax", Integer.toString(sysMax));
+            temp.put("sysAvg", Double.toString(sysAvg));
+            temp.put("diaMin", Integer.toString(diaMin));
+            temp.put("diaMax", Integer.toString(diaMax));
+            temp.put("diaAvg", Double.toString(diaAvg));
+            temp.put("pulseMin", Integer.toString(pulseMin));
+            temp.put("pulseMax", Integer.toString(pulseMax));
+            temp.put("pulseAvg", Double.toString(pulseAvg));
+            System.out.println(temp.toString());
+            return ResponseEntity.status(200).body(temp);
+        } catch(Exception e) {
+            System.out.println(">> error : " + e);
+            System.out.println(">> BloodPressureService.findAverage error!!!");
+            return ResponseEntity.status(400).body(null);
+        } finally {
+            System.out.println(">> BloodPressureService.findAverage end");
+        }
     }
 
 }

@@ -27,4 +27,8 @@ public interface Hba1cRepository extends JpaRepository<Hba1cEntity, Integer> {
     @Query(value = "delete from user_hba1c where hba1c_id = :hba1cId and user_id = :userId", nativeQuery = true)
     int deleteByHba1cIdAndUserId(@Param("hba1cId") int hba1cId, @Param("userId") int userId);
 
+    /// 당화혈색소 최근 1개 정보 불러오기 - R
+    @Query(value = "select * from user_hba1c where user_id = :userId order by measured_at desc limit 1;", nativeQuery = true)
+    Hba1cEntity findLatest(@Param("userId") int userId);
+
 }
