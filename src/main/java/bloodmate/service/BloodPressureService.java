@@ -186,7 +186,7 @@ public class BloodPressureService {
             System.out.println(">> dia = " + entityList.stream().map(BloodPressureEntity::getBloodPressureDiastolic).toList());
             System.out.println(">> pulse = " + entityList.stream().map(BloodPressureEntity::getBloodPressurePulse).toList());
 
-            entityList.forEach(e -> System.out.println("id=" + e.getBloodPressureId() + ", at=" + e.getMeasuredAt()));
+            // entityList.forEach(e -> System.out.println("id=" + e.getBloodPressureId() + ", at=" + e.getMeasuredAt()));
 
             OptionalInt tempSysMin = entityList.stream().mapToInt(BloodPressureEntity::getBloodPressureSystolic).min();
             OptionalInt tempSysMax = entityList.stream().mapToInt(BloodPressureEntity::getBloodPressureSystolic).max();
@@ -207,7 +207,6 @@ public class BloodPressureService {
             pulseMin = tempPulseMin.orElse(0);
             pulseMax = tempPulseMax.orElse(0);
             pulseAvg = tempPulseAvg.orElse(0);
-
 
             HashMap<String, String> temp = new HashMap<>();
             temp.put("sysMin", Integer.toString(sysMin));

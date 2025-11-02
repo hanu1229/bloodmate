@@ -19,7 +19,7 @@ export default function MainLayout(props) {
                     <SideBar/>
                     <Box className = "main-layout" sx = {{scrollBarGutter : isScroll ? "stable" : null}}>
                         {/* context --> 원하는 값 또는 함수를 최하위 jsx파일에서까지 사용할 수 있도록 만듬 | 단, useOutletContext 필요 */}
-                        <Outlet context = {{setLoginState}} />
+                        <Outlet context = {{setLoginState, loginState}} />
                     </Box>
                 </div>
             </div>

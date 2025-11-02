@@ -6,7 +6,8 @@ export default defineConfig({
   plugins : [react()],
   server : {
     // 모든 IP에서 접근 가능
-    host : '0.0.0.0',
+    // host : '0.0.0.0',
+    host : true,
     // 포트 확인
     port : 5173,
     // 포트를 고정(포트 스왑 방지)
