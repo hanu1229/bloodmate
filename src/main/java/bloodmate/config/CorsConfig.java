@@ -17,7 +17,11 @@ public class CorsConfig implements WebMvcConfigurer {
         // 어떤 API 경로에 CROS를 적용할지 매핑 | 보통 전역 "/**"
         registry.addMapping("/**")
                 // 허용할 오리진(출처)을 지정 | 접속할 도메인 작성 (여러개 가능)
-                .allowedOrigins("http://localhost:5173", "http://raunriu.iptime.org:5173")
+                .allowedOrigins(
+                        "http://localhost:5173",
+                        "http://raunriu.iptime.org:5173",
+                        "http://bloodmate.ap-northeast-2.elasticbeanstalk.com"
+                )
                 // 프론트에서 사용할 HTTP 메소드를 지정 | OPTIONS는 브라우저가 사진을 요청할 때 사용되므로 꼭 포함
                 .allowedMethods("POST", "GET", "PUT", "DELETE", "PATCH", "OPTIONS")
                 // 요청 시 허용할 헤더
