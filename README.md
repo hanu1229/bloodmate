@@ -67,6 +67,14 @@
         </p>
     </li>
 </ul>
+<h2>📌 시스템 아키텍처</h2>
+<div>
+    <img src = "docs/images/bloodmate_system_architecture.png" />
+</div>
+<h2>📌 ERD</h2>
+<div>
+    <img src = "docs/images/bloodmate_ERD.png" />
+</div>
 <h2>📌 주요 기능</h2>
 <div>
     <!-- 사용자 인증 -->
