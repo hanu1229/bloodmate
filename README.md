@@ -68,5 +68,39 @@
     </li>
 </ul>
 <h2>📌 주요 기능</h2>
+<div>
+    <!-- 사용자 인증 -->
+    <ul>
+        <li><strong>사용자 인증</strong></li>
+        <ul>
+            <li>JWT 기반 로그인/로그아웃</li>
+            <li>Redis를 활용한 토큰 관리 및 중복 로그인 방지</li>
+        </ul>
+    </ul>
+    <!-- HBA1C/혈당/혈압 기록 관리 -->
+    <ul>
+        <li><strong>HBA1C/혈당/혈압 기록 관리</strong></li>
+        <ul>
+            <li>CRUD API 설계</li>
+            <li>아침/점심/저녁/운동 전후등 측정 상황 분류</li>
+        </ul>
+    </ul>
+    <!-- 대시보드 -->
+    <ul>
+        <li><strong>대시보드</strong></li>
+        <ul>
+            <li>측정 상황에 따라 최근 측정 값, 평균/최소/최대 값 조회 API</li>
+            <li>최근 공지 게시물 출력</li>
+        </ul>    
+    </ul>
+    <!-- 게시물 -->
+    <ul>
+        <li><strong>게시물</strong></li>
+        <ul>
+            <li>공지/자유/혈당/혈압 등 카테고리별 게시글 관리 API</li>
+            <li>노령 사용자를 위한 버튼식 게시물 Read</li>
+        </ul>
+    </ul>
+</div>
 
 <img src = "https://capsule-render.vercel.app/api?type=waving&color=0:A097D4,100:DED9F4&height=200&section=footer">
