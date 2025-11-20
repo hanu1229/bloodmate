@@ -110,5 +110,17 @@
         </ul>
     </ul>
 </div>
+<h2>API 명세서 링크</h2>
+<div>
+    <ul>
+        <li><a href = "https://docs.google.com/spreadsheets/d/1nBB3n0IDq4Q279cRKUsHXq7Vx3-87kCgiR5TozAW9jU/edit?usp=sharing">유저 API</a></li>
+        <li><a href = "https://docs.google.com/spreadsheets/d/12yweGDiE5MyfbDJZonCAdnQoCdKIv9XYYLJeeE0uE3Q/edit?usp=sharing">건강 관리 API</a></li>
+        <li><a href = "https://docs.google.com/spreadsheets/d/1LWNvnNnLxAFr-eTLRAIf70kQPwLhPP4FFKgIdQJM2FU/edit?usp=sharing">게시물 API</a></li>
+    </ul>
+</div>
+<h2>로그인 플로우 차트</h2>
+<div>
+    
+</div>
 
 <img src = "https://capsule-render.vercel.app/api?type=waving&color=0:A097D4,100:DED9F4&height=200&section=footer">
