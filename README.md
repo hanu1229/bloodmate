@@ -67,6 +67,8 @@
         </p>
     </li>
 </ul>
+
+
 <h2>📌 시스템 아키텍처</h2>
 <div>
     <img src = "docs/images/bloodmate_system_architecture.png" />
@@ -75,6 +77,8 @@
 <div>
     <img src = "docs/images/bloodmate_ERD.png" />
 </div>
+
+
 <h2>📌 주요 기능</h2>
 <div>
     <!-- 사용자 인증 -->
@@ -110,7 +114,9 @@
         </ul>
     </ul>
 </div>
-<h2>API 명세서 링크</h2>
+
+
+<h2>📄 API 명세서 링크</h2>
 <div>
     <ul>
         <li><a href = "https://docs.google.com/spreadsheets/d/1nBB3n0IDq4Q279cRKUsHXq7Vx3-87kCgiR5TozAW9jU/edit?usp=sharing">유저 API</a></li>
@@ -118,9 +124,53 @@
         <li><a href = "https://docs.google.com/spreadsheets/d/1LWNvnNnLxAFr-eTLRAIf70kQPwLhPP4FFKgIdQJM2FU/edit?usp=sharing">게시물 API</a></li>
     </ul>
 </div>
-<h2>로그인 플로우 차트</h2>
+<h2>🔁 로그인 플로우 차트</h2>
 <div>
     <img src = "docs/images/bloodmate_login_flow_chart.png" />
+</div>
+
+
+<h2>🚀 개선 계획</h2>
+<div>
+    <ul>
+        <li>JWT Access Token을 LocalStorage 대신 HttpOnly 쿠키로 전송·관리하도록 개선</li>
+        <li>아이디/비밀번호 찾기 인증코드를 문자 API에 적용</li>
+        <li>건강 데이터 여러 조건 검색 기능 적용</li>
+        <li>건강 데이터 차트 적용</li>
+        <li>앱 설정 기능 적용</li>
+        <li>게시판 이미지 저장 기능 적용</li>
+        <li>관리자 페이지 및 관리자 전용 API 구현</li>
+    </ul>
+</div>
+
+<h2>🧠 회고(KPT)</h2>
+<div>
+    <!-- KEEP -->
+    <ul>
+        <li>KEEP</li>
+        <ul>
+            <li>JWT와 Redis를 활용하여 사용자의 인증 상태를 효율적으로 관리할 수 있었습니다.</li>
+            <li>Java Security를 이용해 랜덤 인증번호를 생성함으로써 인증 로직의 기본 구조를 직접 구현해볼 수 있었습니다.</li>
+        </ul>
+    </ul>
+    <!-- PROBLEM -->
+    <ul>
+        <li>PROBLEM</li>
+        <ul>
+            <li>Redis를 단순히 로그인 토큰 관리 용도로만 사용하여 웹·앱 간 동시 로그인 문제를 해결하지 못했습니다.</li>
+            <li>랜덤 인증번호를 실제 메일 또는 문자 전송 API와 연동하지 못해 인증 시스템이 완전하지 않았습니다.</li>
+            <li>사용자의 건강 데이터만을 중심으로 개발하다 보니 게시판에서의 관리자의 역할을 고려하지 못했습니다.</li>
+        </ul>
+    </ul>
+    <!-- TRY -->
+    <ul>
+        <li>TRY</li>
+        <ul>
+            <li>Redis를 활용해 웹과 앱간의 동시 로그인 제어 및 관리자 전용 기능을 구현해보겠습니다.</li>
+            <li>문자 또는 메일 API를 연동하여 실제 서비스 환경과 유사한 인증번호 검증 시스템을 구축하겠습니다.</li>
+            <li>새로운 기능을 만들 때마다 관리자 입장에서 필요한 기능이 있는지 고민하며 실제 서비스처럼 완성도 있는 프로젝트를 개발하도록 하겠습니다.</li>
+        </ul>
+    </ul>
 </div>
 
 <img src = "https://capsule-render.vercel.app/api?type=waving&color=0:A097D4,100:DED9F4&height=200&section=footer">
