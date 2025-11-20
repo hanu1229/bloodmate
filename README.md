@@ -120,7 +120,7 @@
 </div>
 <h2>로그인 플로우 차트</h2>
 <div>
-    
+    <img src = "docs/images/bloodmate_login_flow_chart.png" />
 </div>
 
 <img src = "https://capsule-render.vercel.app/api?type=waving&color=0:A097D4,100:DED9F4&height=200&section=footer">
