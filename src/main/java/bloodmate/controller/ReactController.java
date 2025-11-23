@@ -3,6 +3,7 @@ package bloodmate.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/// 리액트와 스프링 동시 배포 시 사용
 @Controller
 public class ReactController {
     @RequestMapping(value = {
