@@ -21,10 +21,10 @@ export default defineConfig({
     hmr : {
       host : "raunriu.iptime.org",
       protocol : "ws",
-      prot : 5173,
+      port : 5173,
       // 만약 리버스 프록시(80/443)뒤에 두면 아래처럼 설정
       // clientPort : 80 또는 clientPort : 443
-      // protocal : "wss" | HTTPS면 wss를 권장
+      // protocol : "wss" | HTTPS면 wss를 권장
     }
   }
 })
