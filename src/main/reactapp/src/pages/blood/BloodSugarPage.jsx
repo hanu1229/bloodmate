@@ -3,7 +3,7 @@ import useCustomNavigate from "../../useCustomNavigate";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { serverDomain } from "../../ApiDomain";
-import { DataGrid, GridActionsCellItem, gridPaginatedVisibleSortedGridRowEntriesSelector, useGridApiRef } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import { ArrowDropDown, ArrowDropUp, ArrowRight, Edit } from "@mui/icons-material";
 import { LineChart } from "@mui/x-charts";
 import { btnColor } from "../../styles/commonStyle";
@@ -22,10 +22,13 @@ export default function BloodSugarPage(props) {
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
     const [searchModal, setSearchModal] = useState(false);
+    // ↓ 조건 검색을 위한 state
+    const [dateRange, setDateRange] = useState({startDate : "", endDate : ""});
+    const [isFiltered, setIsFiltered] = useState(false);
     const [rowInfo, setRowInfo] = useState({});
     const [totalElements, setTotalElements] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
-    const [paginationModel, setPaginationModel] = useState({page : 0, pageSize : 7});
+    const [paginationModel, setPaginationModel] = useState({page : 0, pageSize : 10});
     /** true : 펼침 | false : 닫힘 */
     const [sugarGuide, setSugarGuide] = useState(false);
     /** 차트에 필요 - DataGrid를 조작할 수 있게 해줌 */
@@ -37,8 +40,12 @@ export default function BloodSugarPage(props) {
     
     useEffect(() => { 
         (async () => {
-            await checkLogin(); 
-            await findAll(); 
+            await checkLogin();
+            if(isFiltered === true) {
+                await findDate(dateRange.startDate, dateRange.endDate);
+            } else {
+                await findAll();
+            }
             console.log(paginationModel.pageSize);
         })();
     }, [paginationModel]);
@@ -112,17 +119,20 @@ export default function BloodSugarPage(props) {
         }
     }
 
-    /** 검색하기 */
-    const findData = async () => {
+    /** 조회하기 */
+    const findDate = async (startDate, endDate) => {
         try {
             const token = localStorage.getItem("Token");
             let params = {page : paginationModel.page + 1, size : paginationModel.pageSize, sorting : "DESC"};
-            if(startDate == "" || endDate == "") {
-                params = {...params, context : context};
-            }
-            if(context === 0) {
+            // 측정 상황으로만 조회할 때
+            // if(startDate == "" || endDate == "") {
+            //     params = {...params, context : context};
+            // }
+            // 기간으로만 조회할 때
+            if(startDate != "" && endDate != "") {
                 params = {...params, startDate : startDate, endDate : endDate};
             }
+            console.log(params);
             const response = await axios.get(
                 `${serverDomain}/blood/sugar/date`,
                 {
@@ -132,10 +142,10 @@ export default function BloodSugarPage(props) {
                 }
             )
             if(response.status === 200) { 
+                console.log(response.data);
                 const temp = response.data.content.map((item, index) => {
                     const time = item["measuredAt"].split("T")[1];
                     const [hour, minute, second] = time.split(":");
-        
                     const obj = {
                         id : index + 1,
                         measureDate : item["measuredAt"].split("T")[0],
@@ -145,6 +155,7 @@ export default function BloodSugarPage(props) {
                         value : item["bloodSugarValue"],
                         bloodSugarId : item["bloodSugarId"]
                     }
+                    console.log("check!!!");
                     return obj;
                 });
                 console.log("temp");
@@ -152,12 +163,24 @@ export default function BloodSugarPage(props) {
                 setBloodSugarInfo(temp);
                 setTotalElements(response.data.totalElements);
                 setTotalPages(response.data.totalPages);
+                setDateRange({startDate : startDate, endDate : endDate});
+                setIsFiltered(true);
              }
         } catch(e) {
+            console.error(`findData error : ${e}`);
             if(e.response.status === 400) { 
                 alert("데이터가 존재하지 않습니다"); 
+            } else {
+                alert("조회 중 오류가 발생했습니다. 콘솔 확인 바람!");
             }
         }
+    }
+
+    /** 필터 초기화 */
+    const resetFilter = async () => {
+        setIsFiltered(false);
+        setPaginationModel({page : 0, pageSize : 10});
+        await findAll();
     }
 
 
@@ -297,9 +320,12 @@ export default function BloodSugarPage(props) {
                         }
                     </Box>
 
-                    {/* 작성하기 버튼 */}
+                    {/* 조건 필터 초기화, 조건 조회, 작성하기 버튼 */}
                     <Box sx = {{marginBottom : "8px", display : "flex", justifyContent : "end"}}>
-                        <Button onClick = {() => setSearchModal(true)} sx = {{...btnColor, marginRight : "16px"}}>조건 검색</Button>
+                        {
+                            isFiltered == true ? <Button onClick = {resetFilter} sx = {{...btnColor, marginRight : "16px"}}>필터 초기화</Button> : null
+                        }
+                        <Button onClick = {() => setSearchModal(true)} sx = {{...btnColor, marginRight : "16px"}}>조건 조회</Button>
                         <Button onClick = {() => setCreateModal(true)} sx = {{...btnColor}}>작성하기</Button>
                         <CustomModal
                             open = {createModal}
@@ -314,10 +340,10 @@ export default function BloodSugarPage(props) {
                     <CustomModal
                         open = {searchModal}
                         onClose = {(event, reason) => { reason === "backdropClick" ? setSearchModal(true) : setSearchModal(false) }}
-                        title = "조건 검색하기"
+                        title = "조건 조회하기"
                         isInfo = {false}
                     >
-                        <SearchSugarModal findAll = {findData} onClose = {() => {setSearchModal(false);}}  />
+                        <SearchSugarModal findDate = {findDate} onClose = {() => {setSearchModal(false);}}  />
                     </CustomModal>
                     <CustomModal
                         open = {updateModal}

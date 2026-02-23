@@ -28,23 +28,42 @@ public interface BloodSugarRepository extends JpaRepository<BloodSugarEntity, In
 //    )
 //    List<BloodSugarEntity> findByDateToBloodSugar(@Param("userId") int userId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
-    /// 혈당 정보 조건 불러오기(조건 : 날짜) - R
+    /// 혈당 정보 조건 불러오기 DESC (조건 : 날짜) - R
     @Query(
             value =
                     """
                     select * from user_blood_sugar
-                    where user_id = :userId and measured_at >= :startDate and measured_at < :endDate and measurement_context_id = :context
+                    where user_id = :userId and measured_at >= :startDateTime and measured_at < :endDateTime
+                    order by measured_at DESC
                     """,
             countQuery =
                     """
-                    select * from user_blood_sugar
-                    where user_id = :userId and measured_at >= :startDate and measured_at < :endDate and measurement_context_id = :context
+                    select count(*) from user_blood_sugar
+                    where user_id = :userId and measured_at >= :startDateTime and measured_at < :endDateTime
                     """,
             nativeQuery = true
     )
-    Page<BloodSugarEntity> findByDateToBloodSugar(
-            @Param("userId") int userId, @Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate,
-            @Param("context") int context, Pageable pageable
+    Page<BloodSugarEntity> findByDateToBloodSugarDESC(
+            @Param("userId") int userId, @Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime, Pageable pageable
+    );
+
+    /// 혈당 정보 조건 불러오기 ASC (조건 : 날짜) - R
+    @Query(
+            value =
+                    """
+                    select * from user_blood_sugar
+                    where user_id = :userId and measured_at >= :startDateTime and measured_at < :endDateTime
+                    order by measured_at ASC
+                    """,
+            countQuery =
+                    """
+                    select count(*) from user_blood_sugar
+                    where user_id = :userId and measured_at >= :startDateTime and measured_at < :endDateTime
+                    """,
+            nativeQuery = true
+    )
+    Page<BloodSugarEntity> findByDateToBloodSugarASC(
+            @Param("userId") int userId, @Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime, Pageable pageable
     );
 
     /// 혈당 측정 상황별 15개 최소, 최대 평균 불러오기 - R
