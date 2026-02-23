@@ -151,25 +151,36 @@ public class BloodSugarService {
     }
 
     /// 혈당 정보 조건 불러오기(조건 : 날짜) - R
-    public List<BloodSugarResponseDto> findByDate(String token, LocalDateTime startDate, LocalDateTime endDate, int context, int page, int size, String sorting) {
+    public ResponseEntity<Page<BloodSugarResponseDto>> findByDate(String token, LocalDate startDate, LocalDate endDate, int context, int page, int size, String sorting) {
         System.out.println(">> BloodSugarService.findByDate start");
         try {
             int userId = jwtUtil.validateToken(token);
             if(userId <= 0) { return null; }
-            Pageable pageable;
-            if(sorting.equals("DESC")) {
-                pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "measuredAt"));
-            } else {
-                pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.ASC, "measuredAt"));
-            }
+            Pageable pageable = PageRequest.of(page - 1, size);
             if(startDate.isEqual(endDate)) { endDate = endDate.plusDays(1); }
-            Page<BloodSugarEntity> bloodSugarEntityList = bloodSugarRepository.findByDateToBloodSugar(userId, startDate, endDate, context, pageable);
-            if(bloodSugarEntityList == null) { return null; }
-            return bloodSugarEntityList.stream().map(BloodSugarEntity::toDto).toList();
+            // LocalDate 값에 시분 00:00을 붙여줌
+            LocalDateTime startDateTime = startDate.atStartOfDay();
+            LocalDateTime endDateTime = endDate.atStartOfDay();
+            Page<BloodSugarEntity> bloodSugarEntityPage = null;
+            if(sorting.equals("DESC")) {
+                bloodSugarEntityPage  = bloodSugarRepository.findByDateToBloodSugarDESC(userId, startDateTime, endDateTime, pageable);
+            } else if(sorting.equals("ASC")) {
+                bloodSugarEntityPage  = bloodSugarRepository.findByDateToBloodSugarASC(userId, startDateTime, endDateTime, pageable);
+            }
+            if(bloodSugarEntityPage == null) { return ResponseEntity.status(400).body(null); }
+            Page<BloodSugarResponseDto> result = bloodSugarEntityPage.map(entity -> {
+                BloodSugarResponseDto dto = entity.toDto();
+                String code = entity.getMeasurementContextEntity().getMcCode();
+                /// getOrDefault(key, default) --> Map 타입에서 key를 찾고 key가 없으면 default값을 반환 시킴
+                String label = CONTEXT_LABELS.getOrDefault(code, code);
+                dto.setMeasurementContextLabel(label);
+                return dto;
+            });
+            return ResponseEntity.status(200).body(result);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BloodSugarService.findByDate error!!!");
-            return null;
+            return ResponseEntity.status(400).body(null);
         } finally {
             System.out.println(">> BloodSugarService.findByDate end");
         }

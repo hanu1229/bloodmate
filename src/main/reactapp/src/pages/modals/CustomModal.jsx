@@ -8,7 +8,7 @@ export function CustomModal(props) {
             aria-labelledby="modal-title" 
             aria-describedby="modal-desc" 
             open = {props.open} 
-            onClose = {props.onClose} 
+            onClose = {props.onClose}
             /** 블러 처리 삭제 */
             // slots = {{backdrop : "span"}}
             sx = {{
