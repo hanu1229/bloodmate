@@ -2,6 +2,7 @@ package bloodmate.service;
 
 import bloodmate.model.dto.bloodpressure.BloodPressureRequestDto;
 import bloodmate.model.dto.bloodpressure.BloodPressureResponseDto;
+import bloodmate.model.dto.bloodsugar.BloodSugarResponseDto;
 import bloodmate.model.entity.BloodPressureEntity;
 import bloodmate.model.entity.BloodSugarEntity;
 import bloodmate.model.entity.MeasurementContextEntity;
@@ -33,6 +34,36 @@ public class BloodPressureService {
     private final UserRepository userRepository;
 
     private final JwtUtil jwtUtil;
+
+    /// Map.ofEntries() --> readOnly
+    public static final Map<String, String> CONTEXT_LABELS = Map.ofEntries(
+            Map.entry("MORNING_BEFORE_MEAL", "아침 식전"),
+            Map.entry("MORNING_AFTER_MEAL", "아침 식후"),
+            Map.entry("LUNCH_BEFORE_MEAL", "점심 식전"),
+            Map.entry("LUNCH_AFTER_MEAL", "점심 식후"),
+            Map.entry("DINNER_BEFORE_MEAL", "저녁 식전"),
+            Map.entry("DINNER_AFTER_MEAL", "저녁 식후"),
+            Map.entry("BEFORE_EXERCISE", "운동 전"),
+            Map.entry("AFTER_EXERCISE", "운동 후"),
+            Map.entry("BEFORE_SLEEP", "취침 전"),
+            Map.entry("WAKE_UP", "기상"),
+            Map.entry("OTHER", "기타")
+    );
+
+    /// Map.ofEntries() --> readOnly
+    public static final Map<String, String> CONTEXT_REVERSE_LABELS = Map.ofEntries(
+            Map.entry("아침 식전", "MORNING_BEFORE_MEAL"),
+            Map.entry("아침 식후", "MORNING_AFTER_MEAL"),
+            Map.entry("점심 식전", "LUNCH_BEFORE_MEAL"),
+            Map.entry("점심 식후", "LUNCH_AFTER_MEAL"),
+            Map.entry("저녁 식전", "DINNER_BEFORE_MEAL"),
+            Map.entry("저녁 식후", "DINNER_AFTER_MEAL"),
+            Map.entry("운동 전", "BEFORE_EXERCISE"),
+            Map.entry("운동 후", "AFTER_EXERCISE"),
+            Map.entry("취침 전", "BEFORE_SLEEP"),
+            Map.entry("기상", "WAKE_UP"),
+            Map.entry("기타", "OTHER")
+    );
 
     /// 혈압 정보 작성 - C
     public ResponseEntity<Boolean> create(String token, BloodPressureRequestDto bloodPressureRequestDto) {
@@ -94,17 +125,35 @@ public class BloodPressureService {
     }
 
     /// 혈압 정보 조건 불러오기 - R
-    public List<BloodPressureResponseDto> findByDate(String token, LocalDateTime date) {
+    public ResponseEntity<Page<BloodPressureResponseDto>> findByDate(String token, LocalDate startDate, LocalDate endDate, int context, int page, int size, String sorting) {
         System.out.println(">> BloodPressureService.findByDate");
         try {
             int userId = jwtUtil.validateToken(token);
             if(userId <= 0) { return null; }
-            LocalDate temp = date.toLocalDate();
-            LocalDateTime start = temp.atStartOfDay();
-            LocalDateTime end = temp.plusDays(1).atStartOfDay();
-            List<BloodPressureEntity> bloodPressureEntityList = bloodPressureRepository.findByDateToBloodPressure(userId, start, end);
-            if(bloodPressureEntityList == null) { return null; }
-            return bloodPressureEntityList.stream().map(BloodPressureEntity::toDto).toList();
+            Sort.Direction direction = "ASC".equalsIgnoreCase(sorting) ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Pageable pageable = PageRequest.of(page - 1, size, Sort.by(direction, "measured_at"));
+            if(startDate.isEqual(endDate)) { endDate = endDate.plusDays(1); }
+            // LocalDate 값에 시분 00:00을 붙여줌
+            LocalDateTime startDateTime = startDate.atStartOfDay();
+            LocalDateTime endDateTime = endDate.atStartOfDay().plusDays(1);
+            System.out.println(">> startDateTime = " + startDateTime);
+            System.out.println(">> endDateTime = " + endDateTime);
+            Page<BloodPressureEntity> bloodPressureEntityPage = null;
+            if(context == 0) {
+                bloodPressureEntityPage = bloodPressureRepository.findByDateToBloodPressure(userId, startDateTime, endDateTime, pageable);
+            } else {
+                bloodPressureEntityPage = bloodPressureRepository.findByContextToDateToBloodPressure(userId, startDateTime, endDateTime, context, pageable);
+            }
+            if(bloodPressureEntityPage == null) { ResponseEntity.status(400).body(null); }
+            Page<BloodPressureResponseDto> result = bloodPressureEntityPage.map(entity -> {
+                BloodPressureResponseDto dto = entity.toDto();
+                String code = entity.getMeasurementContextEntity().getMcCode();
+                ///  getOrDefault(key, default) --> Map 타입에서 key를 찾고 key가 없으면 default값을 반환 시킴
+                String label = CONTEXT_LABELS.getOrDefault(code, code);
+                dto.setMeasurementContextLabel(label);
+                return dto;
+            });
+            return ResponseEntity.status(200).body(result);
         } catch(Exception e) {
             System.out.println(">> " + e);
             System.out.println(">> BloodPressureService.findByDate error!!!");

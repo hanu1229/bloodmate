@@ -21,12 +21,46 @@ public interface BloodPressureRepository extends JpaRepository<BloodPressureEnti
     /// 혈압 정보 전체 불러오기 - R
     Page<BloodPressureEntity> findByUserEntity_userId(@Param("userId") int userId, Pageable pageable);
 
-    /// 혈압 정보 조건 불러오기 - R
+    /// 혈압 정보 조건 불러오기 (측정 상황 O) - R
     @Query(
-            value = "select * from user_blood_pressure where user_id = :userId and measured_at >= :start and measured_at < :end",
+            value = """
+                    select * from user_blood_pressure
+                    where user_id = :userId and measured_at >= :startDateTime and measured_at <= :endDateTime
+                    and measurement_context_id = :context
+                    """,
+            countQuery = """
+                        select count(*) from user_blood_pressure
+                        where user_id = :userId and measured_at >= :startDateTime and measured_at <= :endDateTime
+                        and measurement_context_id = :context
+                        """,
             nativeQuery = true
     )
-    List<BloodPressureEntity> findByDateToBloodPressure(@Param("userId") int userId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+    Page<BloodPressureEntity> findByContextToDateToBloodPressure(
+            @Param("userId") int userId,
+            @Param("startDateTime") LocalDateTime startDateTime,
+            @Param("endDateTime") LocalDateTime endDateTime,
+            @Param("context") int context,
+            Pageable pageable
+    );
+
+    /// 혈압 정보 조건 불러오기 (측정 상황 X) - R
+    @Query(
+            value = """
+                    select * from user_blood_pressure
+                    where user_id = :userId and measured_at >= :startDateTime and measured_at <= :endDateTime
+                    """,
+            countQuery = """
+                        select count(*) from user_blood_pressure
+                        where user_id = :userId and measured_at >= :startDateTime and measured_at <= :endDateTime
+                        """,
+            nativeQuery = true
+    )
+    Page<BloodPressureEntity> findByDateToBloodPressure(
+            @Param("userId") int userId,
+            @Param("startDateTime") LocalDateTime startDateTime,
+            @Param("endDateTime") LocalDateTime endDateTime,
+            Pageable pageable
+    );
 
     /// 혈압 측정 상황별 15개 최소, 최대 평균 불러오기 - R
     @Query(value = "select * from user_blood_pressure where user_id = :userId and measurement_context_id = :measurementContextId order by measured_at limit 15", nativeQuery = true)

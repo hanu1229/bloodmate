@@ -1,5 +1,6 @@
 package bloodmate.controller;
 
+import bloodmate.controller.docs.BoardDocs;
 import bloodmate.model.dto.CommentDto;
 import bloodmate.model.dto.board.BoardRequestDto;
 import bloodmate.model.dto.board.BoardResponseDto;
@@ -13,7 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/board")
-public class BoardController {
+public class BoardController implements BoardDocs {
 
     private final BoardService boardService;
 

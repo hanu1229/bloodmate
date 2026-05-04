@@ -13,7 +13,8 @@ import UpdateSugarModal from "../modals/blood/sugar/UpdateSugarModal";
 import DeleteSugarModal from "../modals/blood/sugar/DeleteSugarModal";
 import SearchSugarModal from "../modals/blood/sugar/SearchSugarModal";
 
-export default function BloodSugarPage(props) {
+export default function BloodSugarTestPage(props) {
+
     const checkLogin = useCustomNavigate();
 
     const [bloodSugarInfo, setBloodSugarInfo] = useState([]);
@@ -23,8 +24,6 @@ export default function BloodSugarPage(props) {
     const [searchModal, setSearchModal] = useState(false);
     // ↓ 조건 검색을 위한 state
     const [dateRange, setDateRange] = useState({startDate : "", endDate : ""});
-    const [choiceContext, setChoiceContext] = useState(0);
-    const [sorting, setSorting] = useState("DESC");
     const [isFiltered, setIsFiltered] = useState(false);
     const [rowInfo, setRowInfo] = useState({});
     const [totalElements, setTotalElements] = useState(0);
@@ -43,7 +42,7 @@ export default function BloodSugarPage(props) {
         (async () => {
             await checkLogin();
             if(isFiltered === true) {
-                await findDate(dateRange.startDate, dateRange.endDate, choiceContext, sorting);
+                await findDate(dateRange.startDate, dateRange.endDate);
             } else {
                 await findAll();
             }
@@ -87,7 +86,7 @@ export default function BloodSugarPage(props) {
                 `${serverDomain}/blood/sugar`, 
                 {
                     headers : {Authorization : token},
-                    params : {page : paginationModel.page + 1, size : paginationModel.pageSize, sorting : sorting}
+                    params : {page : paginationModel.page + 1, size : paginationModel.pageSize, sorting : "DESC"}
                 }
             );
             if(response.status === 200) {
@@ -121,19 +120,18 @@ export default function BloodSugarPage(props) {
     }
 
     /** 조회하기 */
-    const findDate = async (startDate, endDate, context, sorting) => {
+    const findDate = async (startDate, endDate) => {
         try {
             const token = localStorage.getItem("Token");
-            let params = {page : paginationModel.page + 1, size : paginationModel.pageSize, sorting : sorting};
+            let params = {page : paginationModel.page + 1, size : paginationModel.pageSize, sorting : "DESC"};
             // 측정 상황으로만 조회할 때
             // if(startDate == "" || endDate == "") {
             //     params = {...params, context : context};
             // }
             // 기간으로만 조회할 때
             if(startDate != "" && endDate != "") {
-                params = {...params, startDate : startDate, endDate : endDate, context : context, sorting : sorting};
+                params = {...params, startDate : startDate, endDate : endDate};
             }
-            console.log("params");
             console.log(params);
             const response = await axios.get(
                 `${serverDomain}/blood/sugar/date`,
@@ -166,8 +164,6 @@ export default function BloodSugarPage(props) {
                 setTotalElements(response.data.totalElements);
                 setTotalPages(response.data.totalPages);
                 setDateRange({startDate : startDate, endDate : endDate});
-                setChoiceContext(context);
-                setSorting(sorting);
                 setIsFiltered(true);
              }
         } catch(e) {
@@ -299,7 +295,7 @@ export default function BloodSugarPage(props) {
                     {/* 가이드 */}
                     <Box onClick = {() => {setSugarGuide(!sugarGuide);}} sx = {{display : "flex", alignItems : "center", "&:hover" : {cursor : "pointer", fontWeight : "bold"}}}>
                         {sugarGuide ? <ArrowDropDown /> : <ArrowRight />}
-                        <Typography sx = {{color : "inherit"}}>혈당 수치 기준</Typography>
+                        <Typography sx = {{color : "inherit"}}>DataGrid 대신 다른 방식으로 구현할려고 테스트 중</Typography>
                     </Box>
                     <Box sx = {{display : "flex", flexDirection : "row", alignItems : "start", marginBottom : "16px", paddingLeft : "24px", width : "800px"}}>
                         {
@@ -347,7 +343,7 @@ export default function BloodSugarPage(props) {
                         title = "조건 조회하기"
                         isInfo = {false}
                     >
-                        <SearchSugarModal findDate = {findDate} dateRange = {dateRange} choiceContext = {choiceContext} sorting = {sorting} onClose = {() => {setSearchModal(false);}}  />
+                        <SearchSugarModal findDate = {findDate} onClose = {() => {setSearchModal(false);}}  />
                     </CustomModal>
                     <CustomModal
                         open = {updateModal}

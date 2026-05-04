@@ -1,5 +1,6 @@
 package bloodmate.controller;
 
+import bloodmate.controller.docs.MeasurementContextDocs;
 import bloodmate.model.dto.MeasurementContextDto;
 import bloodmate.service.MeasurementContextService;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/blood/measurement")
-public class MeasurementContextController {
+public class MeasurementContextController implements MeasurementContextDocs {
 
     private final MeasurementContextService mcService;
 

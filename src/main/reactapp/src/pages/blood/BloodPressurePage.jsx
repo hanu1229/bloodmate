@@ -11,6 +11,7 @@ import { btnColor } from "../../styles/commonStyle";
 import UpdatePressureModal from "../modals/blood/pressure/UpdatePressureModal";
 import DeletePressureModal from "../modals/blood/pressure/DeletePressureModal";
 import CreatePressureModal from "../modals/blood/pressure/CreatePressureModal";
+import SearchPressureModal from "../modals/blood/pressure/SearchPressureModal";
 
 export default function BloodPressurePage(props) {
     const checkLogin = useCustomNavigate();
@@ -19,17 +20,27 @@ export default function BloodPressurePage(props) {
     const [createModal, setCreateModal] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
     const [deleteModal, setDeleteModal] = useState(false);
+    const [searchModal, setSearchModal] = useState(false);
+    // ↓ 조건 검색을 위한 state
+    const [dateRange, setDateRange] = useState({startDate : "", endDate : ""});
+    const [choiceContext, setChoiceContext] = useState(0);
+    const [sorting, setSorting] = useState("DESC");
+    const [isFiltered, setIsFiltered] = useState(false);
     const [rowInfo, setRowInfo] = useState({});
     const [totalElements, setTotalElements] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
-    const [paginationModel, setPaginationModel] = useState({page : 0, pageSize : 7})
+    const [paginationModel, setPaginationModel] = useState({page : 0, pageSize : 10})
     /** true : 펼침 | false : 닫힘 */
     const [sugarGuide, setSugarGuide] = useState(false);
 
     useEffect(() => { 
         (async () => {
-            await checkLogin(); 
-            await findAll(); 
+            await checkLogin();
+            if(isFiltered == true) {
+                await findDate(dateRange.startDate, dateRange.endDate, choiceContext, sorting);
+            } else {
+                await findAll(); 
+            }
             console.log(paginationModel.pageSize);
         })();
     }, [paginationModel]);
@@ -74,6 +85,74 @@ export default function BloodPressurePage(props) {
                 alert("데이터가 존재하지 않습니다");
             }
         }
+    }
+
+    /** 조회하기 */
+    const findDate = async (startDate, endDate, context, sorting) => {
+        try {
+            const token = localStorage.getItem("Token");
+            let params = {page : paginationModel.page + 1, size : paginationModel.pageSize, sorting : sorting};
+            // 측정 상황으로만 조회할 때
+            // if(startDate == "" || endDate == "") {
+            //     params = {...params, context : context};
+            // }
+            // 기간으로만 조회할 때
+            if(startDate != "" && endDate != "") {
+                params = {...params, startDate : startDate, endDate : endDate, context : context, sorting : sorting};
+            }
+            console.log("params");
+            console.log(params);
+            const response = await axios.get(
+                `${serverDomain}/blood/pressure/date`,
+                {
+                    withCredentials : true,
+                    headers : {Authorization : token},
+                    params : params
+                }
+            )
+            if(response.status === 200) { 
+                console.log("response.data");
+                console.log(response.data);
+                const temp = response.data.content.map((item, index) => {
+                    const time = item["measuredAt"].split("T")[1];
+                    const [hour, minute, second] = time.split(":");
+                    const obj = {
+                        id : index + 1,
+                        measureDate : item["measuredAt"].split("T")[0],
+                        measureTime : `${hour}:${minute}`,
+                        contextLabel : item["measurementContextLabel"],
+                        contextId : item["measurementContextId"],
+                        value : item["bloodSugarValue"],
+                        bloodSugarId : item["bloodSugarId"]
+                    }
+                    console.log("check!!!");
+                    return obj;
+                });
+                console.log("temp");
+                console.log(temp);
+                setBloodPressureInfo(temp);
+                setTotalElements(response.data.totalElements);
+                setTotalPages(response.data.totalPages);
+                setDateRange({startDate : startDate, endDate : endDate});
+                setChoiceContext(context);
+                setSorting(sorting);
+                setIsFiltered(true);
+             }
+        } catch(e) {
+            console.error(`findData error : ${e}`);
+            if(e.response.status === 400) { 
+                alert("데이터가 존재하지 않습니다"); 
+            } else {
+                alert("조회 중 오류가 발생했습니다. 콘솔 확인 바람!");
+            }
+        }
+    }
+
+    /** 필터 초기화 */
+    const resetFilter = async () => {
+        setIsFiltered(false);
+        setPaginationModel({page : 0, pageSize : 10});
+        await findAll();
     }
 
      const columns = [
@@ -229,6 +308,10 @@ export default function BloodPressurePage(props) {
                     </Box>
                     {/* 작성하기 버튼 */}
                     <Box sx = {{marginBottom : "8px", display : "flex", justifyContent : "end"}}>
+                        {
+                            isFiltered == true ? <Button onClick = {resetFilter} sx = {{...btnColor, marginRight : "16px"}}>필터 초기화</Button> : null
+                        }
+                        <Button onClick = {() => setSearchModal(true)} sx = {{...btnColor, marginRight : "16px"}}>조건 조회</Button>
                         <Button onClick = {() => setCreateModal(true)} sx = {{...btnColor}}>작성하기</Button>
                         <CustomModal
                             open = {createModal}
@@ -240,6 +323,14 @@ export default function BloodPressurePage(props) {
                         </CustomModal>
                     </Box>
                     {/* 모달 */}
+                    <CustomModal
+                        open = {searchModal}
+                        onClose = {(event, reason) => { reason === "backdropClick" ? setSearchModal(true) : setSearchModal(false) }}
+                        title = "조건 조회하기"
+                        isInfo = {false}
+                    >
+                        <SearchPressureModal findDate = {findDate} dateRange = {dateRange} choiceContext = {choiceContext} sorting = {sorting} onClose = {() => {setSearchModal(false);}}  />
+                    </CustomModal>
                     <CustomModal
                         open = {updateModal}
                         onClose = {(event, reason) => { reason === "backdropClick" ? setUpdateModal(true) : setUpdateModal(false) }}

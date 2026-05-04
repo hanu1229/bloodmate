@@ -156,16 +156,19 @@ public class BloodSugarService {
         try {
             int userId = jwtUtil.validateToken(token);
             if(userId <= 0) { return null; }
-            Pageable pageable = PageRequest.of(page - 1, size);
+            Sort.Direction direction = "ASC".equalsIgnoreCase(sorting) ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Pageable pageable = PageRequest.of(page - 1, size, Sort.by(direction, "measured_at"));
             if(startDate.isEqual(endDate)) { endDate = endDate.plusDays(1); }
             // LocalDate 값에 시분 00:00을 붙여줌
             LocalDateTime startDateTime = startDate.atStartOfDay();
-            LocalDateTime endDateTime = endDate.atStartOfDay();
+            LocalDateTime endDateTime = endDate.atStartOfDay().plusDays(1);
+            System.out.println(">> startDateTime = " + startDateTime);
+            System.out.println(">> endDateTime = " + endDateTime);
             Page<BloodSugarEntity> bloodSugarEntityPage = null;
-            if(sorting.equals("DESC")) {
-                bloodSugarEntityPage  = bloodSugarRepository.findByDateToBloodSugarDESC(userId, startDateTime, endDateTime, pageable);
-            } else if(sorting.equals("ASC")) {
-                bloodSugarEntityPage  = bloodSugarRepository.findByDateToBloodSugarASC(userId, startDateTime, endDateTime, pageable);
+            if(context == 0) {
+                bloodSugarEntityPage = bloodSugarRepository.findByDateToBloodSugar(userId, startDateTime, endDateTime, pageable);
+            } else {
+                bloodSugarEntityPage  = bloodSugarRepository.findByContextToDateToBloodSugar(userId, startDateTime, endDateTime, context, pageable);
             }
             if(bloodSugarEntityPage == null) { return ResponseEntity.status(400).body(null); }
             Page<BloodSugarResponseDto> result = bloodSugarEntityPage.map(entity -> {

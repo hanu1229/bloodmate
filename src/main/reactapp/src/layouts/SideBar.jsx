@@ -48,6 +48,12 @@ export default function SideBar(props) {
                         혈압
                     </Box>
                 </Link>
+                {/* 테스트 중 */}
+                <Link to = "/blood/test" style = {{textDecoration : "none", color : "black", fontWeight : "bold"}}>
+                    <Box sx = {{padding : "8px 0px 8px 12px", height : "24px", backgroundColor : isActive("/blood/test") ? "#FFFFFF" : "inherit"}}>
+                        테스트
+                    </Box>
+                </Link>
             </Box>
         </>
     );

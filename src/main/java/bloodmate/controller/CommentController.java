@@ -1,5 +1,6 @@
 package bloodmate.controller;
 
+import bloodmate.controller.docs.CommentDocs;
 import bloodmate.model.dto.CommentDto;
 import bloodmate.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/board/comment")
-public class CommentController {
+public class CommentController implements CommentDocs {
 
     private final CommentService commentService;
 

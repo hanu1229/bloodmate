@@ -1,3 +1,4 @@
 -- index 생성
 -- index 이름 규칙 idx : index라는 뜻, ubs : user_blood_sugar 테이블명의 약자, user_id_measured_at : 어떤 컬럼으로 만든 인덱스인지 뜻함
 --create index idx_ubs_user_id_measured_at on bloodmate.user_blood_sugar(user_id, measured_at);
+select 1;

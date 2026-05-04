@@ -13,7 +13,7 @@ import { continuousColorLegendClasses } from "@mui/x-charts";
 import "dayjs/locale/ko";
 import dayjs from "dayjs";
 
-export default function SearchSugarModal(props) {
+export default function SearchPressureModal(props) {
 
     const [startDate, setStartDate] = useState(props.dateRange.startDate);
     const [endDate, setEndDate] = useState(props.dateRange.endDate);
@@ -144,7 +144,7 @@ export default function SearchSugarModal(props) {
             <Box sx = {{marginBottom : "12px", display : "flex", justifyContent : "space-between", alignItems : "center"}}>
                 <Box sx = {{width : "47%"}}>
                     <Typography sx = {{marginBottom : "12px"}}>측정 상황</Typography>
-                    <Select 
+                    <Select
                         defaultValue = {context}
                         onChange = {(event, newValue) => setContext(newValue)}
                     >
@@ -166,23 +166,6 @@ export default function SearchSugarModal(props) {
                     </Select>
                 </Box>
             </Box>
-
-
-            {/* <Typography sx = {{marginBottom : "12px"}}>측정 상황</Typography>
-            <Select
-                value = {context} 
-                defaultValue = {context}
-                onChange = {(event, value) => { setContext(value); console.log(value); }} 
-                placeholder = "선택해주세요"
-                sx = {{...inputFocusColor, marginBottom : "12px"}}
-            >
-                <Option key = {0} value = {0}>선택해주세요</Option>
-                {
-                    contextOption.map((element) => {
-                        return (<Option key = {element.mcId} value = {element.mcId}>{element.mcCode}</Option>); 
-                    })
-                }
-            </Select> */}
             <Button sx = {{...btnColor, marginTop : "12px"}} onClick = {searchData}>조회하기</Button>
         </Box>
     );

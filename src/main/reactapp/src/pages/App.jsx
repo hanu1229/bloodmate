@@ -16,6 +16,7 @@ import MyInfoPage from "./users/MyInfoPage";
 import PostDetailPage from "./boards/PostDetailPage";
 import CreatePostPage from "./boards/CreatePostPage";
 import UpdatePostPage from "./boards/UpdatePostPage";
+import BloodSugarTestPage from "./blood/BloodSugarTestPage";
 
 export default function App(props) {
     return (
@@ -33,6 +34,8 @@ export default function App(props) {
                     <Route path = "/board/create" element = {<CreatePostPage />}/>
                     <Route path = "/board/update/:id" element = {<UpdatePostPage />}/>
                     <Route path = "/myinfo" element = {<MyInfoPage/>}/>
+                    {/* 테스트 중인 페이지 */}
+                    <Route path = "/blood/test" element = {<BloodSugarTestPage/>}/>
                 </Route>
                 <Route path = "/login" element = {<LoginPage/>}/>
                 <Route path = "/search/id" element = {<IdSearchPage/>}/>

@@ -1,8 +1,10 @@
 package bloodmate.controller;
 
+import bloodmate.controller.docs.UserDocs;
 import bloodmate.model.dto.UserDto;
 import bloodmate.model.dto.VerificationDto;
 import bloodmate.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +18,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
-public class UserController {
+public class UserController implements UserDocs {
 
     // @Autowired을 사용해야 하지만 @RequiredArgsConstructor이 자동으로 적용
     private final UserService userService;
@@ -111,7 +113,7 @@ public class UserController {
         return result;
     }
 
-    /// 회원 정보 수정 - U
+    /// 회원 정보 수정 - U 현재 사용하지 않음
     @PutMapping("/information")
     public boolean updateUser(@RequestHeader("Authorization") String token, @RequestBody UserDto userDto) {
         System.out.println(">> UserController.updateUser start");
@@ -122,7 +124,7 @@ public class UserController {
         return result;
     }
 
-    /// 비밀번호 수정(비밀번호 찾기) - U
+    /// 비밀번호 수정(비밀번호 찾기) - U 현재 사용하지 않음
     @PutMapping("/password")
     public ResponseEntity<Boolean> updatePassword(@RequestHeader("Authorization") String token, @RequestBody Map<String, String> passInfo) {
         System.out.println(">> UserController.updatePassword start");

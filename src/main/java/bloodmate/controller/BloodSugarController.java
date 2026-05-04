@@ -1,5 +1,6 @@
 package bloodmate.controller;
 
+import bloodmate.controller.docs.BloodSugarDocs;
 import bloodmate.model.dto.bloodsugar.BloodSugarRequestDto;
 import bloodmate.model.dto.bloodsugar.BloodSugarResponseDto;
 import bloodmate.service.BloodSugarService;
@@ -16,7 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/blood/sugar")
-public class BloodSugarController {
+public class BloodSugarController implements BloodSugarDocs {
 
     private final BloodSugarService bloodSugarService;
 

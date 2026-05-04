@@ -1,5 +1,6 @@
 package bloodmate.controller;
 
+import bloodmate.controller.docs.Hba1cDocs;
 import bloodmate.model.dto.Hba1cDto;
 import bloodmate.service.Hba1cService;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/blood/hba1c")
-public class Hba1cController {
+public class Hba1cController implements Hba1cDocs {
 
     private final Hba1cService hba1cService;
 

@@ -1,4 +1,4 @@
-package bloodmate.config;
+package bloodmate.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

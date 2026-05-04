@@ -1,5 +1,6 @@
 package bloodmate.controller;
 
+import bloodmate.controller.docs.BloodPressureDocs;
 import bloodmate.model.dto.bloodpressure.BloodPressureRequestDto;
 import bloodmate.model.dto.bloodpressure.BloodPressureResponseDto;
 import bloodmate.service.BloodPressureService;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/blood/pressure")
-public class BloodPressureController {
+public class BloodPressureController implements BloodPressureDocs {
 
     private final BloodPressureService bloodPressureService;
 
@@ -50,9 +52,21 @@ public class BloodPressureController {
 
     /// 혈압 정보 조건 불러오기 - R
     @GetMapping("/date")
-    public List<BloodPressureResponseDto> findByDate(@RequestHeader("Authorization") String token, @RequestParam("date") LocalDateTime date) {
+    public ResponseEntity<Page<BloodPressureResponseDto>> findByDate(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate,
+            @RequestParam(name = "context", defaultValue = "0") int context, @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size, @RequestParam(name = "sorting", defaultValue = "DESC") String sorting
+    ) {
         System.out.println(">> BloodPressureController.findByDate start");
-        List<BloodPressureResponseDto> result = bloodPressureService.findByDate(token, date);
+        System.out.println(">> token = " + token);
+        System.out.println(">> startDate = " + startDate);
+        System.out.println(">> endDate = " + endDate);
+        System.out.println(">> context = " + context);
+        System.out.println(">> page = " + page);
+        System.out.println(">> size = " + size);
+        System.out.println(">> sorting = " + sorting);
+        ResponseEntity<Page<BloodPressureResponseDto>> result = bloodPressureService.findByDate(token, startDate, endDate, context, page, size, sorting);
         System.out.println(">> BloodPressureController.findByDate end\n");
         return result;
     }
