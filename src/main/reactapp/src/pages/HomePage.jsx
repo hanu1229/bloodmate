@@ -147,6 +147,11 @@ export default function HomePage(props) {
         }
     }
 
+    // 혈당 수치 체크
+    const checkBloodSugar = (value) => {
+        
+    }
+
     return (
         <>
             <Box sx = {{boxSizing : "border-box", padding : "40px", backgroundColor : "inherit", width : "100%"}}>
@@ -238,9 +243,9 @@ export default function HomePage(props) {
                     isLogin == true ?
                     <Box sx = {{display : "flex", justifyContent : "start"}}>
                         {/* 혈당 */}
-                        <Box sx = {{padding : "16px", width : "45%", border : "1px solid #A097D4", borderRadius : "8px"}}>
+                        <Box sx = {{padding : "16px", width : "45%", border : "1px solid #A097D4", borderRadius : "8px", alignContent : "start"}}>
                             <Box sx = {{display : "flex", justifyContent : "space-between", alignItems : "center", width : "100%"}}>
-                                <Typography sx = {{fontSize : "16px", fontWeight : "bold"}}>혈당 최근 수치</Typography>
+                                <Typography sx = {{fontSize : "16px", fontWeight : "bold"}}>최근 15회 혈당 요약</Typography>
                                 <Box sx = {{display : "flex", justifyContent : "space-between", alignItems : "center"}}>
                                     <Select
                                         value = {selectSugarContext}
@@ -258,11 +263,24 @@ export default function HomePage(props) {
                                     </Select>
                                     <Button onClick = {findSugarAverage} sx = {{...btnColor, marginLeft : "16px"}}>찾기</Button>
                                 </Box>
-                            </Box>
+                            </Box> {/* 최소 {sugarData != null ? sugarData.min : null} mg/dL */}
                             <Divider sx = {{margin : "8px 0px", color : "#A097D4"}} />
-                            <Typography>최소 : {sugarData != null ? sugarData.min : null} mg/dL</Typography>
-                            <Typography>평균 : {sugarData != null ? sugarData.avg : null} mg/dL</Typography>
-                            <Typography>최대 : {sugarData != null ? sugarData.max : null} mg/dL</Typography>
+                            <Box sx = {{display : "flex", justifyContent : "space-around", height : "64%", marginTop : "32px"}}>
+                                <Box sx = {{padding : "8px", width : "24%", backgroundColor : "#faf9ff", border : "2px #A097D4 solid", borderRadius : "8px", alignContent : "center"}}>
+                                        <Typography sx = {{textAlign : "center", fontWeight : "bold", fontSize : "24px"}}>최소</Typography>
+                                        <Typography sx = {{textAlign : "center", fontWeight : "bold", fontSize : "16px"}}>{sugarData != null ? sugarData.min : null} mg/dL</Typography>
+                                </Box>
+                                <Box sx = {{padding : "8px", width : "24%", backgroundColor : "#faf9ff", border : "2px #A097D4 solid", borderRadius : "8px", alignContent : "center"}}>
+                                     
+                                    <Typography sx = {{textAlign : "center", fontWeight : "bold", fontSize : "24px"}}>평균</Typography>
+                                    <Typography sx = {{textAlign : "center", fontWeight : "bold", fontSize : "16px"}}>{sugarData != null ? sugarData.avg : null} mg/dL</Typography>
+                                </Box>
+                                <Box sx = {{padding : "8px", width : "24%", backgroundColor : "#faf9ff", border : "2px #A097D4 solid", borderRadius : "8px", alignContent : "center"}}>
+                                     
+                                    <Typography sx = {{textAlign : "center", fontWeight : "bold", fontSize : "24px"}}>최대</Typography>
+                                    <Typography sx = {{textAlign : "center", fontWeight : "bold", fontSize : "16px"}}>{sugarData != null ? sugarData.max : null} mg/dL</Typography>
+                                </Box>
+                            </Box>
                         </Box>
                         <Box sx ={{width : "5%"}}></Box>
                         {/* 혈압 */}
